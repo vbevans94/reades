@@ -1,9 +1,11 @@
 package ua.org.cofriends.reades;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -24,32 +26,47 @@ public class ReadActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
 
-        final String sample = "Android is a Software stack";
-        final SpannableStringBuilder ss = new SpannableStringBuilder();
-        for (int i = 0; i < 1000; i++) {
-            ss.append(sample);
-            ClickableSpan clickableSpan = new ClickableSpan() {
-                @Override
-                public void onClick(View textView) {
-                    Toast.makeText(ReadActivity.this, sample, Toast.LENGTH_LONG).show();
-                }
+        String sample = "Android is a Software stack";
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < 100; i++) {
+            text.append(sample + "\n");
+        }
 
-                @Override
-                public void updateDrawState(TextPaint ds) {
-                    super.updateDrawState(ds);
-
-                    ds.setUnderlineText(false);
-                    ds.setColor(Color.BLACK);
-                }
-            };
-            ss.setSpan(clickableSpan, 22 + i * sample.length(), 27 + i * sample.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = 0;
+        SpannableStringBuilder spanText = new SpannableStringBuilder();
+        while (text.length() > 0) {
+            int end = text.indexOf(" ");
+            if (end == -1) {
+                break;
+            }
+            CharSequence word = text.subSequence(start, end);
+            spanText.append(word + " ");
+            addSpannable(this, spanText, word);
+            text.delete(start, end + 1);
         }
 
         TextView textView = (TextView) findViewById(R.id.text_content);
-        textView.setText(ss);
+        textView.setText(spanText);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
+    private static void addSpannable(final Context context, Spannable spannable, final CharSequence word) {
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                Toast.makeText(context, word, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+
+                ds.setUnderlineText(false);
+                ds.setColor(Color.BLACK);
+            }
+        };
+        spannable.setSpan(clickableSpan, spannable.length() - word.length(), spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
