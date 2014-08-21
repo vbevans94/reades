@@ -2,7 +2,10 @@
 <resources>
 
     <string name="app_name">Reades</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="message_db_loading">Dictionary being loaded</string>
+    <string name="message_dictionary_download_started">Download of %s dictionary started</string>
+    <string name="error_dictionary_download_failed">Dictionary download failed</string>
+    <string name="message_dictionary_download_success">Downloaded successfully</string>
 
 </resources>

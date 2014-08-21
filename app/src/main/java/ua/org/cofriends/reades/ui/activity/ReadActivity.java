@@ -1,12 +1,9 @@
-package ua.org.cofriends.reades;
+package ua.org.cofriends.reades.ui.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -18,8 +15,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ua.org.cofriends.reades.R;
 
-public class ReadActivity extends ActionBarActivity {
+
+public class ReadActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
