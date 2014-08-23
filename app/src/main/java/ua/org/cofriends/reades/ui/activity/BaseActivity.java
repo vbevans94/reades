@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import butterknife.ButterKnife;
+import ua.org.cofriends.reades.utils.EventBusUtils;
 import ua.org.cofriends.reades.utils.Logger;
 
 public class BaseActivity extends ActionBarActivity {
@@ -14,6 +15,13 @@ public class BaseActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ButterKnife.inject(this);
+        EventBusUtils.getBus().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        EventBusUtils.getBus().unregister(this);
     }
 }

@@ -1,32 +1,44 @@
 package ua.org.cofriends.reades.ui.activity;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.widget.Toast;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
-import ua.org.cofriends.reades.entity.Dictionary;
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.ui.adapter.TabsAdapter;
+import ua.org.cofriends.reades.ui.fragment.DownloadDictionariesFragment;
+import ua.org.cofriends.reades.ui.fragment.LocalDictionariesFragment;
 
 public class DictionariesActivity extends BaseActivity {
+
+    @InjectView(R.id.pager)
+    ViewPager mPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_dictionaries);
+        setContentView(R.layout.activity_pager);
 
-        EventBusUtils.getBus().register(this);
+        ButterKnife.inject(this);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        TabsAdapter tabsAdapter = new TabsAdapter(this, mPager);
+
+        tabsAdapter.addTab(actionBar.newTab().setText(R.string.title_saved), new LocalDictionariesFragment());
+        tabsAdapter.addTab(actionBar.newTab().setText(R.string.title_download), new DownloadDictionariesFragment());
     }
 
-    void onEvent(Dictionary dictionary) {
+    @SuppressWarnings("unused")
+    void onEvent(LocalDictionariesFragment.DictionarySelectedEvent event) {
         // TODO: move to books fragment
-        Toast.makeText(this, dictionary.getDbUrl(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, event.getData().getDbUrl(), Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
 
-        EventBusUtils.getBus().unregister(this);
-    }
 }

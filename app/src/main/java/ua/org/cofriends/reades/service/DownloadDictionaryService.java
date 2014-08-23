@@ -22,7 +22,7 @@ import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.EventBusUtils;
 import ua.org.cofriends.reades.utils.RestClient;
 
-public class DownloadDbService extends Service {
+public class DownloadDictionaryService extends Service {
 
     private static final int NOTIFICATION_ID = 1994;
     private Set<String> mPendingSet;
@@ -32,8 +32,8 @@ public class DownloadDbService extends Service {
      * @param context to use
      * @param dictionary to download db file for
      */
-    public static void startLoadDbService(Context context, Dictionary dictionary) {
-        Intent intent = new Intent(context, DownloadDbService.class);
+    public static void startService(Context context, Dictionary dictionary) {
+        Intent intent = new Intent(context, DownloadDictionaryService.class);
         intent.putExtras(BundleUtils.writeToBundle(dictionary));
         context.startService(intent);
     }
@@ -80,7 +80,7 @@ public class DownloadDbService extends Service {
                 private void stopWithMessage(String message) {
                     // tell user of the result of action
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                    EventBusUtils.getBus().post(new DbLoadedEvent());
+                    EventBusUtils.getBus().post(new DictionaryLoadedEvent(dictionary));
                     mPendingSet.remove(dictionary.getDbUrl());
                     stopForeground(true);
                     stopSelf();
@@ -103,6 +103,10 @@ public class DownloadDbService extends Service {
         mPendingSet = null;
     }
 
-    public static class DbLoadedEvent {
+    public static class DictionaryLoadedEvent extends EventBusUtils.Event<Dictionary> {
+
+        public DictionaryLoadedEvent(Dictionary object) {
+            super(object);
+        }
     }
 }
