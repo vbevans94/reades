@@ -4,12 +4,10 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 
-import java.util.Iterator;
 import java.util.List;
 
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.utils.EventBusUtils;
-import ua.org.cofriends.reades.utils.Utils;
 
 public class LocalDictionariesService extends IntentService {
 
@@ -23,8 +21,8 @@ public class LocalDictionariesService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Iterator<Dictionary> dictionaryIterator = Dictionary.findAll(Dictionary.class);
-        EventBusUtils.getBus().post(new DictionariesLoadedEvent(Utils.toArrayList(dictionaryIterator)));
+        List<Dictionary> dictionaries = Dictionary.listAll(Dictionary.class);
+        EventBusUtils.getBus().post(new DictionariesLoadedEvent(dictionaries));
     }
 
     public static class DictionariesLoadedEvent extends EventBusUtils.Event<List<Dictionary>> {

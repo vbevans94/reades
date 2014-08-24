@@ -23,7 +23,7 @@ public class Dictionary extends SugarRecord<Dictionary>{
     }
 
     @SuppressWarnings("unused")
-    private Dictionary() {
+    public Dictionary() {
         this(0, null, null);
     }
 

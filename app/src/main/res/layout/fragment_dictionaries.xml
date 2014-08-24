@@ -10,5 +10,13 @@
         android:id="@+id/list_dictionaries"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_dictionary_local"/>
+        tools:listitem="@layout/item_dictionary_local" />
+
+    <TextView
+        android:id="@+id/text_no_dictionaries"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/message_no_dictionaries"
+        android:visibility="gone" />
 </LinearLayout>

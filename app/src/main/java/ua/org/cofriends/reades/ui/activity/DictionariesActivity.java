@@ -35,8 +35,8 @@ public class DictionariesActivity extends BaseActivity {
     }
 
     @SuppressWarnings("unused")
-    void onEvent(LocalDictionariesFragment.DictionarySelectedEvent event) {
-        // TODO: move to books fragment
+    public void onEvent(LocalDictionariesFragment.DictionarySelectedEvent event) {
+        // TODO: move to books activity
         Toast.makeText(this, event.getData().getDbUrl(), Toast.LENGTH_LONG).show();
     }
 

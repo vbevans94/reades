@@ -9,5 +9,6 @@
     <string name="message_dictionary_download_success">Downloaded successfully</string>
     <string name="title_download">Download</string>
     <string name="title_saved">Saved</string>
+    <string name="message_no_dictionaries">There are still no dictionaries in this list</string>
 
 </resources>

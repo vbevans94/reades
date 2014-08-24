@@ -1,20 +1,12 @@
 package ua.org.cofriends.reades.ui.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import butterknife.InjectView;
 import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Dictionary;
@@ -23,17 +15,7 @@ import ua.org.cofriends.reades.service.LocalDictionariesService;
 import ua.org.cofriends.reades.ui.adapter.DictionariesAdapter;
 import ua.org.cofriends.reades.utils.RestClient;
 
-public class DownloadDictionariesFragment extends BaseFragment implements RestClient.Handler<Dictionary[]> {
-
-    @InjectView(R.id.list_dictionaries)
-    ListView mListDictionaries;
-
-    List<Dictionary> mDictionaries;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_dictionaries_download, container, false);
-    }
+public class DownloadDictionariesFragment extends DictionariesFragment implements RestClient.Handler<Dictionary[]> {
 
     @Override
     public void onResume() {
@@ -45,7 +27,7 @@ public class DownloadDictionariesFragment extends BaseFragment implements RestCl
     }
 
     private void requestDictionaries() {
-        RestClient.get("dictionaries/", new RestClient.GsonHandler<Dictionary[]>(Dictionary[].class, this, this));
+        RestClient.get("/dictionaries/", new RestClient.GsonHandler<Dictionary[]>(Dictionary[].class, this, this));
     }
 
     @Override
@@ -67,7 +49,7 @@ public class DownloadDictionariesFragment extends BaseFragment implements RestCl
      * @param event to retrieve loaded dictionary from
      */
     @SuppressWarnings("unused")
-    void onEvent(DownloadDictionaryService.DictionaryLoadedEvent event) {
+    public void onEventMainThread(DownloadDictionaryService.DictionaryLoadedEvent event) {
         mDictionaries.remove(event.getData());
         ((ArrayAdapter) mListDictionaries.getAdapter()).notifyDataSetChanged();
     }
@@ -77,7 +59,7 @@ public class DownloadDictionariesFragment extends BaseFragment implements RestCl
      * @param event to retrieve dictionaries from
      */
     @SuppressWarnings("unused")
-    void onEvent(LocalDictionariesService.DictionariesLoadedEvent event) {
+    public void onEventMainThread(LocalDictionariesService.DictionariesLoadedEvent event) {
         mDictionaries.removeAll(event.getData());
         mListDictionaries.setAdapter(new DictionariesAdapter(getActivity(), R.layout.item_dictionary_download, mDictionaries));
     }

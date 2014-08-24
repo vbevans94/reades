@@ -4,7 +4,11 @@ import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
@@ -26,6 +30,35 @@ public class DownloadDictionaryService extends Service {
 
     private static final int NOTIFICATION_ID = 1994;
     private Set<String> mPendingSet;
+    private volatile Looper mServiceLooper;
+    private volatile ServiceHandler mServiceHandler;
+
+    private final class ServiceHandler extends Handler {
+        public ServiceHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            // retrieve dictionary
+            Dictionary dictionary = (Dictionary) msg.obj;
+
+            // get status, and in case of success notify folks
+            ResultStatus status = ResultStatus.values()[msg.arg2];
+            if (status == ResultStatus.OK) {
+                dictionary.save(); // save locally
+                EventBusUtils.getBus().post(new DictionaryLoadedEvent(dictionary));
+            }
+
+            // remove task from working set and remove notification
+            mPendingSet.remove(dictionary.getDbUrl());
+            stopForeground(true);
+
+            if (mPendingSet.isEmpty()) {
+                stopSelf(msg.arg1);
+            }
+        }
+    }
 
     /**
      * Starts load of db if it's not started yet.
@@ -43,10 +76,16 @@ public class DownloadDictionaryService extends Service {
         super.onCreate();
 
         mPendingSet = new HashSet<String>();
+
+        HandlerThread thread = new HandlerThread(DownloadDictionaryService.class.getSimpleName());
+        thread.start();
+
+        mServiceLooper = thread.getLooper();
+        mServiceHandler = new ServiceHandler(mServiceLooper);
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, final int startId) {
         final Dictionary dictionary = BundleUtils.fetchFromBundle(Dictionary.class, intent.getExtras());
         if (!mPendingSet.contains(dictionary.getDbUrl())) {
             // tell user that the download started
@@ -66,24 +105,27 @@ public class DownloadDictionaryService extends Service {
             startForeground(NOTIFICATION_ID, notification);
 
             // start loading
-            RestClient.getClient().get(dictionary.getDbUrl(), new FileAsyncHttpResponseHandler(getApplicationContext()) {
+            RestClient.getClient().get(RestClient.getAbsoluteUrl(dictionary.getDbUrl()), new FileAsyncHttpResponseHandler(getApplicationContext()) {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-                    stopWithMessage(getString(R.string.error_dictionary_download_failed));
+                    stopWithMessage(getString(R.string.error_dictionary_download_failed), ResultStatus.FAIL);
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, File file) {
-                    stopWithMessage(getString(R.string.message_dictionary_download_success, dictionary.getName()));
+                    stopWithMessage(getString(R.string.message_dictionary_download_success, dictionary.getName()), ResultStatus.OK);
                 }
 
-                private void stopWithMessage(String message) {
+                private void stopWithMessage(String message, ResultStatus status) {
                     // tell user of the result of action
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                    EventBusUtils.getBus().post(new DictionaryLoadedEvent(dictionary));
-                    mPendingSet.remove(dictionary.getDbUrl());
-                    stopForeground(true);
-                    stopSelf();
+
+                    // next we will move work to the worker thread
+                    Message msg = mServiceHandler.obtainMessage();
+                    msg.arg1 = startId;
+                    msg.arg2 = status.ordinal();
+                    msg.obj = dictionary;
+                    mServiceHandler.sendMessage(msg);
                 }
             });
         }
@@ -101,6 +143,7 @@ public class DownloadDictionaryService extends Service {
         super.onDestroy();
 
         mPendingSet = null;
+        mServiceLooper.quit();
     }
 
     public static class DictionaryLoadedEvent extends EventBusUtils.Event<Dictionary> {
@@ -108,5 +151,9 @@ public class DownloadDictionaryService extends Service {
         public DictionaryLoadedEvent(Dictionary object) {
             super(object);
         }
+    }
+
+    private enum ResultStatus {
+        OK, FAIL
     }
 }

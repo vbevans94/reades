@@ -12,7 +12,8 @@ import ua.org.cofriends.reades.entity.ApiError;
 
 public class RestClient {
 
-    private static final String BASE_URL = "http://10.44.40.55:8000/";
+    private static final String BASE_URL = "http://192.168.0.7:8000";
+    private static final String BASE_API_URL = BASE_URL + "/api";
 
     private final static AsyncHttpClient CLIENT = new AsyncHttpClient();
 
@@ -27,7 +28,7 @@ public class RestClient {
     public static <T> void get(String url, GsonHandler<T> responseHandler) {
         if (!sPendingHandlers.contains(responseHandler.mHandler)) {
             sPendingHandlers.add(responseHandler.mHandler);
-            CLIENT.get(getAbsoluteUrl(url), responseHandler);
+            CLIENT.get(getAbsoluteApiUrl(url), responseHandler);
         }
     }
 
@@ -42,7 +43,11 @@ public class RestClient {
         return CLIENT;
     }
 
-    private static String getAbsoluteUrl(String relativeUrl) {
+    public static String getAbsoluteApiUrl(String relativeUrl) {
+        return BASE_API_URL + relativeUrl;
+    }
+
+    public static String getAbsoluteUrl(String relativeUrl) {
         return BASE_URL + relativeUrl;
     }
 
@@ -60,7 +65,13 @@ public class RestClient {
 
         @Override
         public final void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-            mErrorHandler.onFailure(statusCode, headers, GsonUtils.fromJson(responseString, ApiError.class));
+            ApiError error;
+            if (responseString != null) {
+                error = GsonUtils.fromJson(responseString, ApiError.class);
+            } else {
+                error = new ApiError(throwable.getMessage());
+            }
+            mErrorHandler.onFailure(statusCode, headers, error);
 
             handlerDone(this);
         }
