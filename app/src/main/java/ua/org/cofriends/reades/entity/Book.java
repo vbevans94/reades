@@ -8,47 +8,55 @@ import java.util.List;
 
 import ua.org.cofriends.reades.utils.EventBusUtils;
 
-public class Dictionary extends SugarRecord<Dictionary>{
+public class Book extends SugarRecord<Book>{
 
     @Expose
     @SerializedName("id")
-    private final int dictionaryId;
+    private final int bookId;
 
     @Expose
     private final String name;
 
     @Expose
-    private final String dbUrl;
+    private final String fileUrl;
 
-    private Dictionary(int dictionaryId, String name, String dbUrl) {
-        this.dictionaryId = dictionaryId;
+    @Expose
+    private final Author author;
+
+    private Book(int bookId, String name, String fileUrl, Author author) {
+        this.bookId = bookId;
         this.name = name;
-        this.dbUrl = dbUrl;
+        this.fileUrl = fileUrl;
+        this.author = author;
     }
 
     @SuppressWarnings("unused")
-    public Dictionary() {
-        this(0, null, null);
+    public Book() {
+        this(0, null, null, null);
     }
 
-    public int getDictionaryId() {
-        return dictionaryId;
+    public int getBookId() {
+        return bookId;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDbUrl() {
-        return dbUrl;
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public Author getAuthor() {
+        return author;
     }
 
     @Override
     public String toString() {
-        return "Dictionary{" +
-                "dictionaryId=" + dictionaryId +
+        return "Book{" +
+                "bookId=" + bookId +
                 ", name='" + name + '\'' +
-                ", dbUrl='" + dbUrl + '\'' +
+                ", fileUrl='" + fileUrl + '\'' +
                 '}';
     }
 
@@ -57,42 +65,42 @@ public class Dictionary extends SugarRecord<Dictionary>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Dictionary that = (Dictionary) o;
+        Book that = (Book) o;
 
-        if (dictionaryId != that.dictionaryId) return false;
+        if (bookId != that.bookId) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return dictionaryId;
+        return bookId;
     }
 
-    public static class Event extends EventBusUtils.Event<Dictionary> {
+    public static class Event extends EventBusUtils.Event<Book> {
 
-        public Event(Dictionary object) {
+        public Event(Book object) {
             super(object);
         }
     }
 
     public static class SelectedEvent extends Event {
 
-        public SelectedEvent(Dictionary object) {
+        public SelectedEvent(Book object) {
             super(object);
         }
     }
 
     public static class LoadedEvent extends Event {
 
-        public LoadedEvent(Dictionary object) {
+        public LoadedEvent(Book object) {
             super(object);
         }
     }
 
-    public static class ListLoadedEvent extends EventBusUtils.Event<List<Dictionary>> {
+    public static class ListLoadedEvent extends EventBusUtils.Event<List<Book>> {
 
-        public ListLoadedEvent(List<Dictionary> dictionaries) {
+        public ListLoadedEvent(List<Book> dictionaries) {
             super(dictionaries);
         }
     }

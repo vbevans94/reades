@@ -22,13 +22,6 @@ public class LocalDictionariesService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         List<Dictionary> dictionaries = Dictionary.listAll(Dictionary.class);
-        EventBusUtils.getBus().post(new DictionariesLoadedEvent(dictionaries));
-    }
-
-    public static class DictionariesLoadedEvent extends EventBusUtils.Event<List<Dictionary>> {
-
-        public DictionariesLoadedEvent(List<Dictionary> dictionaries) {
-            super(dictionaries);
-        }
+        EventBusUtils.getBus().post(new Dictionary.ListLoadedEvent(dictionaries));
     }
 }

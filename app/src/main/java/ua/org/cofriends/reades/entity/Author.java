@@ -8,47 +8,38 @@ import java.util.List;
 
 import ua.org.cofriends.reades.utils.EventBusUtils;
 
-public class Dictionary extends SugarRecord<Dictionary>{
+public class Author extends SugarRecord<Author>{
 
     @Expose
     @SerializedName("id")
-    private final int dictionaryId;
+    private final int authorId;
 
     @Expose
     private final String name;
 
-    @Expose
-    private final String dbUrl;
-
-    private Dictionary(int dictionaryId, String name, String dbUrl) {
-        this.dictionaryId = dictionaryId;
+    private Author(int authorId, String name) {
+        this.authorId = authorId;
         this.name = name;
-        this.dbUrl = dbUrl;
     }
 
     @SuppressWarnings("unused")
-    public Dictionary() {
-        this(0, null, null);
+    public Author() {
+        this(0, null);
     }
 
-    public int getDictionaryId() {
-        return dictionaryId;
+    public int getAuthorId() {
+        return authorId;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDbUrl() {
-        return dbUrl;
-    }
-
     @Override
     public String toString() {
-        return "Dictionary{" +
-                "dictionaryId=" + dictionaryId +
+        return "Author{" +
+                "authorId=" + authorId +
                 ", name='" + name + '\'' +
-                ", dbUrl='" + dbUrl + '\'' +
                 '}';
     }
 
@@ -57,42 +48,42 @@ public class Dictionary extends SugarRecord<Dictionary>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Dictionary that = (Dictionary) o;
+        Author that = (Author) o;
 
-        if (dictionaryId != that.dictionaryId) return false;
+        if (authorId != that.authorId) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return dictionaryId;
+        return authorId;
     }
 
-    public static class Event extends EventBusUtils.Event<Dictionary> {
+    public static class Event extends EventBusUtils.Event<Author> {
 
-        public Event(Dictionary object) {
+        public Event(Author object) {
             super(object);
         }
     }
 
     public static class SelectedEvent extends Event {
 
-        public SelectedEvent(Dictionary object) {
+        public SelectedEvent(Author object) {
             super(object);
         }
     }
 
     public static class LoadedEvent extends Event {
 
-        public LoadedEvent(Dictionary object) {
+        public LoadedEvent(Author object) {
             super(object);
         }
     }
 
-    public static class ListLoadedEvent extends EventBusUtils.Event<List<Dictionary>> {
+    public static class ListLoadedEvent extends EventBusUtils.Event<List<Author>> {
 
-        public ListLoadedEvent(List<Dictionary> dictionaries) {
+        public ListLoadedEvent(List<Author> dictionaries) {
             super(dictionaries);
         }
     }

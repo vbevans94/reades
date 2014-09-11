@@ -57,10 +57,14 @@ public class RestClient {
         private final Handler<T> mHandler;
         private final ErrorHandler mErrorHandler;
 
-        public GsonHandler(Class<T> clazz, Handler<T> handler, ErrorHandler errorHandler) {
+        private GsonHandler(Class<T> clazz, Handler<T> handler, ErrorHandler errorHandler) {
             mClass = clazz;
             mHandler = handler;
             mErrorHandler = errorHandler;
+        }
+
+        public static <T> GsonHandler<T> create(Class<T> clazz, Handler<T> handler, ErrorHandler errorHandler) {
+            return new GsonHandler<T>(clazz, handler, errorHandler);
         }
 
         @Override

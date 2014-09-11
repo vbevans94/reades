@@ -47,7 +47,7 @@ public class DownloadDictionaryService extends Service {
             ResultStatus status = ResultStatus.values()[msg.arg2];
             if (status == ResultStatus.OK) {
                 dictionary.save(); // save locally
-                EventBusUtils.getBus().post(new DictionaryLoadedEvent(dictionary));
+                EventBusUtils.getBus().post(new Dictionary.LoadedEvent(dictionary));
             }
 
             // remove task from working set and remove notification
@@ -144,13 +144,6 @@ public class DownloadDictionaryService extends Service {
 
         mPendingSet = null;
         mServiceLooper.quit();
-    }
-
-    public static class DictionaryLoadedEvent extends EventBusUtils.Event<Dictionary> {
-
-        public DictionaryLoadedEvent(Dictionary object) {
-            super(object);
-        }
     }
 
     private enum ResultStatus {

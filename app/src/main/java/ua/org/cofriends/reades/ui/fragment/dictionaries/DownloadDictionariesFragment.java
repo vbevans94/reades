@@ -6,6 +6,7 @@ import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
@@ -13,22 +14,16 @@ import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.DownloadDictionaryService;
 import ua.org.cofriends.reades.service.LocalDictionariesService;
 import ua.org.cofriends.reades.ui.adapter.DictionariesAdapter;
+import ua.org.cofriends.reades.ui.fragment.RefreshListFragment;
 import ua.org.cofriends.reades.utils.RestClient;
 
-public class DownloadDictionariesFragment extends DictionariesFragment implements RestClient.Handler<Dictionary[]> {
+public class DownloadDictionariesFragment extends RefreshListFragment implements RestClient.Handler<Dictionary[]> {
+
+    private List<Dictionary> mDictionaries;
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        if (mListDictionaries.getAdapter() == null) {
-            requestDictionaries();
-        }
-    }
-
-    @Override
-    void requestDictionaries() {
-        RestClient.get("/dictionaries/", new RestClient.GsonHandler<Dictionary[]>(Dictionary[].class, this, this));
+    protected void refreshList() {
+        RestClient.get("/dictionaries/", RestClient.GsonHandler.create(Dictionary[].class, this, this));
     }
 
     @Override
@@ -40,7 +35,7 @@ public class DownloadDictionariesFragment extends DictionariesFragment implement
     @OnItemClick(R.id.list)
     @SuppressWarnings("unused")
     void onDictionaryClicked(int position) {
-        Dictionary dictionary = (Dictionary) mListDictionaries.getItemAtPosition(position);
+        Dictionary dictionary = (Dictionary) mListView.getItemAtPosition(position);
         // start loading dictionary to the device
         DownloadDictionaryService.startService(getActivity(), dictionary);
     }
@@ -50,9 +45,9 @@ public class DownloadDictionariesFragment extends DictionariesFragment implement
      * @param event to retrieve loaded dictionary from
      */
     @SuppressWarnings("unused")
-    public void onEventMainThread(DownloadDictionaryService.DictionaryLoadedEvent event) {
+    public void onEventMainThread(Dictionary.LoadedEvent event) {
         mDictionaries.remove(event.getData());
-        ((ArrayAdapter) mListDictionaries.getAdapter()).notifyDataSetChanged();
+        ((ArrayAdapter) mListView.getAdapter()).notifyDataSetChanged();
     }
 
     /**
@@ -60,8 +55,8 @@ public class DownloadDictionariesFragment extends DictionariesFragment implement
      * @param event to retrieve dictionaries from
      */
     @SuppressWarnings("unused")
-    public void onEventMainThread(LocalDictionariesService.DictionariesLoadedEvent event) {
+    public void onEventMainThread(Dictionary.ListLoadedEvent event) {
         mDictionaries.removeAll(event.getData());
-        mListDictionaries.setAdapter(new DictionariesAdapter(getActivity(), R.layout.item_dictionary_download, mDictionaries));
+        mListView.setAdapter(new DictionariesAdapter(getActivity(), R.layout.item_dictionary_download, mDictionaries));
     }
 }
