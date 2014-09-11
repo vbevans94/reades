@@ -10,5 +10,6 @@
     <string name="title_download">Download</string>
     <string name="title_saved">Saved</string>
     <string name="message_no_dictionaries">There are still no dictionaries in this list</string>
+    <string name="action_refresh">Refresh</string>
 
 </resources>

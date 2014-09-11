@@ -22,7 +22,7 @@ public class BaseFragment extends Fragment implements RestClient.ErrorHandler {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        EventBusUtils.getBus().register(this);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -30,13 +30,15 @@ public class BaseFragment extends Fragment implements RestClient.ErrorHandler {
         super.onViewCreated(view, savedInstanceState);
 
         ButterKnife.inject(this, view);
+        EventBusUtils.getBus().register(this);
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
 
         EventBusUtils.getBus().unregister(this);
+        ButterKnife.reset(this);
     }
 
     @Override

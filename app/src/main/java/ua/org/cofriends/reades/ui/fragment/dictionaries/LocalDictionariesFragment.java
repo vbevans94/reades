@@ -1,4 +1,4 @@
-package ua.org.cofriends.reades.ui.fragment;
+package ua.org.cofriends.reades.ui.fragment.dictionaries;
 
 import android.widget.ArrayAdapter;
 
@@ -17,11 +17,19 @@ public class LocalDictionariesFragment extends DictionariesFragment {
         super.onResume();
 
         if (mListDictionaries.getAdapter() == null) {
-            LocalDictionariesService.startService(getActivity());
+            requestDictionaries();
         }
     }
 
-    @OnItemClick(R.id.list_dictionaries)
+    /**
+     * Requests dictionaries from the source.
+     */
+    @Override
+    void requestDictionaries() {
+        LocalDictionariesService.startService(getActivity());
+    }
+
+    @OnItemClick(R.id.list)
     @SuppressWarnings("unused")
     void onDictionaryClicked(int position) {
         Dictionary dictionary = (Dictionary) mListDictionaries.getItemAtPosition(position);
