@@ -11,9 +11,9 @@ import java.util.List;
 import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Dictionary;
-import ua.org.cofriends.reades.service.DownloadDictionaryService;
-import ua.org.cofriends.reades.service.LocalDictionariesService;
-import ua.org.cofriends.reades.ui.adapter.DictionariesAdapter;
+import ua.org.cofriends.reades.service.DownloadService;
+import ua.org.cofriends.reades.service.SavedDictionariesService;
+import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
 import ua.org.cofriends.reades.ui.fragment.RefreshListFragment;
 import ua.org.cofriends.reades.utils.RestClient;
 
@@ -29,7 +29,7 @@ public class DownloadDictionariesFragment extends RefreshListFragment implements
     @Override
     public void onSuccess(int statusCode, Header[] headers, Dictionary[] response) {
         mDictionaries = new ArrayList<Dictionary>(Arrays.asList(response));
-        LocalDictionariesService.startService(getActivity());
+        SavedDictionariesService.loadList(getActivity());
     }
 
     @OnItemClick(R.id.list)
@@ -37,15 +37,24 @@ public class DownloadDictionariesFragment extends RefreshListFragment implements
     void onDictionaryClicked(int position) {
         Dictionary dictionary = (Dictionary) mListView.getItemAtPosition(position);
         // start loading dictionary to the device
-        DownloadDictionaryService.startService(getActivity(), dictionary);
+        DownloadService.start(getActivity(), dictionary);
+    }
+
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(DownloadService.Loadable.LoadedEvent event) {
+        DownloadService.Loadable loadable = event.getData();
+        if (loadable instanceof Dictionary) {
+            SavedDictionariesService.save(getActivity(), (Dictionary) event.getData());
+        }
     }
 
     /**
-     * Called when dictionary db file loaded to the file system.
-     * @param event to retrieve loaded dictionary from
+     * Called when dictionary saved to the database.
+     * @param event containing saved dictionary
      */
     @SuppressWarnings("unused")
-    public void onEventMainThread(Dictionary.LoadedEvent event) {
+    public void onEventMainThread(Dictionary.SavedEvent event) {
         mDictionaries.remove(event.getData());
         ((ArrayAdapter) mListView.getAdapter()).notifyDataSetChanged();
     }
@@ -57,6 +66,6 @@ public class DownloadDictionariesFragment extends RefreshListFragment implements
     @SuppressWarnings("unused")
     public void onEventMainThread(Dictionary.ListLoadedEvent event) {
         mDictionaries.removeAll(event.getData());
-        mListView.setAdapter(new DictionariesAdapter(getActivity(), R.layout.item_dictionary_download, mDictionaries));
+        mListView.setAdapter(new SimpleAdapter<Dictionary>(getActivity(), R.layout.item_dictionary_download, mDictionaries));
     }
 }

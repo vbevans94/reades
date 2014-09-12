@@ -7,6 +7,8 @@ import java.util.List;
 import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
+import ua.org.cofriends.reades.service.SavedBooksService;
+import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
 import ua.org.cofriends.reades.ui.fragment.RefreshListFragment;
 import ua.org.cofriends.reades.utils.EventBusUtils;
 
@@ -16,26 +18,24 @@ public class SavedBooksFragment extends RefreshListFragment {
 
     @Override
     protected void refreshList() {
-        // TODO: load book list from the source
-        /*LocalDictionariesService.startService(getActivity());*/
+        SavedBooksService.loadList(getActivity());
     }
 
     @OnItemClick(R.id.list)
     @SuppressWarnings("unused")
     void onBookClicked(int position) {
         Book book = (Book) mListView.getItemAtPosition(position);
-        EventBusUtils.getBus().post(new Book.SelectedEvent(book));
+        EventBusUtils.getBus().post(new Book.SavedEvent(book));
     }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(Book.ListLoadedEvent event) {
         mBooks = event.getData();
-        // TODO: create adapter for books
-        /*mListView.setAdapter(new DictionariesAdapter(getActivity(), R.layout.item_dictionary_local, mBooks));*/
+        mListView.setAdapter(new SimpleAdapter<Book>(getActivity(), R.layout.item_dictionary_local, mBooks));
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(Book.LoadedEvent event) {
+    public void onEventMainThread(Book.SavedEvent event) {
         mBooks.add(event.getData());
         ((ArrayAdapter) mListView.getAdapter()).notifyDataSetChanged();
     }

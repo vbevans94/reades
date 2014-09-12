@@ -6,9 +6,11 @@ import com.orm.SugarRecord;
 
 import java.util.List;
 
+import ua.org.cofriends.reades.service.DownloadService;
+import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
 import ua.org.cofriends.reades.utils.EventBusUtils;
 
-public class Book extends SugarRecord<Book>{
+public class Book extends SugarRecord<Book> implements DownloadService.Loadable, SimpleAdapter.Viewable {
 
     @Expose
     @SerializedName("id")
@@ -39,12 +41,23 @@ public class Book extends SugarRecord<Book>{
         return bookId;
     }
 
+    @Override
+    public long getItemId() {
+        return getBookId();
+    }
+
+    @Override
     public String getName() {
         return name;
     }
 
     public String getFileUrl() {
         return fileUrl;
+    }
+
+    @Override
+    public String getUrl() {
+        return getFileUrl();
     }
 
     public Author getAuthor() {
@@ -91,9 +104,9 @@ public class Book extends SugarRecord<Book>{
         }
     }
 
-    public static class LoadedEvent extends Event {
+    public static class SavedEvent extends Event {
 
-        public LoadedEvent(Book object) {
+        public SavedEvent(Book object) {
             super(object);
         }
     }

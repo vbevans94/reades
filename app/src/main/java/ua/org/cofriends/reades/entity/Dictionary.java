@@ -6,9 +6,11 @@ import com.orm.SugarRecord;
 
 import java.util.List;
 
+import ua.org.cofriends.reades.service.DownloadService;
+import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
 import ua.org.cofriends.reades.utils.EventBusUtils;
 
-public class Dictionary extends SugarRecord<Dictionary>{
+public class Dictionary extends SugarRecord<Dictionary> implements DownloadService.Loadable, SimpleAdapter.Viewable {
 
     @Expose
     @SerializedName("id")
@@ -35,12 +37,23 @@ public class Dictionary extends SugarRecord<Dictionary>{
         return dictionaryId;
     }
 
+    @Override
+    public long getItemId() {
+        return getDictionaryId();
+    }
+
+    @Override
     public String getName() {
         return name;
     }
 
     public String getDbUrl() {
         return dbUrl;
+    }
+
+    @Override
+    public String getUrl() {
+        return getDbUrl();
     }
 
     @Override
@@ -83,9 +96,9 @@ public class Dictionary extends SugarRecord<Dictionary>{
         }
     }
 
-    public static class LoadedEvent extends Event {
+    public static class SavedEvent extends Event {
 
-        public LoadedEvent(Dictionary object) {
+        public SavedEvent(Dictionary object) {
             super(object);
         }
     }

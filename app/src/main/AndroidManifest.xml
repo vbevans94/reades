@@ -14,10 +14,10 @@
 
         <activity
             android:name=".ui.activity.ReadActivity"
-            android:label="@string/title_dictionaries" />
+            android:label="@string/app_name" />
         <activity
             android:name=".ui.activity.DictionariesActivity"
-            android:label="@string/app_name">
+            android:label="@string/title_dictionaries">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,8 +28,8 @@
             android:name=".ui.activity.BooksActivity"
             android:label="@string/title_books" />
 
-        <service android:name=".service.DownloadDictionaryService"/>
-        <service android:name=".service.LocalDictionariesService"/>
+        <service android:name=".service.DownloadService"/>
+        <service android:name=".service.SavedDictionariesService"/>
 
         <meta-data android:name="DATABASE" android:value="reades.db" />
         <meta-data android:name="VERSION" android:value="2" />

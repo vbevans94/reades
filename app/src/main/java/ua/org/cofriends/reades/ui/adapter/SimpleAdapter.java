@@ -10,22 +10,27 @@ import java.util.List;
 
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
-import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.ui.tools.BaseViewHolder;
 
-public class DictionariesAdapter extends ArrayAdapter<Dictionary> {
+public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends ArrayAdapter<T> {
 
     private final int mResId;
 
-    public DictionariesAdapter(Context context, int resId, List<Dictionary> dictionaries) {
-        super(context, resId, dictionaries);
+    /**
+     * Creates adapter for {@link ua.org.cofriends.reades.ui.adapter.SimpleAdapter.Viewable} items.
+     * @param context to use
+     * @param resId to have {@link android.widget.TextView} or descendant with text_name ID
+     * @param items to create adapter for
+     */
+    public SimpleAdapter(Context context, int resId, List<T> items) {
+        super(context, resId, items);
 
         mResId = resId;
     }
 
     @Override
     public long getItemId(int position) {
-        return getItem(position).getDictionaryId();
+        return getItem(position).getItemId();
     }
 
     @Override
@@ -51,5 +56,12 @@ public class DictionariesAdapter extends ArrayAdapter<Dictionary> {
         ViewHolder(View view) {
             super(view);
         }
+    }
+
+    public interface Viewable {
+
+        long getItemId();
+
+        String getName();
     }
 }
