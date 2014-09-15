@@ -17,13 +17,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ua.org.cofriends.reades.R;
-import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.GsonUtils;
+import ua.org.cofriends.reades.utils.Logger;
 import ua.org.cofriends.reades.utils.RestClient;
 
 public class DownloadService extends Service {
 
     private static final int NOTIFICATION_ID = 1994;
+    public static final String EXTRA_CLASS_NAME = "extra_class_name";
+    public static final String EXTRA_JSON = "extra_json";
+    private static final String TAG = Logger.makeLogTag(DownloadService.class);
     private Set<String> mPendingSet;
 
     /**
@@ -33,7 +37,8 @@ public class DownloadService extends Service {
      */
     public static void start(Context context, Loadable loadable) {
         Intent intent = new Intent(context, DownloadService.class);
-        intent.putExtras(BundleUtils.writeToBundle(loadable));
+        intent.putExtra(EXTRA_CLASS_NAME, loadable.getClass().getName());
+        intent.putExtra(EXTRA_JSON, GsonUtils.toJson(loadable));
         context.startService(intent);
     }
 
@@ -46,7 +51,19 @@ public class DownloadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
-        final Loadable loadable = BundleUtils.fetchFromBundle(Loadable.class, intent.getExtras());
+        String className = intent.getStringExtra(EXTRA_CLASS_NAME);
+        Class clazz = null;
+        try {
+            clazz = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            Logger.e(TAG, "Error when building class from params", e);
+        }
+        if (clazz == null) {
+            return START_NOT_STICKY;
+        }
+
+        final Loadable loadable = (Loadable) GsonUtils.fromJson(intent.getStringExtra(EXTRA_JSON), clazz);
+
         if (!mPendingSet.contains(loadable.getUrl())) {
             // tell user that the download started
             Toast.makeText(getApplicationContext()
@@ -68,13 +85,14 @@ public class DownloadService extends Service {
             RestClient.getClient().get(RestClient.getAbsoluteUrl(loadable.getUrl()), new FileAsyncHttpResponseHandler(getApplicationContext()) {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
+                    EventBusUtils.getBus().post(new Loadable.FailedEvent());
                     stopWithMessage(getString(R.string.error_download_failed));
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, File file) {
-                    stopWithMessage(getString(R.string.message_download_success, loadable.getName()));
                     EventBusUtils.getBus().post(new Loadable.LoadedEvent(loadable));
+                    stopWithMessage(getString(R.string.message_download_success, loadable.getName()));
                 }
 
                 /**
@@ -84,6 +102,9 @@ public class DownloadService extends Service {
                 private void stopWithMessage(String message) {
                     // tell user of the result of action
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+
+                    stopForeground(true);
+                    stopSelf(startId);
                 }
             });
         }
@@ -115,5 +136,7 @@ public class DownloadService extends Service {
                 super(object);
             }
         }
+
+        public static class FailedEvent {}
     }
 }

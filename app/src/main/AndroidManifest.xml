@@ -30,6 +30,7 @@
 
         <service android:name=".service.DownloadService"/>
         <service android:name=".service.SavedDictionariesService"/>
+        <service android:name=".service.SavedBooksService"/>
 
         <meta-data android:name="DATABASE" android:value="reades.db" />
         <meta-data android:name="VERSION" android:value="2" />

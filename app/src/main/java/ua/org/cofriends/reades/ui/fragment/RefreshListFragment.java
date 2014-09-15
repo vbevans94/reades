@@ -37,6 +37,15 @@ public class RefreshListFragment extends BaseFragment {
         EventBusUtils.getBus().register(mEventTransmitter);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mListView.getAdapter() == null) {
+            refreshList();
+        }
+    }
+
     /**
      * Refreshes the list of dictionaries from corresponding source.
      */

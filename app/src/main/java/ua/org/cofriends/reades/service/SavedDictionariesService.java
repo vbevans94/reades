@@ -28,7 +28,7 @@ public class SavedDictionariesService extends IntentService {
     public static void save(Context context, Dictionary dictionary) {
         context.startService(new Intent(context, SavedDictionariesService.class)
                 .putExtra(EXTRA_TYPE, SAVE)
-                .putExtras(BundleUtils.writeToBundle(dictionary)));
+                .putExtras(BundleUtils.writeObject(Dictionary.class, dictionary)));
     }
 
     @Override

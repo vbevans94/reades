@@ -27,7 +27,7 @@ public class SavedBooksService extends IntentService {
 
     public static void save(Context context, Book book) {
         context.startService(new Intent(context, SavedBooksService.class)
-                .putExtras(BundleUtils.writeToBundle(book))
+                .putExtras(BundleUtils.writeObject(Book.class, book))
                 .putExtra(EXTRA_TYPE, SAVE));
     }
 

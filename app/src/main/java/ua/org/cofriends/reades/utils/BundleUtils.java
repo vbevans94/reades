@@ -36,7 +36,7 @@ public class BundleUtils {
      *
      * @param bundle to put into
      * @param key    to to put under
-     * @param value to put
+     * @param value  to put
      * @return bundle with the newly put value
      */
     public static Bundle putString(Bundle bundle, String key, String value) {
@@ -67,7 +67,7 @@ public class BundleUtils {
      *
      * @param bundle to put into
      * @param key    to to put under
-     * @param value to put
+     * @param value  to put
      * @return bundle with the newly put value
      */
     public static Bundle putBoolean(Bundle bundle, String key, Boolean value) {
@@ -98,7 +98,7 @@ public class BundleUtils {
      *
      * @param bundle to put into
      * @param key    to to put under
-     * @param value to put
+     * @param value  to put
      * @return bundle with the newly put value
      */
     public static Bundle putInt(Bundle bundle, String key, int value) {
@@ -126,9 +126,10 @@ public class BundleUtils {
 
     /**
      * Puts long value into a bundle. If bundle is null new one will be created.
+     *
      * @param bundle to put into
-     * @param key to put under
-     * @param value to put
+     * @param key    to put under
+     * @param value  to put
      * @return bundle with the value
      */
     public static Bundle putLong(Bundle bundle, String key, long value) {
@@ -180,16 +181,18 @@ public class BundleUtils {
     /**
      * Writes Gson compatible object into the bundle.
      *
+     * @param clazz  type of t
      * @param t      item we want to persist
      * @param bundle to persist into. If null passed new one will be created
+     * @param <T>    type of t
      * @return bundle with appended data
      */
-    public static Bundle writeToBundle(Object t, Bundle bundle) {
+    public static <T> Bundle writeObject(Class<T> clazz, T t, Bundle bundle) {
         if (bundle == null) {
             bundle = new Bundle();
         }
         if (t != null) {
-            bundle.putString(t.getClass().getSimpleName(), GsonUtils.toJson(t));
+            bundle.putString(clazz.getSimpleName(), GsonUtils.toJson(t));
         }
 
         return bundle;
@@ -198,12 +201,15 @@ public class BundleUtils {
     /**
      * Creates bundle and writes Gson compatible object into that bundle.
      *
-     * @param t      item we want to persist
+     * @param t   item we want to persist
+     * @param <T> type of t
      * @return bundle with appended data
      */
-    public static Bundle writeToBundle(Object t) {
-        return writeToBundle(t, null);
+    public static <T> Bundle writeObject(Class<T> clazz, T t) {
+        return writeObject(clazz, t, null);
     }
+
+
 
     /**
      * Fetches object from the bundle with {@link com.google.gson.Gson}.

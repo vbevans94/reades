@@ -12,7 +12,7 @@ import ua.org.cofriends.reades.entity.ApiError;
 
 public class RestClient {
 
-    private static final String BASE_URL = "http://10.1.6.38:8000";
+    private static final String BASE_URL = "http://10.44.41.40:8000";
     private static final String BASE_API_URL = BASE_URL + "/api";
 
     private final static AsyncHttpClient CLIENT = new AsyncHttpClient();
