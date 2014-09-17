@@ -1,16 +1,21 @@
 package ua.org.cofriends.reades.entity;
 
+import android.os.Bundle;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 import java.util.List;
 
 import ua.org.cofriends.reades.service.DownloadService;
 import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
+import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.EventBusUtils;
 
-public class Dictionary extends SugarRecord<Dictionary> implements DownloadService.Loadable, SimpleAdapter.Viewable {
+public class Dictionary extends SugarRecord<Dictionary> implements DownloadService.Loadable
+        , SimpleAdapter.Viewable, BundleUtils.Persistable {
 
     @Expose
     @SerializedName("id")
@@ -21,6 +26,14 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
 
     @Expose
     private final String dbUrl;
+
+    /**
+     * To store value from {@link #getId()} which is not serialized/deserialized.
+     * See {@link #getId()}
+     */
+    @Expose
+    @Ignore
+    private long persistedId;
 
     private Dictionary(int dictionaryId, String name, String dbUrl) {
         this.dictionaryId = dictionaryId;
@@ -33,10 +46,33 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
         this(0, null, null);
     }
 
+    @Override
+    public Bundle persist(Bundle bundle) {
+        persistedId = getId();
+        return BundleUtils.writeNoStrategies(Dictionary.class, this, bundle);
+    }
+
+    /**
+     * @return persisted id or {@code super.getId()} if not set
+     */
+    @Override
+    public Long getId() {
+        if (persistedId == 0l && super.getId() != null) {
+            persistedId = super.getId();
+        }
+        return persistedId;
+    }
+
+    /**
+     * @return dictionary ID returned by API, so by it we can work with API
+     */
     public int getDictionaryId() {
         return dictionaryId;
     }
 
+    /**
+     * @return id to use in the adapters
+     */
     @Override
     public long getItemId() {
         return getDictionaryId();

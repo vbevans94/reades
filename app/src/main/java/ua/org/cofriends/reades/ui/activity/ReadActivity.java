@@ -18,6 +18,8 @@ import ua.org.cofriends.reades.R;
 
 public class ReadActivity extends BaseActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

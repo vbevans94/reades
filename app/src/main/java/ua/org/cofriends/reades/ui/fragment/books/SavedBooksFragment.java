@@ -15,10 +15,11 @@ import ua.org.cofriends.reades.utils.EventBusUtils;
 public class SavedBooksFragment extends RefreshListFragment {
 
     private List<Book> mBooks;
+    private DownloadBooksFragment.DictionaryCache mDictionaryCache = new DownloadBooksFragment.DictionaryCache(this);
 
     @Override
     protected void refreshList() {
-        SavedBooksService.loadList(getActivity());
+        SavedBooksService.loadListByDictionary(getActivity(), mDictionaryCache.getDictionary());
     }
 
     @OnItemClick(R.id.list)

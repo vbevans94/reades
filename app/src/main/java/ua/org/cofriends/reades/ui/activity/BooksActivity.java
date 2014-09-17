@@ -7,27 +7,26 @@ import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import ua.org.cofriends.reades.entity.Book;
+import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.ui.fragment.books.DownloadBooksFragment;
 import ua.org.cofriends.reades.ui.fragment.books.SavedBooksFragment;
 import ua.org.cofriends.reades.utils.BundleUtils;
 
 public class BooksActivity extends TabbedActivity {
 
-    public static final String EXTRA_DICTIONARY_ID = "extra_dictionary_id";
-
-    public static void start(int dictionaryId, Context context) {
-        Bundle extras = BundleUtils.putInt(null, EXTRA_DICTIONARY_ID, dictionaryId);
+    public static void start(Dictionary dictionary, Context context) {
+        Bundle extras = BundleUtils.writeObject(Dictionary.class, dictionary);
         context.startActivity(new Intent(context, BooksActivity.class).putExtras(extras));
     }
 
     @Override
     Fragment getDownloadFragment() {
-        return addExtras(new DownloadBooksFragment());
+        return withExtrasAsArgs(new DownloadBooksFragment());
     }
 
     @Override
     Fragment getSavedFragment() {
-        return addExtras(new SavedBooksFragment());
+        return withExtrasAsArgs(new SavedBooksFragment());
     }
 
     @SuppressWarnings("unused")
@@ -36,7 +35,7 @@ public class BooksActivity extends TabbedActivity {
         Toast.makeText(this, event.getData().getFileUrl(), Toast.LENGTH_LONG).show();
     }
 
-    public Fragment addExtras(Fragment fragment) {
+    public Fragment withExtrasAsArgs(Fragment fragment) {
         fragment.setArguments(getIntent().getExtras());
         return fragment;
     }

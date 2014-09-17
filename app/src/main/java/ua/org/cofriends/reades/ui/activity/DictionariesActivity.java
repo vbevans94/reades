@@ -10,7 +10,7 @@ public class DictionariesActivity extends TabbedActivity {
 
     @SuppressWarnings("unused")
     public void onEvent(Dictionary.SelectedEvent event) {
-        BooksActivity.start(event.getData().getDictionaryId(), this);
+        BooksActivity.start(event.getData(), this);
     }
 
     @Override
