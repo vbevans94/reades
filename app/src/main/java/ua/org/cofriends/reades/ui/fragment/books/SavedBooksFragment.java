@@ -1,7 +1,5 @@
 package ua.org.cofriends.reades.ui.fragment.books;
 
-import android.widget.ArrayAdapter;
-
 import java.util.List;
 
 import butterknife.OnItemClick;
@@ -26,18 +24,12 @@ public class SavedBooksFragment extends RefreshListFragment {
     @SuppressWarnings("unused")
     void onBookClicked(int position) {
         Book book = (Book) mListView.getItemAtPosition(position);
-        EventBusUtils.getBus().post(new Book.SavedEvent(book));
+        EventBusUtils.getBus().post(new Book.SelectedEvent(book));
     }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(Book.ListLoadedEvent event) {
         mBooks = event.getData();
         mListView.setAdapter(new SimpleAdapter<Book>(getActivity(), R.layout.item_dictionary_local, mBooks));
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(Book.SavedEvent event) {
-        mBooks.add(event.getData());
-        ((ArrayAdapter) mListView.getAdapter()).notifyDataSetChanged();
     }
 }

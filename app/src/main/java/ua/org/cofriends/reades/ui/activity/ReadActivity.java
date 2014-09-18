@@ -1,6 +1,7 @@
 package ua.org.cofriends.reades.ui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -11,24 +12,47 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import ua.org.cofriends.reades.R;
+import ua.org.cofriends.reades.entity.Book;
+import ua.org.cofriends.reades.ui.tools.BaseToast;
+import ua.org.cofriends.reades.utils.BundleUtils;
+import ua.org.cofriends.reades.utils.Logger;
 
 
 public class ReadActivity extends BaseActivity {
 
-
+    public static void start(Book book, Context context) {
+        context.startActivity(new Intent(context, ReadActivity.class)
+                .putExtras(BundleUtils.writeObject(Book.class, book)));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
 
-        String sample = "Android is a Software stack";
+        Book book = BundleUtils.fetchFromBundle(Book.class, getIntent().getExtras());
+        File file = new File(book.getFileUrl());
+
         StringBuilder text = new StringBuilder();
-        for (int i = 0; i < 100; i++) {
-            text.append(sample + "\n");
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+        } catch (IOException e) {
+            Logger.e(mTag, "Error reading from book file", e);
+            BaseToast.show(this, R.string.error_reading_book_file);
         }
 
         int start = 0;
@@ -49,11 +73,15 @@ public class ReadActivity extends BaseActivity {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
+    public void onEvent(ReadActivity event) {
+
+    }
+
     private static void addSpannable(final Context context, Spannable spannable, final CharSequence word) {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View textView) {
-                Toast.makeText(context, word, Toast.LENGTH_SHORT).show();
+                BaseToast.show(context, word);
             }
 
             @Override

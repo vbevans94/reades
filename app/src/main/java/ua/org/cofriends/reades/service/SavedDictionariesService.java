@@ -36,15 +36,12 @@ public class SavedDictionariesService extends IntentService {
         int type = intent.getIntExtra(EXTRA_TYPE, LOAD_LIST);
 
         switch (type) {
-            case LOAD_LIST:
-                List<Dictionary> dictionaries = Dictionary.listAll(Dictionary.class);
-                EventBusUtils.getBus().post(new Dictionary.ListLoadedEvent(dictionaries));
-                break;
-
             case SAVE:
                 Dictionary dictionary = BundleUtils.fetchFromBundle(Dictionary.class, intent.getExtras());
                 dictionary.save();
-                EventBusUtils.getBus().post(new Dictionary.SavedEvent(dictionary));
+            case LOAD_LIST:
+                List<Dictionary> dictionaries = Dictionary.listAll(Dictionary.class);
+                EventBusUtils.getBus().post(new Dictionary.ListLoadedEvent(dictionaries));
                 break;
         }
     }

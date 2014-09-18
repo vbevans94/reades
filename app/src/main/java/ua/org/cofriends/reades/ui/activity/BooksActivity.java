@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.widget.Toast;
 
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
@@ -30,9 +29,8 @@ public class BooksActivity extends TabbedActivity {
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(Book.SavedEvent event) {
-        // TODO: move to read activity
-        Toast.makeText(this, event.getData().getFileUrl(), Toast.LENGTH_LONG).show();
+    public void onEvent(Book.SelectedEvent event) {
+        ReadActivity.start(event.getData(), this);
     }
 
     public Fragment withExtrasAsArgs(Fragment fragment) {

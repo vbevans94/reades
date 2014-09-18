@@ -25,7 +25,7 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
     private final String name;
 
     @Expose
-    private final String dbUrl;
+    private String dbUrl;
 
     /**
      * To store value from {@link #getId()} which is not serialized/deserialized.
@@ -83,13 +83,27 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
         return name;
     }
 
+    @Override
+    public String getItemName() {
+        return getName();
+    }
+
+    /**
+     * @return download URL for API received entity or local path for database entry
+     */
     public String getDbUrl() {
         return dbUrl;
     }
 
     @Override
-    public String getUrl() {
+    public String getDownloadUrl() {
         return getDbUrl();
+    }
+
+    @Override
+    public void setLoadedPath(String url) {
+        // we will write into the database the local path
+        dbUrl = url;
     }
 
     @Override
@@ -128,13 +142,6 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
     public static class SelectedEvent extends Event {
 
         public SelectedEvent(Dictionary object) {
-            super(object);
-        }
-    }
-
-    public static class SavedEvent extends Event {
-
-        public SavedEvent(Dictionary object) {
             super(object);
         }
     }

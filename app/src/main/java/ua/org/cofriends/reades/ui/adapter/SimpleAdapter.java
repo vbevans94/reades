@@ -43,7 +43,7 @@ public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends ArrayAdapte
             holder = (ViewHolder) view.getTag();
         }
 
-        holder.mTextName.setText(getItem(position).getName());
+        holder.mTextName.setText(getItem(position).getItemName());
 
         return view;
     }
@@ -62,6 +62,6 @@ public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends ArrayAdapte
 
         long getItemId();
 
-        String getName();
+        String getItemName();
     }
 }

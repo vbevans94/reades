@@ -1,7 +1,5 @@
 package ua.org.cofriends.reades.ui.fragment.dictionaries;
 
-import android.widget.ArrayAdapter;
-
 import org.apache.http.Header;
 
 import java.util.ArrayList;
@@ -47,16 +45,6 @@ public class DownloadDictionariesFragment extends RefreshListFragment implements
         if (loadable instanceof Dictionary) {
             SavedDictionariesService.save(getActivity(), (Dictionary) event.getData());
         }
-    }
-
-    /**
-     * Called when dictionary saved to the database.
-     * @param event containing saved dictionary
-     */
-    @SuppressWarnings("unused")
-    public void onEventMainThread(Dictionary.SavedEvent event) {
-        mDictionaries.remove(event.getData());
-        ((ArrayAdapter) mListView.getAdapter()).notifyDataSetChanged();
     }
 
     /**

@@ -10,6 +10,7 @@ import org.apache.http.Header;
 
 import butterknife.ButterKnife;
 import ua.org.cofriends.reades.entity.ApiError;
+import ua.org.cofriends.reades.ui.tools.BaseToast;
 import ua.org.cofriends.reades.utils.EventBusUtils;
 import ua.org.cofriends.reades.utils.Logger;
 import ua.org.cofriends.reades.utils.RestClient;
@@ -43,6 +44,6 @@ public class BaseFragment extends Fragment implements RestClient.ErrorHandler {
 
     @Override
     public void onFailure(int statusCode, Header[] headers, ApiError error) {
-        Toast.makeText(getActivity(), error.getDetail(), Toast.LENGTH_LONG).show();
+        BaseToast.show(getActivity(), error.getDetail());
     }
 }

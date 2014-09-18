@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
@@ -17,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ua.org.cofriends.reades.R;
+import ua.org.cofriends.reades.ui.tools.BaseToast;
 import ua.org.cofriends.reades.utils.EventBusUtils;
 import ua.org.cofriends.reades.utils.GsonUtils;
 import ua.org.cofriends.reades.utils.Logger;
@@ -64,14 +64,13 @@ public class DownloadService extends Service {
 
         final Loadable loadable = (Loadable) GsonUtils.fromJson(intent.getStringExtra(EXTRA_JSON), clazz);
 
-        if (!mPendingSet.contains(loadable.getUrl())) {
+        if (!mPendingSet.contains(loadable.getDownloadUrl())) {
             // tell user that the download started
-            Toast.makeText(getApplicationContext()
-                    , getString(R.string.message_download_started, loadable.getName())
-                    , Toast.LENGTH_LONG).show();
+            BaseToast.show(getApplicationContext()
+                    , getString(R.string.message_download_started, loadable.getName()));
 
             // save from being downloaded few times
-            mPendingSet.add(loadable.getUrl());
+            mPendingSet.add(loadable.getDownloadUrl());
 
             // create notification about the foreground
             Notification notification = new NotificationCompat.Builder(getApplicationContext())
@@ -82,7 +81,7 @@ public class DownloadService extends Service {
             startForeground(NOTIFICATION_ID, notification);
 
             // start loading
-            RestClient.getClient().get(RestClient.getAbsoluteUrl(loadable.getUrl()), new FileAsyncHttpResponseHandler(getApplicationContext()) {
+            RestClient.getClient().get(RestClient.getAbsoluteUrl(loadable.getDownloadUrl()), new FileAsyncHttpResponseHandler(getApplicationContext()) {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
                     EventBusUtils.getBus().post(new Loadable.FailedEvent());
@@ -91,6 +90,7 @@ public class DownloadService extends Service {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, File file) {
+                    loadable.setLoadedPath(file.getAbsolutePath());
                     EventBusUtils.getBus().post(new Loadable.LoadedEvent(loadable));
                     stopWithMessage(getString(R.string.message_download_success, loadable.getName()));
                 }
@@ -101,7 +101,7 @@ public class DownloadService extends Service {
                  */
                 private void stopWithMessage(String message) {
                     // tell user of the result of action
-                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                    BaseToast.show(getApplicationContext(), message);
 
                     stopForeground(true);
                     stopSelf(startId);
@@ -126,7 +126,9 @@ public class DownloadService extends Service {
 
     public interface Loadable {
 
-        String getUrl();
+        String getDownloadUrl();
+
+        void setLoadedPath(String url);
 
         String getName();
 

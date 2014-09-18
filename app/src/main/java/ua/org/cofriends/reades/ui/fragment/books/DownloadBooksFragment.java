@@ -1,7 +1,6 @@
 package ua.org.cofriends.reades.ui.fragment.books;
 
 import android.support.v4.app.Fragment;
-import android.widget.ArrayAdapter;
 
 import org.apache.http.Header;
 
@@ -48,19 +47,8 @@ public class DownloadBooksFragment extends RefreshListFragment implements RestCl
         DownloadService.Loadable loadable = event.getData();
         if (loadable instanceof Book) {
             Book book = (Book) event.getData();
-            book.setDictionary(mDictionaryCache.getDictionary());
-            SavedBooksService.save(getActivity(), book);
+            SavedBooksService.saveWithDictionary(getActivity(), book, mDictionaryCache.getDictionary());
         }
-    }
-
-    /**
-     * Called when book was saved in the database.
-     * @param event to get book from
-     */
-    @SuppressWarnings("unused")
-    public void onEventMainThread(Book.SavedEvent event) {
-        mBooks.remove(event.getData());
-        ((ArrayAdapter) mListView.getAdapter()).notifyDataSetChanged();
     }
 
     /**

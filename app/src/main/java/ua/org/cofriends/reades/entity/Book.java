@@ -25,7 +25,7 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
     private final String name;
 
     @Expose
-    private final String fileUrl;
+    private String fileUrl;
 
     @Expose
     private final Author author;
@@ -88,17 +88,30 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
     }
 
     @Override
+    public String getItemName() {
+        return String.format("%s - %s", getName(), getAuthor().getName());
+    }
+
+    @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * @return download URL for API received entity or local path for database entry
+     */
     public String getFileUrl() {
         return fileUrl;
     }
 
     @Override
-    public String getUrl() {
+    public String getDownloadUrl() {
         return getFileUrl();
+    }
+
+    @Override
+    public void setLoadedPath(String url) {
+        fileUrl = url;
     }
 
     public Author getAuthor() {
@@ -141,13 +154,6 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
     public static class SelectedEvent extends Event {
 
         public SelectedEvent(Book object) {
-            super(object);
-        }
-    }
-
-    public static class SavedEvent extends Event {
-
-        public SavedEvent(Book object) {
             super(object);
         }
     }
