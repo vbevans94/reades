@@ -1,19 +1,20 @@
 package ua.org.cofriends.reades.service;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import org.apache.http.Header;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.tools.BaseToast;
@@ -24,11 +25,11 @@ import ua.org.cofriends.reades.utils.RestClient;
 
 public class DownloadService extends Service {
 
-    private static final int NOTIFICATION_ID = 1994;
+    private static final AtomicInteger COUNTER = new AtomicInteger(0);
     public static final String EXTRA_CLASS_NAME = "extra_class_name";
     public static final String EXTRA_JSON = "extra_json";
     private static final String TAG = Logger.makeLogTag(DownloadService.class);
-    private Set<String> mPendingSet;
+    private Map<Loadable, Integer> mPendingUrlToId;
 
     /**
      * Starts load of db if it's not started yet.
@@ -46,7 +47,7 @@ public class DownloadService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        mPendingSet = new HashSet<String>();
+        mPendingUrlToId = new HashMap<Loadable, Integer>();
     }
 
     @Override
@@ -64,47 +65,64 @@ public class DownloadService extends Service {
 
         final Loadable loadable = (Loadable) GsonUtils.fromJson(intent.getStringExtra(EXTRA_JSON), clazz);
 
-        if (!mPendingSet.contains(loadable.getDownloadUrl())) {
+        if (!mPendingUrlToId.containsKey(loadable)) {
             // tell user that the download started
             BaseToast.show(getApplicationContext()
                     , getString(R.string.message_download_started, loadable.getName()));
 
             // save from being downloaded few times
-            mPendingSet.add(loadable.getDownloadUrl());
+            mPendingUrlToId.put(loadable, COUNTER.incrementAndGet());
 
             // create notification about the foreground
-            Notification notification = new NotificationCompat.Builder(getApplicationContext())
-                    .setContentText(getString(R.string.message_file_loading))
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                    .setContentText(getString(R.string.message_file_loading, 0))
                     .setContentTitle(loadable.getName())
-                    .setSmallIcon(R.drawable.ic_launcher)
-                    .build();
-            startForeground(NOTIFICATION_ID, notification);
+                    .setSmallIcon(R.drawable.ic_launcher);
+            final NotificationManagerCompat manager = NotificationManagerCompat.from(this);
+            startForeground(mPendingUrlToId.get(loadable), builder.build());
 
             // start loading
             RestClient.getClient().get(RestClient.getAbsoluteUrl(loadable.getDownloadUrl()), new FileAsyncHttpResponseHandler(getApplicationContext()) {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
                     EventBusUtils.getBus().post(new Loadable.FailedEvent());
-                    stopWithMessage(getString(R.string.error_download_failed));
+                    stopWithMessage(getString(R.string.error_download_failed), loadable);
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, File file) {
                     loadable.setLoadedPath(file.getAbsolutePath());
                     EventBusUtils.getBus().post(new Loadable.LoadedEvent(loadable));
-                    stopWithMessage(getString(R.string.message_download_success, loadable.getName()));
+                    stopWithMessage(getString(R.string.message_download_success, loadable.getName()), loadable);
+                }
+
+                @Override
+                public void onProgress(int bytesWritten, int totalSize) {
+                    super.onProgress(bytesWritten, totalSize);
+
+                    if (totalSize > 0) {
+                        int progress = (int) ((bytesWritten * 1.0 / totalSize) * 100);
+                        builder.setProgress(100, progress, false);
+                        manager.notify(mPendingUrlToId.get(loadable)
+                                , builder
+                                .setContentText(getString(R.string.message_file_loading, progress))
+                                .setSubText(getString(R.string.message_tap_to_stop))
+                                .build());
+                    }
                 }
 
                 /**
                  * Shows corresponding message.
                  * @param message to show user
                  */
-                private void stopWithMessage(String message) {
+                private void stopWithMessage(String message, Loadable loadable) {
                     // tell user of the result of action
                     BaseToast.show(getApplicationContext(), message);
-
-                    stopForeground(true);
-                    stopSelf(startId);
+                    mPendingUrlToId.remove(loadable);
+                    if (mPendingUrlToId.isEmpty()) {
+                        stopForeground(true);
+                        stopSelf(startId);
+                    }
                 }
             });
         }
@@ -121,7 +139,7 @@ public class DownloadService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
-        mPendingSet = null;
+        mPendingUrlToId = null;
     }
 
     public interface Loadable {

@@ -47,6 +47,8 @@ public class DownloadDictionariesFragment extends RefreshListFragment implements
         }
     }
 
+
+
     /**
      * Called when local dictionaries query returns.
      * @param event to retrieve dictionaries from

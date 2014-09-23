@@ -132,6 +132,10 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
         return dictionaryId;
     }
 
+    public String getDbConfigPath() {
+        return getDbUrl() + getName();
+    }
+
     public static class Event extends EventBusUtils.Event<Dictionary> {
 
         public Event(Dictionary object) {

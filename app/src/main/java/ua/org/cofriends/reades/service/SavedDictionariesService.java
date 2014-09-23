@@ -9,6 +9,7 @@ import java.util.List;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.ZipUtils;
 
 public class SavedDictionariesService extends IntentService {
 
@@ -38,8 +39,15 @@ public class SavedDictionariesService extends IntentService {
         switch (type) {
             case SAVE:
                 Dictionary dictionary = BundleUtils.fetchFromBundle(Dictionary.class, intent.getExtras());
+
+                // extract zip to private data or SD card if there is no room
+                String newPath = getApplicationContext().getFilesDir().getAbsolutePath() + "/";
+                dictionary.setLoadedPath(ZipUtils.unzip(dictionary.getDbUrl(), newPath));
+
+                // save to the database
                 dictionary.save();
             case LOAD_LIST:
+                // retrieve updated list of all dictionaries from the database
                 List<Dictionary> dictionaries = Dictionary.listAll(Dictionary.class);
                 EventBusUtils.getBus().post(new Dictionary.ListLoadedEvent(dictionaries));
                 break;

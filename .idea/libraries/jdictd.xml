@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="jdictd">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/jdictd.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Downloads/jdictd15/jdictd_src.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -3,7 +3,7 @@
 
     <string name="app_name">Reades</string>
     <string name="action_settings">Settings</string>
-    <string name="message_file_loading">File being loaded</string>
+    <string name="message_file_loading">File being loaded. %d%% complete</string>
     <string name="message_download_started">Download of %s started</string>
     <string name="error_download_failed">Download failed</string>
     <string name="message_download_success">Downloaded successfully</string>
@@ -14,5 +14,6 @@
     <string name="title_books">Books</string>
     <string name="message_no_items">There are no items in the list</string>
     <string name="error_reading_book_file">Error reading book file</string>
+    <string name="message_tap_to_stop">Tap to stop</string>
 
 </resources>

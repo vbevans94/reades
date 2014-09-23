@@ -13,12 +13,16 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import org.dict.kernel.IAnswer;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
 import ua.org.cofriends.reades.R;
+import ua.org.cofriends.reades.dict.DictThread;
+import ua.org.cofriends.reades.dict.DictUtils;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.ui.tools.BaseToast;
 import ua.org.cofriends.reades.utils.BundleUtils;
@@ -38,6 +42,9 @@ public class ReadActivity extends BaseActivity {
         setContentView(R.layout.activity_read);
 
         Book book = BundleUtils.fetchFromBundle(Book.class, getIntent().getExtras());
+        // start dictionary for the book
+        DictUtils.start(book.getDictionary().getDbConfigPath());
+        // read book
         File file = new File(book.getFileUrl());
 
         StringBuilder text = new StringBuilder();
@@ -73,15 +80,26 @@ public class ReadActivity extends BaseActivity {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    public void onEvent(ReadActivity event) {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+        DictUtils.stop();
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(DictThread.AnswerEvent event) {
+        IAnswer[] answers = event.getData();
+        if (answers.length > 0) {
+            BaseToast.show(this, answers[0].getDefinition());
+        }
     }
 
     private static void addSpannable(final Context context, Spannable spannable, final CharSequence word) {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View textView) {
-                BaseToast.show(context, word);
+                DictUtils.search(word);
             }
 
             @Override

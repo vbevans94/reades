@@ -12,7 +12,7 @@ import ua.org.cofriends.reades.entity.ApiError;
 
 public class RestClient {
 
-    private static final String BASE_URL = "http://192.168.0.7:8000";
+    private static final String BASE_URL = "http://10.44.41.63:8000";
     private static final String BASE_API_URL = BASE_URL + "/api";
 
     private final static AsyncHttpClient CLIENT = new AsyncHttpClient();
@@ -69,12 +69,9 @@ public class RestClient {
 
         @Override
         public final void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-            ApiError error;
-            if (responseString != null) {
-                error = GsonUtils.fromJson(responseString, ApiError.class);
-            } else {
-                error = new ApiError(throwable.getMessage());
-            }
+            ApiError error = responseString != null
+                    ? GsonUtils.fromJson(responseString, ApiError.class) // error returned by server
+                    : new ApiError(throwable.getMessage()); // raised by system
             mErrorHandler.onFailure(statusCode, headers, error);
 
             handlerDone(this);
