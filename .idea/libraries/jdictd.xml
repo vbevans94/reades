@@ -4,8 +4,6 @@
       <root url="jar://$PROJECT_DIR$/app/libs/jdictd.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/Downloads/jdictd15/jdictd_src.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

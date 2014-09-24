@@ -193,7 +193,7 @@ public class BundleUtils {
         }
         if (t != null) {
             if (t instanceof Persistable) {
-                ((Persistable) t).persist(bundle);
+                ((Persistable) t).persistIn(bundle);
             } else {
                 writeNoStrategies(clazz, t, bundle);
             }
@@ -261,6 +261,6 @@ public class BundleUtils {
      */
     public interface Persistable {
 
-        Bundle persist(Bundle bundle);
+        Bundle persistIn(Bundle bundle);
     }
 }

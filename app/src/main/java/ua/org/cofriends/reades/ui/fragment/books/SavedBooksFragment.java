@@ -1,18 +1,23 @@
 package ua.org.cofriends.reades.ui.fragment.books;
 
-import java.util.List;
+import android.os.Bundle;
+import android.os.Parcelable;
+
+import com.cocosw.undobar.UndoBarController;
 
 import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.service.SavedBooksService;
 import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
-import ua.org.cofriends.reades.ui.fragment.RefreshListFragment;
+import ua.org.cofriends.reades.ui.fragment.BaseListFragment;
+import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeAdapter;
+import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeToRemoveTouchListener;
+import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.EventBusUtils;
 
-public class SavedBooksFragment extends RefreshListFragment {
+public class SavedBooksFragment extends BaseListFragment implements UndoBarController.AdvancedUndoListener {
 
-    private List<Book> mBooks;
     private DownloadBooksFragment.DictionaryCache mDictionaryCache = new DownloadBooksFragment.DictionaryCache(this);
 
     @Override
@@ -29,7 +34,34 @@ public class SavedBooksFragment extends RefreshListFragment {
 
     @SuppressWarnings("unused")
     public void onEventMainThread(Book.ListLoadedEvent event) {
-        mBooks = event.getData();
-        mListView.setAdapter(new SimpleAdapter<Book>(getActivity(), R.layout.item_dictionary_local, mBooks));
+        SwipeAdapter.wrapList(mListView
+                , new SimpleAdapter<Book>(getActivity(), R.layout.item_saved, event.getData()));
+    }
+
+    @SuppressWarnings("unused")
+    public void onEvent(SwipeToRemoveTouchListener.RemoveEvent event) {
+        Book book = (Book) event.getData();
+        new UndoBarController.UndoBar(getActivity())
+                .style(UndoBarController.UNDOSTYLE)
+                .message(R.string.message_book_will_be_removed)
+                .listener(this)
+                .token(book.persistIn(new Bundle()))
+                .show();
+    }
+
+    @Override
+    public void onUndo(Parcelable parcelable) {
+        refreshList();
+    }
+
+    @Override
+    public void onHide(Parcelable token) {
+        Bundle bundle = (Bundle) token;
+        Book book = BundleUtils.fetchFromBundle(Book.class, bundle);
+        SavedBooksService.delete(getActivity(), book);
+    }
+
+    @Override
+    public void onClear() {
     }
 }

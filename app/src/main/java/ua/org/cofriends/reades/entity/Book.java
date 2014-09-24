@@ -54,8 +54,11 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
     }
 
     @Override
-    public Bundle persist(Bundle bundle) {
+    public Bundle persistIn(Bundle bundle) {
         persistedId = getId();
+        if (dictionary != null) {
+            dictionary.getId(); // triggers resetting persistedId of dictionary
+        }
         return BundleUtils.writeNoStrategies(Book.class, this, bundle);
     }
 

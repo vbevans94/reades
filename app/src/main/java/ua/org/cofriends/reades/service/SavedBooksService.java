@@ -15,8 +15,10 @@ public class SavedBooksService extends IntentService {
 
     private static final int LOAD_LIST = 0;
     private static final int SAVE = 1;
+    private static final int DELETE = 2;
     private static final String EXTRA_TYPE = "extra_type";
     private static final String EXTRA_DICTIONARY_ID = "extra_dictionary_id";
+    private static final String EXTRA_BOOK_ID = "extra_book_id";
 
     public SavedBooksService() {
         super(SavedBooksService.class.getSimpleName());
@@ -42,6 +44,12 @@ public class SavedBooksService extends IntentService {
                 .putExtra(EXTRA_TYPE, LOAD_LIST));
     }
 
+    /**
+     * Saves book into the database.
+     * @param context to use
+     * @param book to save
+     * @param dictionary to save under
+     */
     public static void saveWithDictionary(Context context, Book book, Dictionary dictionary) {
         context.startService(new Intent(context, SavedBooksService.class)
                 .putExtras(BundleUtils.writeObject(Book.class, book))
@@ -49,25 +57,53 @@ public class SavedBooksService extends IntentService {
                 .putExtra(EXTRA_TYPE, SAVE));
     }
 
+    /**
+     * Deletes book from the database.
+     * @param context to use
+     * @param book to save
+     */
+    public static void delete(Context context, Book book) {
+        context.startService(new Intent(context, SavedBooksService.class)
+                .putExtra(EXTRA_BOOK_ID, book.getId())
+                .putExtra(EXTRA_DICTIONARY_ID, book.getDictionary().getId())
+                .putExtra(EXTRA_TYPE, DELETE));
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         int type = intent.getIntExtra(EXTRA_TYPE, LOAD_LIST);
 
         switch (type) {
-            case SAVE:
+            case SAVE: {
                 Book book = BundleUtils.fetchFromBundle(Book.class, intent.getExtras());
                 long dictionaryId = intent.getLongExtra(EXTRA_DICTIONARY_ID, 0l);
                 Dictionary dictionary = Dictionary.findById(Dictionary.class, dictionaryId);
                 book.setDictionary(dictionary);
                 book.getAuthor().save();
                 book.save();
+                loadBooks(intent);
+                break;
+            }
+
+            case DELETE: {
+                long bookId = intent.getLongExtra(EXTRA_BOOK_ID, 0l);
+                Book book = Book.findById(Book.class, bookId);
+                book.delete();
+                loadBooks(intent);
+                break;
+            }
+
             case LOAD_LIST:
-                dictionaryId = intent.getLongExtra(EXTRA_DICTIONARY_ID, 0l);
-                List<Book> books = dictionaryId != 0l
-                        ? Book.find(Book.class, "dictionary = ?", Long.toString(dictionaryId))
-                        : Book.listAll(Book.class);
-                EventBusUtils.getBus().post(new Book.ListLoadedEvent(books));
+                loadBooks(intent);
                 break;
         }
+    }
+
+    private void loadBooks(Intent intent) {
+        long dictionaryId = intent.getLongExtra(EXTRA_DICTIONARY_ID, 0l);
+        List<Book> books = dictionaryId != 0l
+                ? Book.find(Book.class, "dictionary = ?", Long.toString(dictionaryId))
+                : Book.listAll(Book.class);
+        EventBusUtils.getBus().post(new Book.ListLoadedEvent(books));
     }
 }

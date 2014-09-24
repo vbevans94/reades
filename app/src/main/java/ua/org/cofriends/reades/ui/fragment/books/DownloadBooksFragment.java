@@ -15,11 +15,11 @@ import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.DownloadService;
 import ua.org.cofriends.reades.service.SavedBooksService;
 import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
-import ua.org.cofriends.reades.ui.fragment.RefreshListFragment;
+import ua.org.cofriends.reades.ui.fragment.BaseListFragment;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.RestClient;
 
-public class DownloadBooksFragment extends RefreshListFragment implements RestClient.Handler<Book[]> {
+public class DownloadBooksFragment extends BaseListFragment implements RestClient.Handler<Book[]> {
 
     private List<Book> mBooks;
     private DictionaryCache mDictionaryCache = new DictionaryCache(this);
@@ -58,7 +58,7 @@ public class DownloadBooksFragment extends RefreshListFragment implements RestCl
     @SuppressWarnings("unused")
     public void onEventMainThread(Book.ListLoadedEvent event) {
         mBooks.removeAll(event.getData());
-        mListView.setAdapter(new SimpleAdapter<Book>(getActivity(), R.layout.item_dictionary_download, mBooks));
+        mListView.setAdapter(new SimpleAdapter<Book>(getActivity(), R.layout.item_download, mBooks));
     }
 
     public static class DictionaryCache {

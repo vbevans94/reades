@@ -6,16 +6,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_dictionary_local" />
-
     <TextView
         android:id="@+id/text_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone" />
+
+    <ua.org.cofriends.reades.ui.tools.swipetoremove.BackgroundContainer
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_dictionary_local" />
+    </ua.org.cofriends.reades.ui.tools.swipetoremove.BackgroundContainer>
 </LinearLayout>

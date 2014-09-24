@@ -47,7 +47,7 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
     }
 
     @Override
-    public Bundle persist(Bundle bundle) {
+    public Bundle persistIn(Bundle bundle) {
         persistedId = getId();
         return BundleUtils.writeNoStrategies(Dictionary.class, this, bundle);
     }

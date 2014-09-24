@@ -14,7 +14,7 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.activity.DictionariesActivity;
 import ua.org.cofriends.reades.utils.EventBusUtils;
 
-public class RefreshListFragment extends BaseFragment {
+public class BaseListFragment extends BaseFragment {
 
     @InjectView(R.id.list)
     protected ListView mListView;

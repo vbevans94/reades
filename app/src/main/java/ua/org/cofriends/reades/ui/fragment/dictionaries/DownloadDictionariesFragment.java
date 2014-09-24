@@ -12,10 +12,10 @@ import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.DownloadService;
 import ua.org.cofriends.reades.service.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
-import ua.org.cofriends.reades.ui.fragment.RefreshListFragment;
+import ua.org.cofriends.reades.ui.fragment.BaseListFragment;
 import ua.org.cofriends.reades.utils.RestClient;
 
-public class DownloadDictionariesFragment extends RefreshListFragment implements RestClient.Handler<Dictionary[]> {
+public class DownloadDictionariesFragment extends BaseListFragment implements RestClient.Handler<Dictionary[]> {
 
     private List<Dictionary> mDictionaries;
 
@@ -56,6 +56,6 @@ public class DownloadDictionariesFragment extends RefreshListFragment implements
     @SuppressWarnings("unused")
     public void onEventMainThread(Dictionary.ListLoadedEvent event) {
         mDictionaries.removeAll(event.getData());
-        mListView.setAdapter(new SimpleAdapter<Dictionary>(getActivity(), R.layout.item_dictionary_download, mDictionaries));
+        mListView.setAdapter(new SimpleAdapter<Dictionary>(getActivity(), R.layout.item_download, mDictionaries));
     }
 }

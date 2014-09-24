@@ -10,7 +10,7 @@ import java.util.concurrent.BlockingQueue;
 import ua.org.cofriends.reades.utils.EventBusUtils;
 import ua.org.cofriends.reades.utils.Logger;
 
-public class DictThread extends Thread {
+class DictThread extends Thread {
 
     private final static String TAG = Logger.makeLogTag(DictThread.class);
     private final BlockingQueue<String> mWordQueue;
@@ -29,7 +29,7 @@ public class DictThread extends Thread {
                 String word = mWordQueue.take();
                 IRequest request = new SimpleRequest("", "db=*&word=" + word);
                 IAnswer[] answers = mDictEngine.lookup(request);
-                EventBusUtils.getBus().post(new AnswerEvent(answers));
+                EventBusUtils.getBus().post(new DictService.AnswerEvent(answers));
             } catch (InterruptedException e) {
                 Logger.e(TAG, "Interrupted when getting word", e);
             }
@@ -41,12 +41,5 @@ public class DictThread extends Thread {
 
     void cancel() {
         mCancelled = true;
-    }
-
-    public static class AnswerEvent extends EventBusUtils.Event<IAnswer[]> {
-
-        public AnswerEvent(IAnswer[] object) {
-            super(object);
-        }
     }
 }

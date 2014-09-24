@@ -3,7 +3,6 @@ package ua.org.cofriends.reades.ui.adapter;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.List;
@@ -11,8 +10,9 @@ import java.util.List;
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.tools.BaseViewHolder;
+import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeAdapter;
 
-public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends ArrayAdapter<T> {
+public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends SwipeAdapter<T> {
 
     private final int mResId;
 
@@ -29,12 +29,12 @@ public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends ArrayAdapte
     }
 
     @Override
-    public long getItemId(int position) {
+    public long getItemIdImpl(int position) {
         return getItem(position).getItemId();
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getViewImpl(int position, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         if (view == null) {
             view = View.inflate(getContext(), mResId, null);

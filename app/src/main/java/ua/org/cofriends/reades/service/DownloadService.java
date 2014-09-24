@@ -106,7 +106,6 @@ public class DownloadService extends Service {
                         manager.notify(mPendingUrlToId.get(loadable)
                                 , builder
                                 .setContentText(getString(R.string.message_file_loading, progress))
-                                .setSubText(getString(R.string.message_tap_to_stop))
                                 .build());
                     }
                 }

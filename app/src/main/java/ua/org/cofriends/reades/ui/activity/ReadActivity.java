@@ -2,34 +2,25 @@ package ua.org.cofriends.reades.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
+import android.support.v4.view.ViewPager;
 import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.view.View;
-import android.widget.TextView;
 
-import org.dict.kernel.IAnswer;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
-import ua.org.cofriends.reades.dict.DictThread;
-import ua.org.cofriends.reades.dict.DictUtils;
+import ua.org.cofriends.reades.dict.DictService;
 import ua.org.cofriends.reades.entity.Book;
-import ua.org.cofriends.reades.ui.tools.BaseToast;
+import ua.org.cofriends.reades.ui.adapter.TextPagerAdapter;
 import ua.org.cofriends.reades.utils.BundleUtils;
-import ua.org.cofriends.reades.utils.Logger;
+import ua.org.cofriends.reades.utils.FileUtils;
+import ua.org.cofriends.reades.utils.PageSplitter;
 
 
 public class ReadActivity extends BaseActivity {
+
+    @InjectView(R.id.pager)
+    ViewPager mPager;
 
     public static void start(Book book, Context context) {
         context.startActivity(new Intent(context, ReadActivity.class)
@@ -39,77 +30,30 @@ public class ReadActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_read);
+        setContentView(R.layout.activity_pager);
 
+        ButterKnife.inject(this);
+
+        // get book
         Book book = BundleUtils.fetchFromBundle(Book.class, getIntent().getExtras());
-        // start dictionary for the book
-        DictUtils.start(book.getDictionary().getDbConfigPath());
-        // read book
-        File file = new File(book.getFileUrl());
-
-        StringBuilder text = new StringBuilder();
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-        } catch (IOException e) {
-            Logger.e(mTag, "Error reading from book file", e);
-            BaseToast.show(this, R.string.error_reading_book_file);
-        }
-
-        int start = 0;
-        SpannableStringBuilder spanText = new SpannableStringBuilder();
-        while (text.length() > 0) {
-            int end = text.indexOf(" ");
-            if (end == -1) {
-                break;
-            }
-            CharSequence word = text.subSequence(start, end);
-            spanText.append(word + " ");
-            addSpannable(this, spanText, word);
-            text.delete(start, end + 1);
-        }
-
-        TextView textView = (TextView) findViewById(R.id.text_content);
-        textView.setText(spanText);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        // start dict service for this book
+        DictService.getStartedService(book.getDictionary().getDbConfigPath());
+        // read book text
+        String text = FileUtils.readText(book.getFileUrl());
+        // split text to pages
+        PageSplitter splitter = new PageSplitter(mPager.getWidth(), mPager.getHeight(), 1, 0);
+        TextPaint textPaint = new TextPaint();
+        textPaint.setTextSize(getResources().getDimension(R.dimen.text_size));
+        splitter.append(text, textPaint);
+        // add split text to pager
+        mPager.setAdapter(new TextPagerAdapter(getSupportFragmentManager(), splitter.getPages(), book));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        DictUtils.stop();
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(DictThread.AnswerEvent event) {
-        IAnswer[] answers = event.getData();
-        if (answers.length > 0) {
-            BaseToast.show(this, answers[0].getDefinition());
-        }
-    }
-
-    private static void addSpannable(final Context context, Spannable spannable, final CharSequence word) {
-        ClickableSpan clickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(View textView) {
-                DictUtils.search(word);
-            }
-
-            @Override
-            public void updateDrawState(TextPaint ds) {
-                super.updateDrawState(ds);
-
-                ds.setUnderlineText(false);
-                ds.setColor(Color.BLACK);
-            }
-        };
-        spannable.setSpan(clickableSpan, spannable.length() - word.length(), spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        Book book = BundleUtils.fetchFromBundle(Book.class, getIntent().getExtras());
+        DictService.stopByPath(book.getDictionary().getDbConfigPath());
     }
 }
