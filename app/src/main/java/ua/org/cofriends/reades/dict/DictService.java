@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 
 public class DictService {
 
@@ -65,7 +65,7 @@ public class DictService {
         }
     }
 
-    public static class AnswerEvent extends EventBusUtils.Event<IAnswer[]> {
+    public static class AnswerEvent extends BusUtils.Event<IAnswer[]> {
 
         public AnswerEvent(IAnswer[] object) {
             super(object);

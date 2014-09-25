@@ -7,7 +7,7 @@ import org.dict.kernel.SimpleRequest;
 
 import java.util.concurrent.BlockingQueue;
 
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.Logger;
 
 class DictThread extends Thread {
@@ -29,7 +29,7 @@ class DictThread extends Thread {
                 String word = mWordQueue.take();
                 IRequest request = new SimpleRequest("", "db=*&word=" + word);
                 IAnswer[] answers = mDictEngine.lookup(request);
-                EventBusUtils.getBus().post(new DictService.AnswerEvent(answers));
+                BusUtils.post(new DictService.AnswerEvent(answers));
             } catch (InterruptedException e) {
                 Logger.e(TAG, "Interrupted when getting word", e);
             }

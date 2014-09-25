@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PageSplitter {
+
     private final int pageWidth;
     private final int pageHeight;
     private final float lineSpacingMultiplier;
@@ -33,11 +34,19 @@ public class PageSplitter {
         textLineHeight = (int) Math.ceil(textPaint.getFontMetrics(null) * lineSpacingMultiplier + lineSpacingExtra);
         String[] paragraphs = text.split("\n", -1);
         int i;
+        int total = paragraphs.length;
         for (i = 0; i < paragraphs.length - 1; i++) {
             appendText(paragraphs[i], textPaint);
             appendNewLine();
+            publishProgress(i, total);
         }
         appendText(paragraphs[i], textPaint);
+        publishProgress(i, total);
+    }
+
+    private void publishProgress(int i, int total) {
+        int progress = (int) ((1.0f * i / total) * 100);
+        BusUtils.post(new ProgressEvent(progress));
     }
 
     private void appendText(String text, TextPaint textPaint) {
@@ -106,5 +115,12 @@ public class PageSplitter {
             spannable.setSpan(new StyleSpan(Typeface.BOLD), 0, spannable.length(), 0);
         }
         return spannable;
+    }
+
+    public static class ProgressEvent extends BusUtils.Event<Integer> {
+
+        public ProgressEvent(Integer object) {
+            super(object);
+        }
     }
 }

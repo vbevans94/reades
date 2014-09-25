@@ -14,7 +14,7 @@ import ua.org.cofriends.reades.ui.fragment.BaseListFragment;
 import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeAdapter;
 import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeToRemoveTouchListener;
 import ua.org.cofriends.reades.utils.BundleUtils;
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 
 public class SavedDictionariesFragment extends BaseListFragment implements UndoBarController.AdvancedUndoListener {
 
@@ -27,7 +27,7 @@ public class SavedDictionariesFragment extends BaseListFragment implements UndoB
     @SuppressWarnings("unused")
     void onDictionaryClicked(int position) {
         Dictionary dictionary = (Dictionary) mListView.getItemAtPosition(position);
-        EventBusUtils.getBus().post(new Dictionary.SelectedEvent(dictionary));
+        BusUtils.post(new Dictionary.SelectedEvent(dictionary));
     }
 
     @SuppressWarnings("unused")
@@ -40,9 +40,9 @@ public class SavedDictionariesFragment extends BaseListFragment implements UndoB
     public void onEvent(SwipeToRemoveTouchListener.RemoveEvent event) {
         new UndoBarController.UndoBar(getActivity())
                 .style(UndoBarController.UNDOSTYLE)
-                .message(R.string.message_book_will_be_removed)
+                .message(R.string.message_will_be_removed)
                 .listener(this)
-                .token(((Dictionary) event.getData()).persistIn(new Bundle()))
+                .token(BundleUtils.writeObject(Dictionary.class, (Dictionary) event.getData()))
                 .show();
     }
 

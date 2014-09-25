@@ -9,7 +9,7 @@ import java.util.List;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.utils.BundleUtils;
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.ZipUtils;
 
 public class SavedDictionariesService extends IntentService {
@@ -86,6 +86,6 @@ public class SavedDictionariesService extends IntentService {
     private void loadAll() {
         // retrieve updated list of all dictionaries from the database
         List<Dictionary> dictionaries = Dictionary.listAll(Dictionary.class);
-        EventBusUtils.getBus().post(new Dictionary.ListLoadedEvent(dictionaries));
+        BusUtils.post(new Dictionary.ListLoadedEvent(dictionaries));
     }
 }

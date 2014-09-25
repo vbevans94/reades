@@ -20,7 +20,7 @@ import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.nineoldandroids.view.animation.AnimatorProxy;
 
 import ua.org.cofriends.reades.ui.tools.UiUtils;
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 
 public class SwipeToRemoveTouchListener implements View.OnTouchListener {
 
@@ -181,7 +181,7 @@ public class SwipeToRemoveTouchListener implements View.OnTouchListener {
 
         int position = mListView.getPositionForView(viewToRemove);
         // tell the world about it
-        EventBusUtils.getBus().post(new RemoveEvent(mListView.getItemAtPosition(position)));
+        BusUtils.post(new RemoveEvent(mListView.getItemAtPosition(position)));
 
         // Delete the item from the adapter
         ListAdapter listAdapter = mListView.getAdapter();
@@ -280,7 +280,7 @@ public class SwipeToRemoveTouchListener implements View.OnTouchListener {
         }
     }
 
-    public static class RemoveEvent extends EventBusUtils.Event<Object> {
+    public static class RemoveEvent extends BusUtils.Event<Object> {
 
         public RemoveEvent(Object object) {
             super(object);

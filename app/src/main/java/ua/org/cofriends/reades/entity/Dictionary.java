@@ -12,7 +12,7 @@ import java.util.List;
 import ua.org.cofriends.reades.service.DownloadService;
 import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
 import ua.org.cofriends.reades.utils.BundleUtils;
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 
 public class Dictionary extends SugarRecord<Dictionary> implements DownloadService.Loadable
         , SimpleAdapter.Viewable, BundleUtils.Persistable {
@@ -136,7 +136,7 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
         return getDbUrl() + getName();
     }
 
-    public static class Event extends EventBusUtils.Event<Dictionary> {
+    public static class Event extends BusUtils.Event<Dictionary> {
 
         public Event(Dictionary object) {
             super(object);
@@ -150,7 +150,7 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
         }
     }
 
-    public static class ListLoadedEvent extends EventBusUtils.Event<List<Dictionary>> {
+    public static class ListLoadedEvent extends BusUtils.Event<List<Dictionary>> {
 
         public ListLoadedEvent(List<Dictionary> dictionaries) {
             super(dictionaries);

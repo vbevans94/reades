@@ -1,5 +1,6 @@
 package ua.org.cofriends.reades.service;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -18,18 +19,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.tools.BaseToast;
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.GsonUtils;
 import ua.org.cofriends.reades.utils.Logger;
 import ua.org.cofriends.reades.utils.RestClient;
 
 public class DownloadService extends Service {
 
-    private static final AtomicInteger COUNTER = new AtomicInteger(0);
-    public static final String EXTRA_CLASS_NAME = "extra_class_name";
-    public static final String EXTRA_JSON = "extra_json";
     private static final String TAG = Logger.makeLogTag(DownloadService.class);
-    private Map<Loadable, Integer> mPendingUrlToId;
+    private static final int COMMAND_START = 0;
+    private static final int COMMAND_STOP = 1;
+    private static final AtomicInteger COUNTER = new AtomicInteger(0);
+    private static final String EXTRA_CLASS_NAME = "extra_class_name";
+    private static final String EXTRA_JSON = "extra_json";
+    private static final String EXTRA_COMMAND = "extra_command";
+
+    private Map<Loadable, Integer> mPendingToId;
 
     /**
      * Starts load of db if it's not started yet.
@@ -38,20 +43,38 @@ public class DownloadService extends Service {
      */
     public static void start(Context context, Loadable loadable) {
         Intent intent = new Intent(context, DownloadService.class);
-        intent.putExtra(EXTRA_CLASS_NAME, loadable.getClass().getName());
-        intent.putExtra(EXTRA_JSON, GsonUtils.toJson(loadable));
+        putLoadable(intent, loadable);
+        intent.putExtra(EXTRA_COMMAND, COMMAND_START);
         context.startService(intent);
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        mPendingUrlToId = new HashMap<Loadable, Integer>();
+    /**
+     * Creates intent that forces this service to stop exact load.
+     * @param context to use
+     */
+    private static PendingIntent stopIntent(Context context, Loadable loadable) {
+        Intent intent = new Intent(context, DownloadService.class);
+        putLoadable(intent, loadable);
+        intent.putExtra(EXTRA_COMMAND, COMMAND_STOP);
+        return PendingIntent.getService(context, 0, intent, 0);
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, final int startId) {
+    /**
+     * Puts loadable inside of the intent.
+     * @param intent to put into
+     * @param loadable to put
+     */
+    private static void putLoadable(Intent intent, Loadable loadable) {
+        intent.putExtra(EXTRA_CLASS_NAME, loadable.getClass().getName());
+        intent.putExtra(EXTRA_JSON, GsonUtils.toJson(loadable));
+    }
+
+    /**
+     * Gets loadable from the intent.
+     * @param intent to get from
+     * @return loadable instance or null if failed
+     */
+    private static Loadable getLoadable(Intent intent) {
         String className = intent.getStringExtra(EXTRA_CLASS_NAME);
         Class clazz = null;
         try {
@@ -60,39 +83,88 @@ public class DownloadService extends Service {
             Logger.e(TAG, "Error when building class from params", e);
         }
         if (clazz == null) {
-            return START_NOT_STICKY;
+            return null;
         }
 
-        final Loadable loadable = (Loadable) GsonUtils.fromJson(intent.getStringExtra(EXTRA_JSON), clazz);
+        return (Loadable) GsonUtils.fromJson(intent.getStringExtra(EXTRA_JSON), clazz);
+    }
 
-        if (!mPendingUrlToId.containsKey(loadable)) {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        mPendingToId = new HashMap<Loadable, Integer>();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        int command = intent.getIntExtra(EXTRA_COMMAND, 0);
+
+        switch (command) {
+            case COMMAND_START:
+                startCommand(intent, startId);
+                break;
+
+            case COMMAND_STOP:
+                stopCommand(intent);
+                break;
+        }
+
+
+        return START_NOT_STICKY;
+    }
+
+    /**
+     * Stops loading.
+     * @param intent to fetch needed data from
+     */
+    private void stopCommand(Intent intent) {
+        Loadable loadable = getLoadable(intent);
+        if (mPendingToId.containsKey(loadable)) {
+            NotificationManagerCompat manager = NotificationManagerCompat.from(this);
+            manager.cancel(mPendingToId.get(loadable));
+            // remove for not being notified on load end
+            mPendingToId.remove(loadable);
+        }
+    }
+
+    /**
+     * Starts load.
+     * @param intent to fetch needed data from
+     * @param startId to start with
+     */
+    private void startCommand(Intent intent, final int startId) {
+        final Loadable loadable = getLoadable(intent);
+
+        if (!mPendingToId.containsKey(loadable)) {
             // tell user that the download started
             BaseToast.show(getApplicationContext()
                     , getString(R.string.message_download_started, loadable.getName()));
 
             // save from being downloaded few times
-            mPendingUrlToId.put(loadable, COUNTER.incrementAndGet());
+            mPendingToId.put(loadable, COUNTER.incrementAndGet());
 
             // create notification about the foreground
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                     .setContentText(getString(R.string.message_file_loading, 0))
                     .setContentTitle(loadable.getName())
+                    .setContentIntent(stopIntent(this, loadable))
                     .setSmallIcon(R.drawable.ic_launcher);
             final NotificationManagerCompat manager = NotificationManagerCompat.from(this);
-            startForeground(mPendingUrlToId.get(loadable), builder.build());
+            startForeground(mPendingToId.get(loadable), builder.build());
 
             // start loading
             RestClient.getClient().get(RestClient.getAbsoluteUrl(loadable.getDownloadUrl()), new FileAsyncHttpResponseHandler(getApplicationContext()) {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-                    EventBusUtils.getBus().post(new Loadable.FailedEvent());
+                    BusUtils.post(new Loadable.FailedEvent());
                     stopWithMessage(getString(R.string.error_download_failed), loadable);
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, File file) {
                     loadable.setLoadedPath(file.getAbsolutePath());
-                    EventBusUtils.getBus().post(new Loadable.LoadedEvent(loadable));
+                    BusUtils.post(new Loadable.LoadedEvent(loadable));
                     stopWithMessage(getString(R.string.message_download_success, loadable.getName()), loadable);
                 }
 
@@ -103,7 +175,7 @@ public class DownloadService extends Service {
                     if (totalSize > 0) {
                         int progress = (int) ((bytesWritten * 1.0 / totalSize) * 100);
                         builder.setProgress(100, progress, false);
-                        manager.notify(mPendingUrlToId.get(loadable)
+                        manager.notify(mPendingToId.get(loadable)
                                 , builder
                                 .setContentText(getString(R.string.message_file_loading, progress))
                                 .build());
@@ -115,17 +187,19 @@ public class DownloadService extends Service {
                  * @param message to show user
                  */
                 private void stopWithMessage(String message, Loadable loadable) {
-                    // tell user of the result of action
-                    BaseToast.show(getApplicationContext(), message);
-                    mPendingUrlToId.remove(loadable);
-                    if (mPendingUrlToId.isEmpty()) {
-                        stopForeground(true);
-                        stopSelf(startId);
+                    // only when load isn't cancelled, we cancel it with notifying user
+                    if (mPendingToId.containsKey(loadable)) {
+                        // tell user of the result of action
+                        BaseToast.show(getApplicationContext(), message);
+                        mPendingToId.remove(loadable);
+                        if (mPendingToId.isEmpty()) {
+                            stopForeground(true);
+                            stopSelf(startId);
+                        }
                     }
                 }
             });
         }
-        return START_NOT_STICKY;
     }
 
     @Override
@@ -138,7 +212,7 @@ public class DownloadService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
-        mPendingUrlToId = null;
+        mPendingToId = null;
     }
 
     public interface Loadable {
@@ -149,7 +223,7 @@ public class DownloadService extends Service {
 
         String getName();
 
-        public static class LoadedEvent extends EventBusUtils.Event<Loadable> {
+        public static class LoadedEvent extends BusUtils.Event<Loadable> {
 
             public LoadedEvent(Loadable object) {
                 super(object);

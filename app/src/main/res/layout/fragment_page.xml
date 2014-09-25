@@ -1,6 +1,6 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/text_page"
+    android:id="@+id/text_page_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:lineSpacingExtra="0sp"

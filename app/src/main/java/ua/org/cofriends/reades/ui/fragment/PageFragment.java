@@ -15,29 +15,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.dict.kernel.IAnswer;
-
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
-import ua.org.cofriends.reades.dict.DictService;
-import ua.org.cofriends.reades.entity.Book;
-import ua.org.cofriends.reades.ui.tools.BaseToast;
 import ua.org.cofriends.reades.utils.BundleUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 
 public class PageFragment extends BaseFragment {
 
     private final static String ARG_PAGE_TEXT = "arg_page_text";
 
-    @InjectView(R.id.text_page)
+    @InjectView(R.id.text_page_info)
     TextView textPage;
 
-    private DictService mDictService;
-
-    public static PageFragment newInstance(CharSequence pageText, Book book) {
+    public static PageFragment newInstance(CharSequence pageText) {
         PageFragment fragment = new PageFragment();
         // TODO: see if we really need CharSequence
-        fragment.setArguments(BundleUtils.putString(BundleUtils.writeObject(Book.class, book)
-                , ARG_PAGE_TEXT, pageText.toString()));
+        fragment.setArguments(BundleUtils.putString(null, ARG_PAGE_TEXT, pageText.toString()));
         return fragment;
     }
 
@@ -66,11 +59,16 @@ public class PageFragment extends BaseFragment {
         }
 
         textPage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size));
-        textPage.setText(text);
+        textPage.setText(spanText);
         textPage.setMovementMethod(LinkMovementMethod.getInstance());
+    }
 
-        Book book = BundleUtils.fetchFromBundle(Book.class, getArguments());
-        mDictService = DictService.getStartedService(book.getDictionary().getDbConfigPath());
+    /**
+     * Dummy handler.
+     */
+    @SuppressWarnings("unused")
+    public void onEvent(PageFragment fragment) {
+        // nothing here
     }
 
     private void addSpannable(Spannable spannable, final CharSequence word) {
@@ -78,7 +76,7 @@ public class PageFragment extends BaseFragment {
 
             @Override
             public void onClick(View textView) {
-                mDictService.search(word);
+                BusUtils.post(new WordRequestEvent(word));
             }
 
             @Override
@@ -92,11 +90,10 @@ public class PageFragment extends BaseFragment {
         spannable.setSpan(clickableSpan, spannable.length() - word.length(), spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
-    @SuppressWarnings("unused")
-    public void onEventMainThread(DictService.AnswerEvent event) {
-        IAnswer[] answers = event.getData();
-        if (answers.length > 0) {
-            BaseToast.show(getActivity(), answers[0].getDefinition());
+    public static class WordRequestEvent extends BusUtils.Event<CharSequence> {
+
+        public WordRequestEvent(CharSequence object) {
+            super(object);
         }
     }
 }

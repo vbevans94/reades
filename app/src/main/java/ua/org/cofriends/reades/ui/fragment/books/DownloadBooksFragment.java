@@ -14,36 +14,45 @@ import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.DownloadService;
 import ua.org.cofriends.reades.service.SavedBooksService;
+import ua.org.cofriends.reades.ui.activity.BaseActivity;
 import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
 import ua.org.cofriends.reades.ui.fragment.BaseListFragment;
 import ua.org.cofriends.reades.utils.BundleUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.RestClient;
 
 public class DownloadBooksFragment extends BaseListFragment implements RestClient.Handler<Book[]> {
 
-    private List<Book> mBooks;
+    private List<Book> mBooks = new ArrayList<Book>();
     private DictionaryCache mDictionaryCache = new DictionaryCache(this);
 
     @Override
     protected void refreshList() {
-        RestClient.get(String.format("/dictionaries/%d/books/", mDictionaryCache.getDictionary().getDictionaryId()), RestClient.GsonHandler.create(Book[].class, this, this));
+        // load books from server
+        RestClient.get(String.format("/dictionaries/%d/books/"
+                , mDictionaryCache.getDictionary().getDictionaryId())
+                , RestClient.GsonHandler.create(Book[].class, this, this));
+        // display progress
+        BusUtils.post(new BaseActivity.ProgressStartEvent(getActivity()));
     }
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, Book[] response) {
-        mBooks = new ArrayList<Book>(Arrays.asList(response));
+        mBooks.addAll(Arrays.asList(response));
         SavedBooksService.loadListByDictionary(getActivity(), mDictionaryCache.getDictionary());
     }
 
     @OnItemClick(R.id.list)
     @SuppressWarnings("unused")
     void onBookClicked(int position) {
+        // download book
         Book book = (Book) mListView.getItemAtPosition(position);
         DownloadService.start(getActivity(), book);
     }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(DownloadService.Loadable.LoadedEvent event) {
+        // save downloaded to database
         DownloadService.Loadable loadable = event.getData();
         if (loadable instanceof Book) {
             Book book = (Book) event.getData();
@@ -57,6 +66,8 @@ public class DownloadBooksFragment extends BaseListFragment implements RestClien
      */
     @SuppressWarnings("unused")
     public void onEventMainThread(Book.ListLoadedEvent event) {
+        // stop displaying progress
+        BusUtils.post(new BaseActivity.ProgressEndEvent(getActivity()));
         mBooks.removeAll(event.getData());
         mListView.setAdapter(new SimpleAdapter<Book>(getActivity(), R.layout.item_download, mBooks));
     }

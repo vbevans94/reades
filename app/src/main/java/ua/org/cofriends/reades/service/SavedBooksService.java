@@ -9,7 +9,7 @@ import java.util.List;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.utils.BundleUtils;
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 
 public class SavedBooksService extends IntentService {
 
@@ -104,6 +104,6 @@ public class SavedBooksService extends IntentService {
         List<Book> books = dictionaryId != 0l
                 ? Book.find(Book.class, "dictionary = ?", Long.toString(dictionaryId))
                 : Book.listAll(Book.class);
-        EventBusUtils.getBus().post(new Book.ListLoadedEvent(books));
+        BusUtils.post(new Book.ListLoadedEvent(books));
     }
 }

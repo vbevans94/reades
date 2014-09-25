@@ -6,7 +6,7 @@ import com.orm.SugarRecord;
 
 import java.util.List;
 
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 
 public class Author extends SugarRecord<Author>{
 
@@ -60,7 +60,7 @@ public class Author extends SugarRecord<Author>{
         return authorId;
     }
 
-    public static class Event extends EventBusUtils.Event<Author> {
+    public static class Event extends BusUtils.Event<Author> {
 
         public Event(Author object) {
             super(object);
@@ -81,7 +81,7 @@ public class Author extends SugarRecord<Author>{
         }
     }
 
-    public static class ListLoadedEvent extends EventBusUtils.Event<List<Author>> {
+    public static class ListLoadedEvent extends BusUtils.Event<List<Author>> {
 
         public ListLoadedEvent(List<Author> dictionaries) {
             super(dictionaries);

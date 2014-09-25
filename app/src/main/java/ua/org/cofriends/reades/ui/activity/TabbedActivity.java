@@ -11,7 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.adapter.TabsAdapter;
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 
 public abstract class TabbedActivity extends BaseActivity {
 
@@ -55,7 +55,7 @@ public abstract class TabbedActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_refresh) {
-            EventBusUtils.getBus().post(new RefreshEvent());
+            BusUtils.post(new RefreshEvent());
         }
 
         return super.onOptionsItemSelected(item);

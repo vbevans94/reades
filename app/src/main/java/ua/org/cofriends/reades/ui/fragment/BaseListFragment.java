@@ -12,7 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.activity.DictionariesActivity;
-import ua.org.cofriends.reades.utils.EventBusUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 
 public class BaseListFragment extends BaseFragment {
 
@@ -34,7 +34,7 @@ public class BaseListFragment extends BaseFragment {
         textEmpty.setText(R.string.message_no_items);
         mListView.setEmptyView(textEmpty);
 
-        EventBusUtils.getBus().register(mEventTransmitter);
+        BusUtils.register(mEventTransmitter);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class BaseListFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
 
-        EventBusUtils.getBus().unregister(mEventTransmitter);
+        BusUtils.unregister(mEventTransmitter);
     }
 
     class EventTransmitter {

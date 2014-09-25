@@ -11,22 +11,27 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.DownloadService;
 import ua.org.cofriends.reades.service.SavedDictionariesService;
+import ua.org.cofriends.reades.ui.activity.BaseActivity;
 import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
 import ua.org.cofriends.reades.ui.fragment.BaseListFragment;
+import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.RestClient;
 
 public class DownloadDictionariesFragment extends BaseListFragment implements RestClient.Handler<Dictionary[]> {
 
-    private List<Dictionary> mDictionaries;
+    private List<Dictionary> mDictionaries = new ArrayList<Dictionary>();
 
     @Override
     protected void refreshList() {
+        // load dictionaries from server
         RestClient.get("/dictionaries/", RestClient.GsonHandler.create(Dictionary[].class, this, this));
+        // display progress
+        BusUtils.post(new BaseActivity.ProgressStartEvent(getActivity()));
     }
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, Dictionary[] response) {
-        mDictionaries = new ArrayList<Dictionary>(Arrays.asList(response));
+        mDictionaries.addAll(Arrays.asList(response));
         SavedDictionariesService.loadList(getActivity());
     }
 
@@ -47,14 +52,14 @@ public class DownloadDictionariesFragment extends BaseListFragment implements Re
         }
     }
 
-
-
     /**
      * Called when local dictionaries query returns.
      * @param event to retrieve dictionaries from
      */
     @SuppressWarnings("unused")
     public void onEventMainThread(Dictionary.ListLoadedEvent event) {
+        // stop displaying progress
+        BusUtils.post(new BaseActivity.ProgressEndEvent(getActivity()));
         mDictionaries.removeAll(event.getData());
         mListView.setAdapter(new SimpleAdapter<Dictionary>(getActivity(), R.layout.item_download, mDictionaries));
     }
