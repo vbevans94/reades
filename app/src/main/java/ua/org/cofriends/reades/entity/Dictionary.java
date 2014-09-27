@@ -22,7 +22,10 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
     private final int dictionaryId;
 
     @Expose
-    private final String name;
+    private Language fromLanguage;
+
+    @Expose
+    private Language toLanguage;
 
     @Expose
     private String dbUrl;
@@ -35,20 +38,25 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
     @Ignore
     private long persistedId;
 
-    private Dictionary(int dictionaryId, String name, String dbUrl) {
+    private Dictionary(int dictionaryId, String dbUrl) {
         this.dictionaryId = dictionaryId;
-        this.name = name;
         this.dbUrl = dbUrl;
     }
 
     @SuppressWarnings("unused")
     public Dictionary() {
-        this(0, null, null);
+        this(0, null);
     }
 
     @Override
     public Bundle persistIn(Bundle bundle) {
         persistedId = getId();
+        if (fromLanguage != null) {
+            fromLanguage.getId();
+        }
+        if (toLanguage != null) {
+            toLanguage.getId();
+        }
         return BundleUtils.writeNoStrategies(Dictionary.class, this, bundle);
     }
 
@@ -80,7 +88,12 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
 
     @Override
     public String getName() {
-        return name;
+        return String.format("%s - %s", fromLanguage.getName(), toLanguage.getName());
+    }
+
+    @Override
+    public String getImageUrl() {
+        return toLanguage.getImageUrl();
     }
 
     @Override
@@ -106,12 +119,30 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
         dbUrl = url;
     }
 
+    public Language getFromLanguage() {
+        return fromLanguage;
+    }
+
+    public Language getToLanguage() {
+        return toLanguage;
+    }
+
+    public void setFromLanguage(Language fromLanguage) {
+        this.fromLanguage = fromLanguage;
+    }
+
+    public void setToLanguage(Language toLanguage) {
+        this.toLanguage = toLanguage;
+    }
+
     @Override
     public String toString() {
         return "Dictionary{" +
                 "dictionaryId=" + dictionaryId +
-                ", name='" + name + '\'' +
+                ", fromLanguage=" + fromLanguage +
+                ", toLanguage=" + toLanguage +
                 ", dbUrl='" + dbUrl + '\'' +
+                ", persistedId=" + persistedId +
                 '}';
     }
 
@@ -133,7 +164,7 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
     }
 
     public String getDbConfigPath() {
-        return getDbUrl() + getName();
+        return String.format("%s%s-%s", getDbUrl(), fromLanguage.getCode(), toLanguage.getCode());
     }
 
     public static class Event extends BusUtils.Event<Dictionary> {

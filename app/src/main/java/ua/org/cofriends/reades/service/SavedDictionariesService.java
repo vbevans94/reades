@@ -8,6 +8,7 @@ import java.util.List;
 
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
+import ua.org.cofriends.reades.entity.Language;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.ZipUtils;
@@ -48,6 +49,27 @@ public class SavedDictionariesService extends IntentService {
         switch (type) {
             case SAVE: {
                 Dictionary dictionary = BundleUtils.fetchFromBundle(Dictionary.class, intent.getExtras());
+
+                // save or link with saved language in the database
+                Language fromLanguage = dictionary.getFromLanguage();
+                if (fromLanguage != null) {
+                    List<Language> saved = Language.find(Language.class, "LANGUAGE_ID = ?", Integer.toString(fromLanguage.getLanguageId()));
+                    if (saved.isEmpty()) {
+                        fromLanguage.save();
+                    } else {
+                        dictionary.setFromLanguage(saved.get(0));
+                    }
+                }
+
+                Language toLanguage = dictionary.getToLanguage();
+                if (toLanguage != null) {
+                    List<Language> saved = Language.find(Language.class, "LANGUAGE_ID = ?", Integer.toString(toLanguage.getLanguageId()));
+                    if (saved.isEmpty()) {
+                        toLanguage.save();
+                    } else {
+                        dictionary.setToLanguage(saved.get(0));
+                    }
+                }
 
                 // extract zip to private data or SD card if there is no room
                 String newPath = getApplicationContext().getFilesDir().getAbsolutePath() + "/";

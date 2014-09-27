@@ -17,5 +17,6 @@
     <string name="message_will_be_removed">Will be permanently removed in a moment</string>
     <string name="key_book">book_%d</string>
     <string name="text_page_info">%1$d/%2$d</string>
+    <string name="description_image">Image</string>
 
 </resources>

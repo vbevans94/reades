@@ -28,7 +28,10 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
     private String fileUrl;
 
     @Expose
-    private final Author author;
+    private final String imageUrl;
+
+    @Expose
+    private Author author;
 
     @Expose
     private Dictionary dictionary;
@@ -41,23 +44,22 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
     @Ignore
     private long persistedId;
 
-    private Book(int bookId, String name, String fileUrl, Author author) {
+    private Book(int bookId, String name, String imageUrl) {
         this.bookId = bookId;
         this.name = name;
-        this.fileUrl = fileUrl;
-        this.author = author;
+        this.imageUrl = imageUrl;
     }
 
     @SuppressWarnings("unused")
     public Book() {
-        this(0, null, null, null);
+        this(0, null, null);
     }
 
     @Override
     public Bundle persistIn(Bundle bundle) {
-        persistedId = getId();
+        getId(); // trigger setting this.persistedId
         if (dictionary != null) {
-            dictionary.getId(); // triggers resetting persistedId of dictionary
+            dictionary.getId(); // triggers setting persistedId of dictionary
         }
         return BundleUtils.writeNoStrategies(Book.class, this, bundle);
     }
@@ -100,6 +102,11 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
         return name;
     }
 
+    @Override
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
     /**
      * @return download URL for API received entity or local path for database entry
      */
@@ -119,6 +126,10 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
 
     public Author getAuthor() {
         return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
     @Override

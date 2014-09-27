@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import java.util.List;
 
+import ua.org.cofriends.reades.entity.Author;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.utils.BundleUtils;
@@ -75,11 +76,27 @@ public class SavedBooksService extends IntentService {
 
         switch (type) {
             case SAVE: {
+                // fetch book and dictionary ID from params bundle
                 Book book = BundleUtils.fetchFromBundle(Book.class, intent.getExtras());
                 long dictionaryId = intent.getLongExtra(EXTRA_DICTIONARY_ID, 0l);
+
+                // link book with existing in the database dictionary
                 Dictionary dictionary = Dictionary.findById(Dictionary.class, dictionaryId);
                 book.setDictionary(dictionary);
-                book.getAuthor().save();
+
+                // save book author if it's not yet or just link with existing in the database
+                Author author = book.getAuthor();
+                if (author != null) {
+                    // first check if author with the same author ID exists in the database
+                    List<Author> savedAuthors = Author.find(Author.class, "AUTHOR_ID = ?", Integer.toString(author.getAuthorId()));
+                    if (savedAuthors.isEmpty()) {
+                        // author of this book hasn't been saved in the database yet, save it
+                        author.save();
+                    } else {
+                        // this book's author is already saved, just link it
+                        book.setAuthor(savedAuthors.get(0));
+                    }
+                }
                 book.save();
                 loadBooks(intent);
                 break;
