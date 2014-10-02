@@ -9,6 +9,7 @@ import java.util.List;
 import ua.org.cofriends.reades.entity.Author;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
+import ua.org.cofriends.reades.entity.Page;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 
@@ -104,8 +105,20 @@ public class SavedBooksService extends IntentService {
 
             case DELETE: {
                 long bookId = intent.getLongExtra(EXTRA_BOOK_ID, 0l);
+
+                // delete book pages if there were some saved
+                List<Page> bookPages = Page.find(Page.class, "book = ?", Long.toString(bookId));
+                if (!bookPages.isEmpty()) {
+                    for (Page page : bookPages) {
+                        page.delete();
+                    }
+                }
+
+                // delete book itself
                 Book book = Book.findById(Book.class, bookId);
                 book.delete();
+
+                // load up to date book list
                 loadBooks(intent);
                 break;
             }

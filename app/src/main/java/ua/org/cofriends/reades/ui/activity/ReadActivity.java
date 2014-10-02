@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import org.dict.kernel.IAnswer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -18,9 +19,10 @@ import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.dict.DictService;
 import ua.org.cofriends.reades.entity.Book;
+import ua.org.cofriends.reades.entity.Page;
 import ua.org.cofriends.reades.ui.adapter.TextPagerAdapter;
+import ua.org.cofriends.reades.ui.fragment.DefinitionFragment;
 import ua.org.cofriends.reades.ui.fragment.PageFragment;
-import ua.org.cofriends.reades.ui.tools.BaseToast;
 import ua.org.cofriends.reades.ui.tools.UiUtils;
 import ua.org.cofriends.reades.ui.view.BaseViewPager;
 import ua.org.cofriends.reades.utils.BundleUtils;
@@ -79,10 +81,11 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     public void onEvent(BaseViewPager.SizeChangedEvent event) {
         TextPaint textPaint = new TextPaint();
         textPaint.setTextSize(getResources().getDimension(R.dimen.text_size));
+        int appPadding = (int) getResources().getDimension(R.dimen.app_padding);
         int verticalPadding = mPager.getPaddingTop() + mPager.getPaddingBottom();
         int horizontalPadding = mPager.getPaddingLeft() + mPager.getPaddingRight();
-        int height = mPager.getHeight() - verticalPadding;
-        int width = mPager.getWidth() - horizontalPadding;
+        int height = mPager.getHeight() - verticalPadding - appPadding;
+        int width = mPager.getWidth() - horizontalPadding - appPadding;
         TaskUtils.execute(new PagingTask(), new PagingTask.Params(getBook(), height, width, textPaint));
     }
 
@@ -113,7 +116,7 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     public void onEventMainThread(DictService.AnswerEvent event) {
         IAnswer[] answers = event.getData();
         if (answers.length > 0) {
-            BaseToast.show(this, answers[0].getDefinition());
+            DefinitionFragment.show(getSupportFragmentManager(), answers[0]);
         }
     }
 
@@ -147,12 +150,31 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
         @Override
         protected List<CharSequence> doInBackground(Params... paramsArray) {
             Params params = paramsArray[0];
-            // read book text
-            String text = FileUtils.readText(params.mBook.getFileUrl());
-            // split text to pages
-            PageSplitter splitter = new PageSplitter(params.mWidth, params.mHeight, 1, 0);
-            splitter.append(text, params.mTextPaint);
-            return splitter.getPages();
+            // fetch from database
+            List<Page> pages = Page.find(Page.class, "book = ?", Long.toString(params.mBook.getId()));
+            List<CharSequence> contents;
+            if (!pages.isEmpty()) {
+                // extract content from pages
+                contents = new ArrayList<CharSequence>();
+                for (Page page : pages) {
+                    contents.add(page.getContent());
+                }
+            } else {
+                // read book text
+                String text = FileUtils.readText(params.mBook.getFileUrl());
+                // split text to pages
+                PageSplitter splitter = new PageSplitter(params.mWidth, params.mHeight, 1, 0);
+                splitter.append(text, params.mTextPaint);
+                contents = splitter.getPages();
+                Book savedBook = Book.findById(Book.class, params.mBook.getId());
+                // save to database for next fetches
+                int pageNumber = 0;
+                for (CharSequence content : contents) {
+                    Page page = new Page(content.toString(), pageNumber, savedBook);
+                    page.save();
+                }
+            }
+            return contents;
         }
 
         @Override

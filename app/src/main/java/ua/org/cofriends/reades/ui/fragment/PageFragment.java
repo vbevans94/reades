@@ -48,14 +48,24 @@ public class PageFragment extends BaseFragment {
         int start = 0;
         SpannableStringBuilder spanText = new SpannableStringBuilder();
         while (text.length() > 0) {
-            int end = text.indexOf(" ");
-            if (end == -1) {
+            int nextSpace = text.indexOf(" ");
+            int nextBreak = text.indexOf("\n");
+            String delimiter = " ";
+            if (nextBreak != -1 && nextBreak < nextSpace) {
+                nextSpace = nextBreak;
+                delimiter = "\n";
+            }
+            if (nextSpace != -1) {
+                CharSequence word = text.subSequence(start, nextSpace);
+                spanText.append(word).append(delimiter);
+                addSpannable(spanText, word);
+                text.delete(start, nextSpace + 1);
+            } else {
+                CharSequence word = text.substring(start);
+                spanText.append(word);
+                addSpannable(spanText, word);
                 break;
             }
-            CharSequence word = text.subSequence(start, end);
-            spanText.append(word).append(" ");
-            addSpannable(spanText, word);
-            text.delete(start, end + 1);
         }
 
         textPage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size));
@@ -76,7 +86,8 @@ public class PageFragment extends BaseFragment {
 
             @Override
             public void onClick(View textView) {
-                BusUtils.post(new WordRequestEvent(word));
+                String escaped = word.toString().replaceAll("\\W", "");
+                BusUtils.post(new WordRequestEvent(escaped));
             }
 
             @Override

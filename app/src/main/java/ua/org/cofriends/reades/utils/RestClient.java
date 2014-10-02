@@ -12,7 +12,8 @@ import ua.org.cofriends.reades.entity.ApiError;
 
 public class RestClient {
 
-    private static final String BASE_URL = "http://192.168.0.7:8000";
+
+    private static final String BASE_URL = "http://hi/";
     private static final String BASE_API_URL = BASE_URL + "/api";
 
     private final static AsyncHttpClient CLIENT = new AsyncHttpClient();
@@ -21,7 +22,7 @@ public class RestClient {
 
     static {
         // client authorization
-        CLIENT.addHeader("Authorization", "Token e217abaef3e28e4acd0fa3a5408fbe7c5f26649e");
+        CLIENT.addHeader("Authorization", "Token hi");
         CLIENT.addHeader(AsyncHttpClient.HEADER_CONTENT_TYPE, "application/json");
     }
 
