@@ -6,7 +6,7 @@ import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.ui.fragment.dictionaries.DownloadDictionariesFragment;
 import ua.org.cofriends.reades.ui.fragment.dictionaries.SavedDictionariesFragment;
 
-public class DictionariesActivity extends TabbedActivity {
+public class DictionariesActivity extends ListAddActivity {
 
     @SuppressWarnings("unused")
     public void onEvent(Dictionary.SelectedEvent event) {

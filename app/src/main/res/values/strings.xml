@@ -19,5 +19,16 @@
     <string name="text_page_info">%1$d/%2$d</string>
     <string name="description_image">Image</string>
     <string name="title_add_to_my_words">Add to my words</string>
+    <string name="font_name">fonts/Roboto-Regular.ttf</string>
+    <string name="description_add">Add</string>
+    <string name="title_open">Open</string>
+    <string name="title_online">Online</string>
+    <string name="description_logo">Logo</string>
+    <string name="description_remove">Remove</string>
+    <string name="description_definition">Definition</string>
+    <string name="message_no_learned_words">You haven\'t learned a word yet.</string>
+    <string name="title_learned_words">Learned words</string>
+    <string name="description_drawer_open">Drawer open</string>
+    <string name="description_drawer_close">Drawer closed</string>
 
 </resources>

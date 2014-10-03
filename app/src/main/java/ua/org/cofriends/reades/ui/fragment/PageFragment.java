@@ -68,7 +68,7 @@ public class PageFragment extends BaseFragment {
             }
         }
 
-        textPage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size));
+        textPage.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_normal));
         textPage.setText(spanText);
         textPage.setMovementMethod(LinkMovementMethod.getInstance());
     }

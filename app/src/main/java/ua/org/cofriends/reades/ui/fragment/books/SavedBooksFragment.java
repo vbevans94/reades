@@ -2,6 +2,8 @@ package ua.org.cofriends.reades.ui.fragment.books;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.cocosw.undobar.UndoBarController;
 
@@ -10,15 +12,22 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.service.SavedBooksService;
 import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
-import ua.org.cofriends.reades.ui.fragment.BaseListFragment;
+import ua.org.cofriends.reades.ui.fragment.AddListFragment;
 import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeAdapter;
 import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeToRemoveTouchListener;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 
-public class SavedBooksFragment extends BaseListFragment implements UndoBarController.AdvancedUndoListener {
+public class SavedBooksFragment extends AddListFragment implements UndoBarController.AdvancedUndoListener {
 
     private DownloadBooksFragment.DictionaryCache mDictionaryCache = new DownloadBooksFragment.DictionaryCache(this);
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mTextTitle.setText(R.string.title_saved);
+    }
 
     @Override
     protected void refreshList() {
@@ -35,7 +44,7 @@ public class SavedBooksFragment extends BaseListFragment implements UndoBarContr
     @SuppressWarnings("unused")
     public void onEventMainThread(Book.ListLoadedEvent event) {
         SwipeAdapter.wrapList(mListView
-                , new SimpleAdapter<Book>(getActivity(), R.layout.item_saved, event.getData()));
+                , new SimpleAdapter<Book>(getActivity(), R.layout.item, event.getData()));
     }
 
     @SuppressWarnings("unused")

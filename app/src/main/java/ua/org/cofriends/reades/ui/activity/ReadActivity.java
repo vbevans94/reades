@@ -16,6 +16,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.dict.DictService;
 import ua.org.cofriends.reades.entity.Book;
@@ -35,12 +36,15 @@ import ua.org.cofriends.reades.utils.TaskUtils;
 
 public class ReadActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
+    @Optional
     @InjectView(R.id.pager)
     ViewPager mPager;
 
+    @Optional
     @InjectView(R.id.progress)
     ProgressBar mProgress;
 
+    @Optional
     @InjectView(R.id.text_page_info)
     TextView mTextPageInfo;
 
@@ -80,12 +84,10 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     @SuppressWarnings("unused")
     public void onEvent(BaseViewPager.SizeChangedEvent event) {
         TextPaint textPaint = new TextPaint();
-        textPaint.setTextSize(getResources().getDimension(R.dimen.text_size));
-        int appPadding = (int) getResources().getDimension(R.dimen.app_padding);
-        int verticalPadding = mPager.getPaddingTop() + mPager.getPaddingBottom();
-        int horizontalPadding = mPager.getPaddingLeft() + mPager.getPaddingRight();
-        int height = mPager.getHeight() - verticalPadding - appPadding;
-        int width = mPager.getWidth() - horizontalPadding - appPadding;
+        textPaint.setTextSize(getResources().getDimension(R.dimen.text_normal));
+        int marginRoot = (int) getResources().getDimension(R.dimen.root_margin);
+        int height = mPager.getHeight() - 2 * marginRoot;
+        int width = mPager.getWidth() - 2 * marginRoot;
         TaskUtils.execute(new PagingTask(), new PagingTask.Params(getBook(), height, width, textPaint));
     }
 

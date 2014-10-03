@@ -19,6 +19,9 @@ public class BaseListFragment extends BaseFragment {
     @InjectView(R.id.list)
     protected ListView mListView;
 
+    @InjectView(R.id.text_title)
+    protected TextView mTextTitle;
+
     private final EventTransmitter mEventTransmitter = new EventTransmitter();
 
     @Override

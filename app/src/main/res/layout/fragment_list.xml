@@ -6,12 +6,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_empty"
+    <ua.org.cofriends.reades.ui.view.BaseTextView
+        android:id="@+id/text_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone" />
+        android:layout_height="@dimen/section_height"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/root_margin"
+        android:textColor="@color/text_black_secondary"
+        android:textSize="@dimen/text_small"
+        tools:text="Saved" />
 
     <ua.org.cofriends.reades.ui.tools.swipetoremove.BackgroundContainer
         android:layout_width="match_parent"
@@ -21,6 +24,26 @@
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_dictionary_local" />
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            tools:listitem="@layout/item" />
+
+        <ua.org.cofriends.reades.ui.view.BaseTextView
+            android:id="@+id/text_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/image_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="@dimen/root_margin"
+            android:contentDescription="@string/description_add"
+            android:src="@drawable/ic_add"
+            android:visibility="gone"
+            tools:visibility="visible" />
     </ua.org.cofriends.reades.ui.tools.swipetoremove.BackgroundContainer>
 </LinearLayout>

@@ -1,5 +1,9 @@
 package ua.org.cofriends.reades.ui.fragment.dictionaries;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
+
 import org.apache.http.Header;
 
 import java.util.ArrayList;
@@ -22,15 +26,23 @@ public class DownloadDictionariesFragment extends BaseListFragment implements Re
     private List<Dictionary> mDictionaries = new ArrayList<Dictionary>();
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mTextTitle.setText(R.string.title_online);
+    }
+
+    @Override
     protected void refreshList() {
         // load dictionaries from server
         RestClient.get("/dictionaries/", RestClient.GsonHandler.create(Dictionary[].class, this, this));
         // display progress
-        BusUtils.post(new BaseActivity.ProgressStartEvent(getActivity()));
+        BusUtils.post(new BaseActivity.ProgressEndEvent(getActivity()));
     }
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, Dictionary[] response) {
+        mDictionaries.clear();
         mDictionaries.addAll(Arrays.asList(response));
         SavedDictionariesService.loadList(getActivity());
     }
@@ -38,9 +50,9 @@ public class DownloadDictionariesFragment extends BaseListFragment implements Re
     @OnItemClick(R.id.list)
     @SuppressWarnings("unused")
     void onDictionaryClicked(int position) {
-        Dictionary dictionary = (Dictionary) mListView.getItemAtPosition(position);
+        SavedDictionariesFragment.DictionaryWrapper wrapper = (SavedDictionariesFragment.DictionaryWrapper) mListView.getItemAtPosition(position);
         // start loading dictionary to the device
-        DownloadService.start(getActivity(), dictionary);
+        DownloadService.start(getActivity(), wrapper.getWrapped());
     }
 
 
@@ -61,6 +73,10 @@ public class DownloadDictionariesFragment extends BaseListFragment implements Re
         // stop displaying progress
         BusUtils.post(new BaseActivity.ProgressEndEvent(getActivity()));
         mDictionaries.removeAll(event.getData());
-        mListView.setAdapter(new SimpleAdapter<Dictionary>(getActivity(), R.layout.item_download, mDictionaries));
+        mListView.setAdapter(new SimpleAdapter<SavedDictionariesFragment.DictionaryWrapper>(getActivity()
+                , R.layout.item
+                , SavedDictionariesFragment.DictionaryWrapper.fromList(getActivity()
+                    , R.string.title_download
+                    , mDictionaries)));
     }
 }

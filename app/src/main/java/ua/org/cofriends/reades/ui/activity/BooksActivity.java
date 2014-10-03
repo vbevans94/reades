@@ -11,7 +11,7 @@ import ua.org.cofriends.reades.ui.fragment.books.DownloadBooksFragment;
 import ua.org.cofriends.reades.ui.fragment.books.SavedBooksFragment;
 import ua.org.cofriends.reades.utils.BundleUtils;
 
-public class BooksActivity extends TabbedActivity {
+public class BooksActivity extends ListAddActivity {
 
     public static void start(Dictionary dictionary, Context context) {
         Bundle extras = BundleUtils.writeObject(Dictionary.class, dictionary);

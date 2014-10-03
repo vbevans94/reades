@@ -94,7 +94,12 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
 
     @Override
     public String getItemName() {
-        return String.format("%s - %s", getName(), getAuthor().getName());
+        return getName();
+    }
+
+    @Override
+    public String getItemDetails() {
+        return getAuthor().getName();
     }
 
     @Override

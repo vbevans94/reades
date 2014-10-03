@@ -1,19 +1,14 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:textViewStyle">@style/TextView</item>
+    <style name="AppTheme" parent="Theme.Reades">
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Reades.Large</item>
+        <item name="actionBarStyle">@style/ActionBar.Solid.Reades.Large</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
-    <style name="TextView" parent="@android:style/Widget.TextView">
-        <item name="android:padding">8dp</item>
-    </style>
-
-    <style name="RootLayout">
-        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
-        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
+    <style name="ActionBar.Solid.Reades.Large">
+        <item name="android:height">@dimen/action_bar_height</item>
     </style>
 
 </resources>

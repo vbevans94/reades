@@ -24,9 +24,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/app_padding"
-        android:background="@color/black_alpha"
+        android:background="@color/text_black_secondary"
         android:textColor="@color/white"
         android:visibility="gone"
         tools:text="4/324"
+        android:padding="@dimen/app_padding"
         tools:visibility="visible" />
 </FrameLayout>

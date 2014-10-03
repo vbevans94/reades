@@ -13,13 +13,13 @@ import java.util.List;
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.tools.BaseViewHolder;
+import ua.org.cofriends.reades.ui.tools.CircleTransform;
 import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeAdapter;
-import ua.org.cofriends.reades.utils.RestClient;
 
 public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends SwipeAdapter<T> {
 
-    public static final int TARGET_SIZE = 128;
     private final int mResId;
+    private final int mSize;
 
     /**
      * Creates adapter for {@link ua.org.cofriends.reades.ui.adapter.SimpleAdapter.Viewable} items.
@@ -31,6 +31,7 @@ public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends SwipeAdapte
         super(context, resId, items);
 
         mResId = resId;
+        mSize = (int) context.getResources().getDimension(R.dimen.item_icon_size);
     }
 
     @Override
@@ -50,9 +51,11 @@ public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends SwipeAdapte
 
         Viewable item = getItem(position);
         holder.textName.setText(item.getItemName());
+        holder.textDetails.setText(item.getItemDetails());
         Picasso.with(getContext())
-                .load(RestClient.getAbsoluteUrl(item.getImageUrl()))
-                .resize(TARGET_SIZE, TARGET_SIZE)
+                .load(item.getImageUrl())
+                .resize(mSize, mSize)
+                .transform(new CircleTransform())
                 .centerCrop()
                 .into(holder.image);
 
@@ -63,6 +66,9 @@ public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends SwipeAdapte
 
         @InjectView(R.id.text_name)
         TextView textName;
+
+        @InjectView(R.id.text_details)
+        TextView textDetails;
 
         @InjectView(R.id.image)
         ImageView image;
@@ -77,6 +83,8 @@ public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends SwipeAdapte
         long getItemId();
 
         String getItemName();
+
+        String getItemDetails();
 
         String getImageUrl();
     }

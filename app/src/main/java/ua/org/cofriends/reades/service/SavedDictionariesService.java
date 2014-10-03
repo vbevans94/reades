@@ -18,6 +18,7 @@ public class SavedDictionariesService extends IntentService {
     private static final int LOAD_LIST = 0;
     private static final int SAVE = 1;
     private static final int DELETE = 2;
+    private static final int SAVE_WORD = 3;
     private static final String EXTRA_TYPE = "extra_type";
     private static final String EXTRA_DICTIONARY_ID = "extra_dictionary_id";
 

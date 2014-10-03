@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white">#fff</color>
-    <color name="black">#000</color>
-    <color name="black_alpha">#77000000</color>
+    <color name="text_black_primary">#de000000</color>
+    <color name="text_black_secondary">#8a000000</color>
+
+    <color name="light_grey_divider">#d1d1d1</color>
+    <color name="dark_indigo">#1e237e</color>
+    <color name="light_indigo">#8c9eff</color>
 </resources>

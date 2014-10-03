@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_indigo"
+    android:orientation="vertical">
+
+    <ua.org.cofriends.reades.ui.view.BaseTextView
+        android:id="@+id/text_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/section_height"
+        android:gravity="center_vertical"
+        android:padding="@dimen/root_margin"
+        android:text="@string/title_learned_words"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_small" />
+
+    <ua.org.cofriends.reades.ui.view.BaseTextView
+        android:id="@+id/text_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/message_no_learned_words"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_normal"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/list_words"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_word" />
+</LinearLayout>

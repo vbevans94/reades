@@ -1,6 +1,9 @@
 package ua.org.cofriends.reades.ui.fragment.books;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import org.apache.http.Header;
 
@@ -27,17 +30,25 @@ public class DownloadBooksFragment extends BaseListFragment implements RestClien
     private DictionaryCache mDictionaryCache = new DictionaryCache(this);
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mTextTitle.setText(R.string.title_online);
+    }
+
+    @Override
     protected void refreshList() {
         // load books from server
         RestClient.get(String.format("/dictionaries/%d/books/"
                 , mDictionaryCache.getDictionary().getDictionaryId())
                 , RestClient.GsonHandler.create(Book[].class, this, this));
         // display progress
-        BusUtils.post(new BaseActivity.ProgressStartEvent(getActivity()));
+        BusUtils.post(new BaseActivity.ProgressEndEvent(getActivity()));
     }
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, Book[] response) {
+        mBooks.clear();
         mBooks.addAll(Arrays.asList(response));
         SavedBooksService.loadListByDictionary(getActivity(), mDictionaryCache.getDictionary());
     }
@@ -69,7 +80,7 @@ public class DownloadBooksFragment extends BaseListFragment implements RestClien
         // stop displaying progress
         BusUtils.post(new BaseActivity.ProgressEndEvent(getActivity()));
         mBooks.removeAll(event.getData());
-        mListView.setAdapter(new SimpleAdapter<Book>(getActivity(), R.layout.item_download, mBooks));
+        mListView.setAdapter(new SimpleAdapter<Book>(getActivity(), R.layout.item, mBooks));
     }
 
     public static class DictionaryCache {

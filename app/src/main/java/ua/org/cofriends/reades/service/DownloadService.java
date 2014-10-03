@@ -154,7 +154,7 @@ public class DownloadService extends Service {
             startForeground(mPendingToId.get(loadable), builder.build());
 
             // start loading
-            RestClient.getClient().get(RestClient.getAbsoluteUrl(loadable.getDownloadUrl()), new FileAsyncHttpResponseHandler(getApplicationContext()) {
+            RestClient.getClient().get(loadable.getDownloadUrl(), new FileAsyncHttpResponseHandler(getApplicationContext()) {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
                     BusUtils.post(new Loadable.FailedEvent());

@@ -3,34 +3,73 @@ package ua.org.cofriends.reades.ui.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.MenuItem;
-import android.view.Window;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
+import butterknife.ButterKnife;
+import ua.org.cofriends.reades.R;
+import ua.org.cofriends.reades.ui.fragment.WordsDrawerFragment;
 import ua.org.cofriends.reades.utils.BusUtils;
 
 public class BaseActivity extends ActionBarActivity {
 
-    private ProgressViewer mProgressViewer;
+    FrameLayout mLayoutContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        super.setContentView(R.layout.activity_drawer);
+
+        mLayoutContainer = ButterKnife.findById(this, R.id.layout_container);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.layout_drawer, new WordsDrawerFragment())
+                    .commit();
+        }
+
         BusUtils.register(this);
-        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        mProgressViewer = new ProgressViewer();
-        BusUtils.register(mProgressViewer);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * Sets content view under given resource id.
+     *
+     * @param layoutResId to be set as a content view
+     * @see {@link #setContentView(android.view.View)}.
+     */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
+    public void setContentView(int layoutResId) {
+        setContentView(getLayoutInflater().inflate(layoutResId, null), null);
+    }
 
-        return super.onOptionsItemSelected(item);
+    /**
+     * Sets content view into the content part of alongside with drawer.
+     *
+     * @param view   to be used as content view
+     * @param params to apply when setting up view
+     */
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        if (mLayoutContainer == null) {
+            throw new IllegalStateException("You can set content view only after super.onCreate() is called!");
+        } else {
+            mLayoutContainer.removeAllViews();
+            if (params == null) {
+                mLayoutContainer.addView(view);
+            } else {
+                mLayoutContainer.addView(view, params);
+            }
+        }
+    }
+
+    @Override
+    public void setContentView(View view) {
+        setContentView(view, null);
     }
 
     @Override
@@ -38,37 +77,17 @@ public class BaseActivity extends ActionBarActivity {
         super.onDestroy();
 
         BusUtils.unregister(this);
-        BusUtils.unregister(mProgressViewer);
-    }
-
-    public class ProgressViewer {
-
-        @SuppressWarnings("unused")
-        public void onEvent(ProgressStartEvent event) {
-            if (BaseActivity.this == event.getData()) {
-                setSupportProgressBarIndeterminateVisibility(true);
-            }
-        }
-
-        @SuppressWarnings("unused")
-        public void onEvent(ProgressEndEvent event) {
-            if (BaseActivity.this == event.getData()) {
-                setSupportProgressBarIndeterminateVisibility(false);
-            }
-        }
     }
 
     public static class ProgressStartEvent extends BusUtils.Event<Activity> {
-
-        public ProgressStartEvent(Activity object) {
-            super(object);
+        public ProgressStartEvent(Activity activity) {
+            super(activity);
         }
     }
 
     public static class ProgressEndEvent extends BusUtils.Event<Activity> {
-
-        public ProgressEndEvent(Activity object) {
-            super(object);
+        public ProgressEndEvent(Activity activity) {
+            super(activity);
         }
     }
 }

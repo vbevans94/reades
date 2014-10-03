@@ -1,5 +1,6 @@
 package ua.org.cofriends.reades.utils;
 
+import com.google.gson.JsonSyntaxException;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
@@ -12,18 +13,21 @@ import ua.org.cofriends.reades.entity.ApiError;
 
 public class RestClient {
 
-
-    private static final String BASE_URL = "http://hi/";
+    private static final String BASE_URL = "hi";
     private static final String BASE_API_URL = BASE_URL + "/api";
 
     private final static AsyncHttpClient CLIENT = new AsyncHttpClient();
+    private final static AsyncHttpClient CLEAR_CLIENT = new AsyncHttpClient();
 
     private final static Set<Handler> sPendingHandlers = new HashSet<Handler>();
 
     static {
-        // client authorization
         CLIENT.addHeader("Authorization", "Token hi");
         CLIENT.addHeader(AsyncHttpClient.HEADER_CONTENT_TYPE, "application/json");
+    }
+
+    public static AsyncHttpClient getClient() {
+        return CLEAR_CLIENT;
     }
 
     public static <T> void get(String url, GsonHandler<T> responseHandler) {
@@ -37,19 +41,8 @@ public class RestClient {
         sPendingHandlers.remove(handler.mHandler);
     }
 
-    /**
-     * @return client to do all possible actions
-     */
-    public static AsyncHttpClient getClient() {
-        return CLIENT;
-    }
-
     public static String getAbsoluteApiUrl(String relativeUrl) {
         return BASE_API_URL + relativeUrl;
-    }
-
-    public static String getAbsoluteUrl(String relativeUrl) {
-        return BASE_URL + relativeUrl;
     }
 
     public static class GsonHandler<T> extends TextHttpResponseHandler {
@@ -70,9 +63,14 @@ public class RestClient {
 
         @Override
         public final void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-            ApiError error = responseString != null
-                    ? GsonUtils.fromJson(responseString, ApiError.class) // error returned by server
-                    : new ApiError(throwable.getMessage()); // raised by system
+            ApiError error;
+            try {
+                error = responseString != null
+                        ? GsonUtils.fromJson(responseString, ApiError.class) // error returned by server
+                        : new ApiError(throwable.getMessage()); // raised by system
+            } catch (JsonSyntaxException e) {
+                error = new ApiError(e.getMessage());
+            }
             mErrorHandler.onFailure(statusCode, headers, error);
 
             handlerDone(this);

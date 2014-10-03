@@ -101,6 +101,11 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
         return getName();
     }
 
+    @Override
+    public String getItemDetails() {
+        return null;
+    }
+
     /**
      * @return download URL for API received entity or local path for database entry
      */
