@@ -3,6 +3,7 @@ package ua.org.cofriends.reades.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 
 import ua.org.cofriends.reades.entity.Book;
@@ -19,8 +20,8 @@ public class BooksActivity extends ListAddActivity {
     }
 
     @Override
-    Fragment getDownloadFragment() {
-        return withExtrasAsArgs(new DownloadBooksFragment());
+    DialogFragment getDownloadFragment() {
+        return (DialogFragment) withExtrasAsArgs(new DownloadBooksFragment());
     }
 
     @Override

@@ -40,8 +40,8 @@ public abstract class SwipeAdapter<T> extends ArrayAdapter<T> {
     public abstract View getViewImpl(int position, View view, ViewGroup viewGroup);
 
     /**
-     * Returns unique ID for a given item.
-     * @param position of item we need the ID
+     * Returns unique ID for a given item_book.
+     * @param position of item_book we need the ID
      * @return id
      */
     public abstract long getItemIdImpl(int position);

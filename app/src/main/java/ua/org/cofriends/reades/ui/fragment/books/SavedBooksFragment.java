@@ -11,7 +11,7 @@ import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.service.SavedBooksService;
-import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
+import ua.org.cofriends.reades.ui.adapter.BookAdapter;
 import ua.org.cofriends.reades.ui.fragment.AddListFragment;
 import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeAdapter;
 import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeToRemoveTouchListener;
@@ -30,21 +30,21 @@ public class SavedBooksFragment extends AddListFragment implements UndoBarContro
     }
 
     @Override
-    protected void refreshList() {
+    public void refreshList() {
         SavedBooksService.loadListByDictionary(getActivity(), mDictionaryCache.getDictionary());
     }
 
     @OnItemClick(R.id.list)
     @SuppressWarnings("unused")
     void onBookClicked(int position) {
-        Book book = (Book) mListView.getItemAtPosition(position);
+        Book book = (Book) listView().getItemAtPosition(position);
         BusUtils.post(new Book.SelectedEvent(book));
     }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(Book.ListLoadedEvent event) {
-        SwipeAdapter.wrapList(mListView
-                , new SimpleAdapter<Book>(getActivity(), R.layout.item, event.getData()));
+        SwipeAdapter.wrapList(listView()
+                , new BookAdapter(getActivity(), event.getData()));
     }
 
     @SuppressWarnings("unused")

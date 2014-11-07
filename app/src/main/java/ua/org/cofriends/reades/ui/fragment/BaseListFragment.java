@@ -12,60 +12,54 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.activity.DictionariesActivity;
+import ua.org.cofriends.reades.ui.tools.refreshable.RefreshManager;
+import ua.org.cofriends.reades.ui.tools.refreshable.Refreshable;
 import ua.org.cofriends.reades.utils.BusUtils;
 
-public class BaseListFragment extends BaseFragment {
+public class BaseListFragment extends BaseFragment implements Refreshable {
 
     @InjectView(R.id.list)
-    protected ListView mListView;
+    ListView mListView;
 
     @InjectView(R.id.text_title)
     protected TextView mTextTitle;
 
-    private final EventTransmitter mEventTransmitter = new EventTransmitter();
+    private final RefreshManager mRefreshManager = new RefreshManager(this);
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        return mRefreshManager.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextView textEmpty = ButterKnife.findById(view, R.id.text_empty);
-        textEmpty.setText(R.string.message_no_items);
-        mListView.setEmptyView(textEmpty);
-
-        BusUtils.register(mEventTransmitter);
+        mRefreshManager.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if (mListView.getAdapter() == null) {
-            refreshList();
-        }
+        mRefreshManager.onResume();
     }
 
     /**
-     * Refreshes the list of dictionaries from corresponding source.
+     * Refreshes the list of items from corresponding source.
      */
-    protected void refreshList() {}
+    @Override
+    public void refreshList() {}
+
+    @Override
+    public ListView listView() {
+        return mListView;
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
-        BusUtils.unregister(mEventTransmitter);
-    }
-
-    class EventTransmitter {
-
-        @SuppressWarnings("unused")
-        public void onEvent(DictionariesActivity.RefreshEvent event) {
-            refreshList();
-        }
+        mRefreshManager.onDestroyView();
     }
 }

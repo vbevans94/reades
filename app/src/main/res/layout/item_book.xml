@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/item_height"
-    android:background="@drawable/pressable_background_white"
     android:orientation="horizontal">
 
     <ImageView xmlns:android="http://schemas.android.com/apk/res/android"

@@ -30,5 +30,6 @@
     <string name="title_learned_words">Learned words</string>
     <string name="description_drawer_open">Drawer open</string>
     <string name="description_drawer_close">Drawer closed</string>
+    <string name="title_store">Store</string>
 
 </resources>

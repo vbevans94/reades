@@ -10,12 +10,12 @@ import com.orm.dsl.Ignore;
 import java.util.List;
 
 import ua.org.cofriends.reades.service.DownloadService;
-import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
+import ua.org.cofriends.reades.ui.adapter.BookAdapter;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 
 public class Book extends SugarRecord<Book> implements DownloadService.Loadable
-        , SimpleAdapter.Viewable, BundleUtils.Persistable {
+        , BundleUtils.Persistable {
 
     @Expose
     @SerializedName("id")
@@ -64,6 +64,10 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
         return BundleUtils.writeNoStrategies(Book.class, this, bundle);
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
     /**
      * @return persisted id or {@code super.getId()} if not set
      */
@@ -88,28 +92,8 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
     }
 
     @Override
-    public long getItemId() {
-        return getBookId();
-    }
-
-    @Override
-    public String getItemName() {
-        return getName();
-    }
-
-    @Override
-    public String getItemDetails() {
-        return getAuthor().getName();
-    }
-
-    @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getImageUrl() {
-        return imageUrl;
     }
 
     /**

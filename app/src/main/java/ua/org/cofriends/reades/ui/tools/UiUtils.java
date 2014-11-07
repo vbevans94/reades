@@ -84,7 +84,7 @@ public class UiUtils {
     }
 
     /**
-     * Selects list view item by actually performing a click on it.
+     * Selects list view item_book by actually performing a click on it.
      *
      * @param listView to select in
      * @param position to be selected

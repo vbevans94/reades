@@ -10,12 +10,12 @@ import com.orm.dsl.Ignore;
 import java.util.List;
 
 import ua.org.cofriends.reades.service.DownloadService;
-import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
+import ua.org.cofriends.reades.ui.adapter.BookAdapter;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 
 public class Dictionary extends SugarRecord<Dictionary> implements DownloadService.Loadable
-        , SimpleAdapter.Viewable, BundleUtils.Persistable {
+        , BundleUtils.Persistable {
 
     @Expose
     @SerializedName("id")
@@ -78,32 +78,9 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
         return dictionaryId;
     }
 
-    /**
-     * @return id to use in the adapters
-     */
-    @Override
-    public long getItemId() {
-        return getDictionaryId();
-    }
-
     @Override
     public String getName() {
         return String.format("%s - %s", fromLanguage.getName(), toLanguage.getName());
-    }
-
-    @Override
-    public String getImageUrl() {
-        return toLanguage.getImageUrl();
-    }
-
-    @Override
-    public String getItemName() {
-        return getName();
-    }
-
-    @Override
-    public String getItemDetails() {
-        return null;
     }
 
     /**

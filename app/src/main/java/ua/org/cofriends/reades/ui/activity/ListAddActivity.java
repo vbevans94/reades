@@ -1,6 +1,7 @@
 package ua.org.cofriends.reades.ui.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,6 +11,8 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.utils.BusUtils;
 
 public abstract class ListAddActivity extends BaseActivity {
+
+    public static final String DOWNLOAD_FRAGMENT_TAG = "download_fragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,16 +31,15 @@ public abstract class ListAddActivity extends BaseActivity {
 
     @SuppressWarnings("unused")
     public void onEvent(AddEvent event) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.layout_container, getDownloadFragment())
-                .addToBackStack(null)
-                .commit();
+        getDownloadFragment().show(getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack(null), DOWNLOAD_FRAGMENT_TAG);
     }
 
     /**
      * @return fragment to show under 'download' tab
      */
-    abstract Fragment getDownloadFragment();
+    abstract DialogFragment getDownloadFragment();
 
     /**
      * @return fragment to show under 'saved' tab
@@ -61,7 +63,9 @@ public abstract class ListAddActivity extends BaseActivity {
     }
 
     // TODO: test whether the it fires in stopped activities/fragments
-    public static class RefreshEvent {}
+    public static class RefreshEvent {
+    }
 
-    public static class AddEvent {}
+    public static class AddEvent {
+    }
 }

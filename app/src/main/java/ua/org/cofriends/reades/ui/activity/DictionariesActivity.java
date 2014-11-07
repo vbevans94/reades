@@ -1,5 +1,6 @@
 package ua.org.cofriends.reades.ui.activity;
 
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 
 import ua.org.cofriends.reades.entity.Dictionary;
@@ -14,7 +15,7 @@ public class DictionariesActivity extends ListAddActivity {
     }
 
     @Override
-    Fragment getDownloadFragment() {
+    DialogFragment getDownloadFragment() {
         return new DownloadDictionariesFragment();
     }
 

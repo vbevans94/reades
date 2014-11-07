@@ -9,9 +9,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/libs" />
-            <option value="$PROJECT_DIR$/libs/UndoBar" />
-            <option value="$PROJECT_DIR$/libs/UndoBar/library" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -15,16 +15,17 @@ import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
+import ua.org.cofriends.reades.service.BookDownloadService;
 import ua.org.cofriends.reades.service.DownloadService;
 import ua.org.cofriends.reades.service.SavedBooksService;
 import ua.org.cofriends.reades.ui.activity.BaseActivity;
-import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
-import ua.org.cofriends.reades.ui.fragment.BaseListFragment;
+import ua.org.cofriends.reades.ui.adapter.BookAdapter;
+import ua.org.cofriends.reades.ui.fragment.BaseListDialogFragment;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.RestClient;
 
-public class DownloadBooksFragment extends BaseListFragment implements RestClient.Handler<Book[]> {
+public class DownloadBooksFragment extends BaseListDialogFragment implements RestClient.Handler<Book[]> {
 
     private List<Book> mBooks = new ArrayList<Book>();
     private DictionaryCache mDictionaryCache = new DictionaryCache(this);
@@ -37,13 +38,11 @@ public class DownloadBooksFragment extends BaseListFragment implements RestClien
     }
 
     @Override
-    protected void refreshList() {
+    public void refreshList() {
         // load books from server
         RestClient.get(String.format("/dictionaries/%d/books/"
                 , mDictionaryCache.getDictionary().getDictionaryId())
                 , RestClient.GsonHandler.create(Book[].class, this, this));
-        // display progress
-        BusUtils.post(new BaseActivity.ProgressEndEvent(getActivity()));
     }
 
     @Override
@@ -57,18 +56,8 @@ public class DownloadBooksFragment extends BaseListFragment implements RestClien
     @SuppressWarnings("unused")
     void onBookClicked(int position) {
         // download book
-        Book book = (Book) mListView.getItemAtPosition(position);
-        DownloadService.start(getActivity(), book);
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(DownloadService.Loadable.LoadedEvent event) {
-        // save downloaded to database
-        DownloadService.Loadable loadable = event.getData();
-        if (loadable instanceof Book) {
-            Book book = (Book) event.getData();
-            SavedBooksService.saveWithDictionary(getActivity(), book, mDictionaryCache.getDictionary());
-        }
+        Book book = (Book) listView().getItemAtPosition(position);
+        BookDownloadService.start(getActivity(), book);
     }
 
     /**
@@ -77,10 +66,8 @@ public class DownloadBooksFragment extends BaseListFragment implements RestClien
      */
     @SuppressWarnings("unused")
     public void onEventMainThread(Book.ListLoadedEvent event) {
-        // stop displaying progress
-        BusUtils.post(new BaseActivity.ProgressEndEvent(getActivity()));
         mBooks.removeAll(event.getData());
-        mListView.setAdapter(new SimpleAdapter<Book>(getActivity(), R.layout.item, mBooks));
+        listView().setAdapter(new BookAdapter(getActivity(), mBooks));
     }
 
     public static class DictionaryCache {

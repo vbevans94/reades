@@ -182,7 +182,7 @@ public class BundleUtils {
      * Writes Gson compatible object into the bundle.
      *
      * @param clazz  type of t
-     * @param t      item we want to persist
+     * @param t      item_book we want to persist
      * @param bundle to persist into. If null passed new one will be created
      * @param <T>    type of t
      * @return bundle with appended data
@@ -218,7 +218,7 @@ public class BundleUtils {
     /**
      * Creates bundle and writes Gson compatible object into that bundle.
      *
-     * @param t   item we want to persist
+     * @param t   item_book we want to persist
      * @param <T> type of t
      * @return bundle with appended data
      */

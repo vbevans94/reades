@@ -13,15 +13,15 @@ import java.util.List;
 import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Dictionary;
-import ua.org.cofriends.reades.service.DownloadService;
+import ua.org.cofriends.reades.service.DictionaryDownloadService;
 import ua.org.cofriends.reades.service.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.activity.BaseActivity;
-import ua.org.cofriends.reades.ui.adapter.SimpleAdapter;
-import ua.org.cofriends.reades.ui.fragment.BaseListFragment;
+import ua.org.cofriends.reades.ui.adapter.DictionaryAdapter;
+import ua.org.cofriends.reades.ui.fragment.BaseListDialogFragment;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.RestClient;
 
-public class DownloadDictionariesFragment extends BaseListFragment implements RestClient.Handler<Dictionary[]> {
+public class DownloadDictionariesFragment extends BaseListDialogFragment implements RestClient.Handler<Dictionary[]> {
 
     private List<Dictionary> mDictionaries = new ArrayList<Dictionary>();
 
@@ -33,11 +33,9 @@ public class DownloadDictionariesFragment extends BaseListFragment implements Re
     }
 
     @Override
-    protected void refreshList() {
+    public void refreshList() {
         // load dictionaries from server
         RestClient.get("/dictionaries/", RestClient.GsonHandler.create(Dictionary[].class, this, this));
-        // display progress
-        BusUtils.post(new BaseActivity.ProgressEndEvent(getActivity()));
     }
 
     @Override
@@ -50,22 +48,14 @@ public class DownloadDictionariesFragment extends BaseListFragment implements Re
     @OnItemClick(R.id.list)
     @SuppressWarnings("unused")
     void onDictionaryClicked(int position) {
-        SavedDictionariesFragment.DictionaryWrapper wrapper = (SavedDictionariesFragment.DictionaryWrapper) mListView.getItemAtPosition(position);
+        Dictionary dictionary = (Dictionary) listView().getItemAtPosition(position);
         // start loading dictionary to the device
-        DownloadService.start(getActivity(), wrapper.getWrapped());
-    }
-
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(DownloadService.Loadable.LoadedEvent event) {
-        DownloadService.Loadable loadable = event.getData();
-        if (loadable instanceof Dictionary) {
-            SavedDictionariesService.save(getActivity(), (Dictionary) event.getData());
-        }
+        DictionaryDownloadService.start(getActivity(), dictionary);
     }
 
     /**
      * Called when local dictionaries query returns.
+     *
      * @param event to retrieve dictionaries from
      */
     @SuppressWarnings("unused")
@@ -73,10 +63,7 @@ public class DownloadDictionariesFragment extends BaseListFragment implements Re
         // stop displaying progress
         BusUtils.post(new BaseActivity.ProgressEndEvent(getActivity()));
         mDictionaries.removeAll(event.getData());
-        mListView.setAdapter(new SimpleAdapter<SavedDictionariesFragment.DictionaryWrapper>(getActivity()
-                , R.layout.item
-                , SavedDictionariesFragment.DictionaryWrapper.fromList(getActivity()
-                    , R.string.title_download
-                    , mDictionaries)));
+        listView().setAdapter(new DictionaryAdapter(getActivity()
+                , mDictionaries, R.string.title_download));
     }
 }

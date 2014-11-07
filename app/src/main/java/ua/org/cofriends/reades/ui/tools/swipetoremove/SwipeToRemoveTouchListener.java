@@ -51,7 +51,7 @@ public class SwipeToRemoveTouchListener implements View.OnTouchListener {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (mItemPressed || mAnimating) {
-                    // Multi-item swipes not handled
+                    // Multi-item_book swipes not handled
                     return false;
                 }
                 mItemPressed = true;
@@ -130,10 +130,10 @@ public class SwipeToRemoveTouchListener implements View.OnTouchListener {
     }
 
     /**
-     * Animates a swipe of the item either back into place or out of the listview container.
+     * Animates a swipe of the item_book either back into place or out of the listview container.
      * NOTE: This is a simplified version of swipe behavior, for the purposes of this demo
      * about animation. A real version should use velocity (via the VelocityTracker class)
-     * to send the item off or back at an appropriate speed.
+     * to send the item_book off or back at an appropriate speed.
      */
     @SuppressLint("NewApi")
     private void animateSwipe(final View view, float endX, long duration, final boolean remove) {
@@ -183,7 +183,7 @@ public class SwipeToRemoveTouchListener implements View.OnTouchListener {
         // tell the world about it
         BusUtils.post(new RemoveEvent(mListView.getItemAtPosition(position)));
 
-        // Delete the item from the adapter
+        // Delete the item_book from the adapter
         ListAdapter listAdapter = mListView.getAdapter();
         ArrayAdapter adapter;
         if (listAdapter instanceof WrapperListAdapter) {

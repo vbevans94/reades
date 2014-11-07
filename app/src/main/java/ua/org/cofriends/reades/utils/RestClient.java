@@ -13,7 +13,7 @@ import ua.org.cofriends.reades.entity.ApiError;
 
 public class RestClient {
 
-    private static final String BASE_URL = "hi";
+    private static final String BASE_URL = "http://reades.herokuapp.com";
     private static final String BASE_API_URL = BASE_URL + "/api";
 
     private final static AsyncHttpClient CLIENT = new AsyncHttpClient();
@@ -22,7 +22,7 @@ public class RestClient {
     private final static Set<Handler> sPendingHandlers = new HashSet<Handler>();
 
     static {
-        CLIENT.addHeader("Authorization", "Token hi");
+        CLIENT.addHeader("Authorization", "Token b008d05b7bdea19e60ad2db31747910f7ed30ea4");
         CLIENT.addHeader(AsyncHttpClient.HEADER_CONTENT_TYPE, "application/json");
     }
 

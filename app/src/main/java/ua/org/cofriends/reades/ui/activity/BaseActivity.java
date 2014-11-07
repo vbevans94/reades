@@ -78,16 +78,4 @@ public class BaseActivity extends ActionBarActivity {
 
         BusUtils.unregister(this);
     }
-
-    public static class ProgressStartEvent extends BusUtils.Event<Activity> {
-        public ProgressStartEvent(Activity activity) {
-            super(activity);
-        }
-    }
-
-    public static class ProgressEndEvent extends BusUtils.Event<Activity> {
-        public ProgressEndEvent(Activity activity) {
-            super(activity);
-        }
-    }
 }

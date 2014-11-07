@@ -12,48 +12,42 @@ import java.util.List;
 
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
+import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.ui.tools.BaseViewHolder;
 import ua.org.cofriends.reades.ui.tools.CircleTransform;
 import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeAdapter;
 
-public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends SwipeAdapter<T> {
+public class BookAdapter extends SwipeAdapter<Book> {
 
-    private final int mResId;
-    private final int mSize;
+    final int mSize;
 
-    /**
-     * Creates adapter for {@link ua.org.cofriends.reades.ui.adapter.SimpleAdapter.Viewable} items.
-     * @param context to use
-     * @param resId to have {@link android.widget.TextView} or descendant with text_name ID
-     * @param items to create adapter for
-     */
-    public SimpleAdapter(Context context, int resId, List<T> items) {
-        super(context, resId, items);
+    public BookAdapter(Context context, List<Book> items) {
+        super(context, R.layout.item_book, items);
 
-        mResId = resId;
         mSize = (int) context.getResources().getDimension(R.dimen.item_icon_size);
     }
 
     @Override
     public long getItemIdImpl(int position) {
-        return getItem(position).getItemId();
+        return getItem(position).getBookId();
     }
 
     @Override
     public View getViewImpl(int position, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         if (view == null) {
-            view = View.inflate(getContext(), mResId, null);
+            view = View.inflate(getContext(), R.layout.item_book, null);
             holder = new ViewHolder(view);
         } else {
             holder = (ViewHolder) view.getTag();
         }
 
-        Viewable item = getItem(position);
-        holder.textName.setText(item.getItemName());
-        holder.textDetails.setText(item.getItemDetails());
+        Book book = getItem(position);
+
+        holder.textName.setText(book.getName());
+        holder.textDetails.setText(book.getAuthor().getName());
         Picasso.with(getContext())
-                .load(item.getImageUrl())
+                .load(book.getImageUrl())
                 .resize(mSize, mSize)
                 .transform(new CircleTransform())
                 .centerCrop()
@@ -76,16 +70,5 @@ public class SimpleAdapter<T extends SimpleAdapter.Viewable> extends SwipeAdapte
         ViewHolder(View view) {
             super(view);
         }
-    }
-
-    public interface Viewable {
-
-        long getItemId();
-
-        String getItemName();
-
-        String getItemDetails();
-
-        String getImageUrl();
     }
 }

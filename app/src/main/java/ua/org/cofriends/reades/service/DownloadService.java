@@ -41,8 +41,8 @@ public class DownloadService extends Service {
      * @param context to use
      * @param loadable to download
      */
-    public static void start(Context context, Loadable loadable) {
-        Intent intent = new Intent(context, DownloadService.class);
+    public static void start(Context context, Loadable loadable, Class serviceClass) {
+        Intent intent = new Intent(context, serviceClass);
         putLoadable(intent, loadable);
         intent.putExtra(EXTRA_COMMAND, COMMAND_START);
         context.startService(intent);
@@ -52,7 +52,7 @@ public class DownloadService extends Service {
      * Creates intent that forces this service to stop exact load.
      * @param context to use
      */
-    private static PendingIntent stopIntent(Context context, Loadable loadable) {
+    private static PendingIntent stopIntent(Context context, Loadable loadable, Class serviceClass) {
         Intent intent = new Intent(context, DownloadService.class);
         putLoadable(intent, loadable);
         intent.putExtra(EXTRA_COMMAND, COMMAND_STOP);
@@ -148,7 +148,7 @@ public class DownloadService extends Service {
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                     .setContentText(getString(R.string.message_file_loading, 0))
                     .setContentTitle(loadable.getName())
-                    .setContentIntent(stopIntent(this, loadable))
+                    .setContentIntent(stopIntent(this, loadable, getClass()))
                     .setSmallIcon(R.drawable.ic_launcher);
             final NotificationManagerCompat manager = NotificationManagerCompat.from(this);
             startForeground(mPendingToId.get(loadable), builder.build());
@@ -164,7 +164,12 @@ public class DownloadService extends Service {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, File file) {
                     loadable.setLoadedPath(file.getAbsolutePath());
+
+                    onLoaded(loadable);
+
+                    // notify eco-system that we are done
                     BusUtils.post(new Loadable.LoadedEvent(loadable));
+
                     stopWithMessage(getString(R.string.message_download_success, loadable.getName()), loadable);
                 }
 
@@ -200,6 +205,10 @@ public class DownloadService extends Service {
                 }
             });
         }
+    }
+
+    public void onLoaded(Loadable loadable) {
+        // designed for overriding
     }
 
     @Override
