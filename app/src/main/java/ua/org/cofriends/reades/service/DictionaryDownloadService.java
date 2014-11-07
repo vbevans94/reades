@@ -13,7 +13,7 @@ public class DictionaryDownloadService extends DownloadService {
     @Override
     public void onLoaded(Loadable loadable) {
         if (loadable instanceof Dictionary) {
-            SavedDictionariesService.save(this, (Dictionary) loadable);
+            SavedDictionariesService.actUpon(this, (Dictionary) loadable, SavedBooksService.SAVE);
         }
     }
 }

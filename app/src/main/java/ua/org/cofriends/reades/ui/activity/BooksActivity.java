@@ -31,7 +31,8 @@ public class BooksActivity extends ListAddActivity {
 
     @SuppressWarnings("unused")
     public void onEvent(Book.SelectedEvent event) {
-        ReadActivity.start(event.getData(), this);
+        Dictionary dictionary = BundleUtils.fetchFromBundle(Dictionary.class, getIntent().getExtras());
+        ReadActivity.start(event.getData(), dictionary, this);
     }
 
     public Fragment withExtrasAsArgs(Fragment fragment) {

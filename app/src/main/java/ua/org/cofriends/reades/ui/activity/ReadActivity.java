@@ -20,6 +20,7 @@ import butterknife.Optional;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.dict.DictService;
 import ua.org.cofriends.reades.entity.Book;
+import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.entity.Page;
 import ua.org.cofriends.reades.ui.adapter.TextPagerAdapter;
 import ua.org.cofriends.reades.ui.fragment.DefinitionFragment;
@@ -50,9 +51,12 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
 
     private DictService mDictService;
 
-    public static void start(Book book, Context context) {
+    public static void start(Book book, Dictionary dictionary, Context context) {
+        Bundle extras = BundleUtils.writeObject(Book.class, book
+                , BundleUtils.writeObject(Dictionary.class, dictionary));
+
         context.startActivity(new Intent(context, ReadActivity.class)
-                .putExtras(BundleUtils.writeObject(Book.class, book)));
+                .putExtras(extras));
     }
 
     @Override
@@ -62,7 +66,7 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
 
         ButterKnife.inject(this);
 
-        mDictService = DictService.getStartedService(getBook().getDictionary().getDbConfigPath());
+        mDictService = DictService.getStartedService(getDictionary().getDbConfigPath());
 
         setTitle(getBook().getName());
 
@@ -71,6 +75,10 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
 
     private Book getBook() {
         return BundleUtils.fetchFromBundle(Book.class, getIntent().getExtras());
+    }
+
+    private Dictionary getDictionary() {
+        return BundleUtils.fetchFromBundle(Dictionary.class, getIntent().getExtras());
     }
 
     @Override
@@ -127,7 +135,7 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
         super.onDestroy();
 
         // in case it wasn't stopped:)
-        DictService.stopByPath(getBook().getDictionary().getDbConfigPath());
+        DictService.stopByPath(getDictionary().getDbConfigPath());
     }
 
     @Override

@@ -6,9 +6,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
 
+import java.util.List;
+
 import ua.org.cofriends.reades.utils.BundleUtils;
 
-public class Language extends SugarRecord<Language> implements BundleUtils.Persistable {
+public class Language extends SugarRecord<Language> {
 
     @Expose
     @SerializedName("id")
@@ -22,9 +24,6 @@ public class Language extends SugarRecord<Language> implements BundleUtils.Persi
 
     @Expose
     private final String imageUrl;
-
-    @Expose
-    private long persistedId;
 
     private Language(int languageId, String code, String name, String imageUrl) {
         this.languageId = languageId;
@@ -41,20 +40,6 @@ public class Language extends SugarRecord<Language> implements BundleUtils.Persi
         this(0, null, null, null);
     }
 
-    @Override
-    public Bundle persistIn(Bundle bundle) {
-        getId(); // trigger setting id of me
-        return BundleUtils.writeNoStrategies(Language.class, this, bundle);
-    }
-
-    @Override
-    public Long getId() {
-        if (persistedId == 0l && super.getId() != null) {
-            persistedId = super.getId();
-        }
-        return persistedId;
-    }
-
     public int getLanguageId() {
         return languageId;
     }
@@ -69,6 +54,15 @@ public class Language extends SugarRecord<Language> implements BundleUtils.Persi
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public Language meFromDb() {
+        List<Language> languages = Language.find(Language.class, "LANGUAGE_ID = ?", "" + getLanguageId());
+        if (languages.isEmpty()) {
+            save();
+            return this;
+        }
+        return languages.get(0);
     }
 
     @Override

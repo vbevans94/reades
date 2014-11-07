@@ -14,8 +14,7 @@ import ua.org.cofriends.reades.ui.adapter.BookAdapter;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 
-public class Book extends SugarRecord<Book> implements DownloadService.Loadable
-        , BundleUtils.Persistable {
+public class Book extends SugarRecord<Book> implements DownloadService.Loadable {
 
     @Expose
     @SerializedName("id")
@@ -34,15 +33,7 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
     private Author author;
 
     @Expose
-    private Dictionary dictionary;
-
-    /**
-     * To store value from {@link #getId()} which is not serialized/deserialized.
-     * See {@link #getId()}
-     */
-    @Expose
-    @Ignore
-    private long persistedId;
+    private Language language;
 
     private Book(int bookId, String name, String imageUrl) {
         this.bookId = bookId;
@@ -55,36 +46,16 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
         this(0, null, null);
     }
 
-    @Override
-    public Bundle persistIn(Bundle bundle) {
-        getId(); // trigger setting this.persistedId
-        if (dictionary != null) {
-            dictionary.getId(); // triggers setting persistedId of dictionary
-        }
-        return BundleUtils.writeNoStrategies(Book.class, this, bundle);
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
 
-    /**
-     * @return persisted id or {@code super.getId()} if not set
-     */
-    @Override
-    public Long getId() {
-        if (persistedId == 0l && super.getId() != null) {
-            persistedId = super.getId();
-        }
-        return persistedId;
+    public Language getLanguage() {
+        return language;
     }
 
-    public Dictionary getDictionary() {
-        return dictionary;
-    }
-
-    public void setDictionary(Dictionary dictionary) {
-        this.dictionary = dictionary;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     public int getBookId() {
@@ -109,8 +80,8 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
     }
 
     @Override
-    public void setLoadedPath(String url) {
-        fileUrl = url;
+    public void setLoadedPath(String path) {
+        fileUrl = path;
     }
 
     public Author getAuthor() {
@@ -119,6 +90,15 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable
 
     public void setAuthor(Author author) {
         this.author = author;
+    }
+
+    public Book meFromDb() {
+        List<Book> books = Book.find(Book.class, "BOOK_ID = ?", Integer.toString(getBookId()));
+        if (books.isEmpty()) {
+            save();
+            return this;
+        }
+        return books.get(0);
     }
 
     @Override

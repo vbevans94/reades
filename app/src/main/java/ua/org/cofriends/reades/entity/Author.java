@@ -35,6 +35,15 @@ public class Author extends SugarRecord<Author>{
         return name;
     }
 
+    public Author meFromDb() {
+        List<Author> authors = Author.find(Author.class, "AUTHOR_ID = ?", Integer.toString(getAuthorId()));
+        if (authors.isEmpty()) {
+            save();
+            return this;
+        }
+        return authors.get(0);
+    }
+
     @Override
     public String toString() {
         return "Author{" +
@@ -58,33 +67,5 @@ public class Author extends SugarRecord<Author>{
     @Override
     public int hashCode() {
         return authorId;
-    }
-
-    public static class Event extends BusUtils.Event<Author> {
-
-        public Event(Author object) {
-            super(object);
-        }
-    }
-
-    public static class SelectedEvent extends Event {
-
-        public SelectedEvent(Author object) {
-            super(object);
-        }
-    }
-
-    public static class LoadedEvent extends Event {
-
-        public LoadedEvent(Author object) {
-            super(object);
-        }
-    }
-
-    public static class ListLoadedEvent extends BusUtils.Event<List<Author>> {
-
-        public ListLoadedEvent(List<Author> dictionaries) {
-            super(dictionaries);
-        }
     }
 }

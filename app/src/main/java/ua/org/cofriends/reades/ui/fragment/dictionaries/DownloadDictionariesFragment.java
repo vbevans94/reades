@@ -60,8 +60,6 @@ public class DownloadDictionariesFragment extends BaseListDialogFragment impleme
      */
     @SuppressWarnings("unused")
     public void onEventMainThread(Dictionary.ListLoadedEvent event) {
-        // stop displaying progress
-        BusUtils.post(new BaseActivity.ProgressEndEvent(getActivity()));
         mDictionaries.removeAll(event.getData());
         listView().setAdapter(new DictionaryAdapter(getActivity()
                 , mDictionaries, R.string.title_download));

@@ -16,11 +16,10 @@ import ua.org.cofriends.reades.utils.ZipUtils;
 public class SavedDictionariesService extends IntentService {
 
     private static final int LOAD_LIST = 0;
-    private static final int SAVE = 1;
-    private static final int DELETE = 2;
+    public static final int SAVE = 1;
+    public static final int DELETE = 2;
     private static final int SAVE_WORD = 3;
     private static final String EXTRA_TYPE = "extra_type";
-    private static final String EXTRA_DICTIONARY_ID = "extra_dictionary_id";
 
     public SavedDictionariesService() {
         super(SavedDictionariesService.class.getSimpleName());
@@ -31,16 +30,16 @@ public class SavedDictionariesService extends IntentService {
                 .putExtra(EXTRA_TYPE, LOAD_LIST));
     }
 
-    public static void save(Context context, Dictionary dictionary) {
+    /**
+     * Does action upon given dictionary.
+     * @param context to use
+     * @param dictionary to act upon
+     * @param action to do. One of {@link #DELETE} or {@link #SAVE}
+     */
+    public static void actUpon(Context context, Dictionary dictionary, int action) {
         context.startService(new Intent(context, SavedDictionariesService.class)
-                .putExtra(EXTRA_TYPE, SAVE)
+                .putExtra(EXTRA_TYPE, action)
                 .putExtras(BundleUtils.writeObject(Dictionary.class, dictionary)));
-    }
-
-    public static void delete(Context context, Dictionary dictionary) {
-        context.startService(new Intent(context, SavedDictionariesService.class)
-                .putExtra(EXTRA_TYPE, DELETE)
-                .putExtra(EXTRA_DICTIONARY_ID, dictionary.getId()));
     }
 
     @Override
@@ -51,26 +50,9 @@ public class SavedDictionariesService extends IntentService {
             case SAVE: {
                 Dictionary dictionary = BundleUtils.fetchFromBundle(Dictionary.class, intent.getExtras());
 
-                // save or link with saved language in the database
-                Language fromLanguage = dictionary.getFromLanguage();
-                if (fromLanguage != null) {
-                    List<Language> saved = Language.find(Language.class, "LANGUAGE_ID = ?", Integer.toString(fromLanguage.getLanguageId()));
-                    if (saved.isEmpty()) {
-                        fromLanguage.save();
-                    } else {
-                        dictionary.setFromLanguage(saved.get(0));
-                    }
-                }
-
-                Language toLanguage = dictionary.getToLanguage();
-                if (toLanguage != null) {
-                    List<Language> saved = Language.find(Language.class, "LANGUAGE_ID = ?", Integer.toString(toLanguage.getLanguageId()));
-                    if (saved.isEmpty()) {
-                        toLanguage.save();
-                    } else {
-                        dictionary.setToLanguage(saved.get(0));
-                    }
-                }
+                // save or link with saved languages in the database
+                dictionary.setFromLanguage(dictionary.getFromLanguage().meFromDb());
+                dictionary.setToLanguage(dictionary.getToLanguage().meFromDb());
 
                 // extract zip to private data or SD card if there is no room
                 String newPath = getApplicationContext().getFilesDir().getAbsolutePath() + "/";
@@ -83,19 +65,15 @@ public class SavedDictionariesService extends IntentService {
             }
 
             case DELETE: {
-                long dictionaryId = intent.getLongExtra(EXTRA_DICTIONARY_ID, 0l);
-                if (dictionaryId != 0l) {
-                    Dictionary dictionary = Dictionary.findById(Dictionary.class, dictionaryId);
-                    // delete all books with this dictionary
-                    List<Book> books = Book.find(Book.class, "dictionary = ?", Long.toString(dictionaryId));
-                    for (Book book : books) {
-                        book.delete();
-                    }
-                    // delete dictionary itself
-                    dictionary.delete();
-                    loadAll();
+                Dictionary dictionary = BundleUtils.fetchFromBundle(Dictionary.class, intent.getExtras()).meFromDb();
+                // delete all books with this dictionary's 'from language'
+                List<Book> books = Book.find(Book.class, "language = ?", Long.toString(dictionary.getFromLanguage().getId()));
+                for (Book book : books) {
+                    SavedBooksService.deleteBook(book);
                 }
-
+                // delete dictionary itself
+                dictionary.delete();
+                loadAll();
 
                 break;
             }

@@ -16,13 +16,10 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.BookDownloadService;
-import ua.org.cofriends.reades.service.DownloadService;
 import ua.org.cofriends.reades.service.SavedBooksService;
-import ua.org.cofriends.reades.ui.activity.BaseActivity;
 import ua.org.cofriends.reades.ui.adapter.BookAdapter;
 import ua.org.cofriends.reades.ui.fragment.BaseListDialogFragment;
 import ua.org.cofriends.reades.utils.BundleUtils;
-import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.RestClient;
 
 public class DownloadBooksFragment extends BaseListDialogFragment implements RestClient.Handler<Book[]> {
@@ -40,8 +37,8 @@ public class DownloadBooksFragment extends BaseListDialogFragment implements Res
     @Override
     public void refreshList() {
         // load books from server
-        RestClient.get(String.format("/dictionaries/%d/books/"
-                , mDictionaryCache.getDictionary().getDictionaryId())
+        RestClient.get(String.format("/languages/%d/books/"
+                , mDictionaryCache.getDictionary().getFromLanguage().getLanguageId())
                 , RestClient.GsonHandler.create(Book[].class, this, this));
     }
 
@@ -49,7 +46,7 @@ public class DownloadBooksFragment extends BaseListDialogFragment implements Res
     public void onSuccess(int statusCode, Header[] headers, Book[] response) {
         mBooks.clear();
         mBooks.addAll(Arrays.asList(response));
-        SavedBooksService.loadListByDictionary(getActivity(), mDictionaryCache.getDictionary());
+        SavedBooksService.loadListByLanguage(getActivity(), mDictionaryCache.getDictionary().getFromLanguage());
     }
 
     @OnItemClick(R.id.list)

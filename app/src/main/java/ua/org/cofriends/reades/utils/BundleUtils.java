@@ -192,26 +192,9 @@ public class BundleUtils {
             bundle = new Bundle();
         }
         if (t != null) {
-            if (t instanceof Persistable) {
-                ((Persistable) t).persistIn(bundle);
-            } else {
-                writeNoStrategies(clazz, t, bundle);
-            }
+            bundle.putString(clazz.getSimpleName(), GsonUtils.toJson(t));
         }
 
-        return bundle;
-    }
-
-    /**
-     * Writes an object to the bundle ignoring all strategies, just serialization.
-     * @param clazz of object
-     * @param t object itself
-     * @param bundle to persist into. If null passed NPE will happen
-     * @param <T> type of t
-     * @return bundle with the object
-     */
-    public static <T> Bundle writeNoStrategies(Class<T> clazz, T t, Bundle bundle) {
-        bundle.putString(clazz.getSimpleName(), GsonUtils.toJson(t));
         return bundle;
     }
 
@@ -253,14 +236,5 @@ public class BundleUtils {
         if (bundle != null) {
             bundle.remove(clazz.getSimpleName());
         }
-    }
-
-    /**
-     * Defines persisting strategy that will be used in {@link #writeObject(Class, Object)} on an object
-     * that implements it.
-     */
-    public interface Persistable {
-
-        Bundle persistIn(Bundle bundle);
     }
 }

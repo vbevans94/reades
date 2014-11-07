@@ -3,7 +3,6 @@ package ua.org.cofriends.reades.service;
 import android.content.Context;
 
 import ua.org.cofriends.reades.entity.Book;
-import ua.org.cofriends.reades.entity.Dictionary;
 
 public class BookDownloadService extends DownloadService {
 
@@ -14,8 +13,7 @@ public class BookDownloadService extends DownloadService {
     @Override
     public void onLoaded(Loadable loadable) {
         if (loadable instanceof Book) {
-            Book book = (Book) loadable;
-            SavedBooksService.saveWithDictionary(this, book, book.getDictionary());
+            SavedBooksService.actUpon(this, (Book) loadable, SavedBooksService.SAVE);
         }
     }
 }

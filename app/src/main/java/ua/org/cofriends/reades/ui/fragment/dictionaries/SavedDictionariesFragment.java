@@ -67,7 +67,7 @@ public class SavedDictionariesFragment extends AddListFragment implements UndoBa
     public void onHide(Parcelable token) {
         Bundle bundle = (Bundle) token;
         Dictionary dictionary = BundleUtils.fetchFromBundle(Dictionary.class, bundle);
-        SavedDictionariesService.delete(getActivity(), dictionary);
+        SavedDictionariesService.actUpon(getActivity(), dictionary, SavedDictionariesService.DELETE);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class SavedBooksFragment extends AddListFragment implements UndoBarContro
 
     @Override
     public void refreshList() {
-        SavedBooksService.loadListByDictionary(getActivity(), mDictionaryCache.getDictionary());
+        SavedBooksService.loadListByLanguage(getActivity(), mDictionaryCache.getDictionary().getFromLanguage());
     }
 
     @OnItemClick(R.id.list)
@@ -67,7 +67,7 @@ public class SavedBooksFragment extends AddListFragment implements UndoBarContro
     public void onHide(Parcelable token) {
         Bundle bundle = (Bundle) token;
         Book book = BundleUtils.fetchFromBundle(Book.class, bundle);
-        SavedBooksService.delete(getActivity(), book);
+        SavedBooksService.actUpon(getActivity(), book, SavedBooksService.DELETE);
     }
 
     @Override

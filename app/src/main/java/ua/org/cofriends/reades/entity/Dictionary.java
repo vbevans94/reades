@@ -14,8 +14,7 @@ import ua.org.cofriends.reades.ui.adapter.BookAdapter;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 
-public class Dictionary extends SugarRecord<Dictionary> implements DownloadService.Loadable
-        , BundleUtils.Persistable {
+public class Dictionary extends SugarRecord<Dictionary> implements DownloadService.Loadable {
 
     @Expose
     @SerializedName("id")
@@ -30,45 +29,13 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
     @Expose
     private String dbUrl;
 
-    /**
-     * To store value from {@link #getId()} which is not serialized/deserialized.
-     * See {@link #getId()}
-     */
-    @Expose
-    @Ignore
-    private long persistedId;
-
-    private Dictionary(int dictionaryId, String dbUrl) {
+    private Dictionary(int dictionaryId) {
         this.dictionaryId = dictionaryId;
-        this.dbUrl = dbUrl;
     }
 
     @SuppressWarnings("unused")
     public Dictionary() {
-        this(0, null);
-    }
-
-    @Override
-    public Bundle persistIn(Bundle bundle) {
-        persistedId = getId();
-        if (fromLanguage != null) {
-            fromLanguage.getId();
-        }
-        if (toLanguage != null) {
-            toLanguage.getId();
-        }
-        return BundleUtils.writeNoStrategies(Dictionary.class, this, bundle);
-    }
-
-    /**
-     * @return persisted id or {@code super.getId()} if not set
-     */
-    @Override
-    public Long getId() {
-        if (persistedId == 0l && super.getId() != null) {
-            persistedId = super.getId();
-        }
-        return persistedId;
+        this(0);
     }
 
     /**
@@ -96,9 +63,9 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
     }
 
     @Override
-    public void setLoadedPath(String url) {
+    public void setLoadedPath(String path) {
         // we will write into the database the local path
-        dbUrl = url;
+        dbUrl = path;
     }
 
     public Language getFromLanguage() {
@@ -117,6 +84,15 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
         this.toLanguage = toLanguage;
     }
 
+    public Dictionary meFromDb() {
+        List<Dictionary> dictionaries = Dictionary.find(Dictionary.class, "DICTIONARY_ID = ?", Integer.toString(getDictionaryId()));
+        if (dictionaries.isEmpty()) {
+            save();
+            return this;
+        }
+        return dictionaries.get(0);
+    }
+
     @Override
     public String toString() {
         return "Dictionary{" +
@@ -124,7 +100,6 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
                 ", fromLanguage=" + fromLanguage +
                 ", toLanguage=" + toLanguage +
                 ", dbUrl='" + dbUrl + '\'' +
-                ", persistedId=" + persistedId +
                 '}';
     }
 

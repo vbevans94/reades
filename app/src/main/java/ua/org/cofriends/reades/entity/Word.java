@@ -20,6 +20,7 @@ public class Word extends SugarRecord<Word> {
         this.definition = definition;
     }
 
+    @SuppressWarnings("unused")
     public Word() {
         this(null, null);
     }

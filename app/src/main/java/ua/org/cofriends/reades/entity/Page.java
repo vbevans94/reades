@@ -16,6 +16,7 @@ public class Page extends SugarRecord<Page> {
         this.book = book;
     }
 
+    @SuppressWarnings("unused")
     public Page() {
         this(null, 0, null);
     }
