@@ -164,11 +164,13 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
             // fetch from database
             List<Page> pages = Page.find(Page.class, "book = ?", Long.toString(book.getId()));
             List<CharSequence> contents;
+            int pageNumber = 0;
             if (!pages.isEmpty()) {
                 // extract content from pages
                 contents = new ArrayList<CharSequence>();
                 for (Page page : pages) {
                     contents.add(page.getContent());
+                    publishProgress(pageNumber++, pages.size());
                 }
             } else {
                 // read book text
@@ -178,7 +180,6 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
                 splitter.append(text, params.mTextPaint);
                 contents = splitter.getPages();
                 // save to database for next fetches
-                int pageNumber = 0;
                 for (CharSequence content : contents) {
                     Page page = new Page(content.toString(), pageNumber, book);
                     page.save();

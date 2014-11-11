@@ -7,7 +7,6 @@ Read and study language app exclusively for Android
 ```
 
     // TODO:
-        - make prefix search work
-        - debug tapping on the word
-        - add pressed state to plus icon
+        - different languages symbols
+        - events like refresh from books screen don't trigger refreshes in dictionaries screen
 ```

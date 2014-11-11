@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Random;
+
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.utils.BundleUtils;
@@ -98,7 +100,7 @@ public class PageFragment extends BaseFragment {
                 ds.setColor(Color.BLACK);
             }
         };
-        spannable.setSpan(clickableSpan, spannable.length() - word.length(), spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(clickableSpan, spannable.length() - word.length() - 1, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     public static class WordRequestEvent extends BusUtils.Event<CharSequence> {

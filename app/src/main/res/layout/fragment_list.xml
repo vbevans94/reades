@@ -44,7 +44,7 @@
             android:layout_gravity="bottom|right"
             android:layout_margin="@dimen/root_margin"
             android:contentDescription="@string/description_add"
-            android:src="@drawable/ic_add"
+            android:src="@drawable/btn_add"
             android:visibility="gone"
             tools:visibility="visible" />
     </ua.org.cofriends.reades.ui.tools.swipetoremove.BackgroundContainer>
