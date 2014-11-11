@@ -1,4 +1,4 @@
-package ua.org.cofriends.reades.service;
+package ua.org.cofriends.reades.service.book;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -6,9 +6,7 @@ import android.content.Intent;
 
 import java.util.List;
 
-import ua.org.cofriends.reades.entity.Author;
 import ua.org.cofriends.reades.entity.Book;
-import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.entity.Language;
 import ua.org.cofriends.reades.entity.Page;
 import ua.org.cofriends.reades.utils.BundleUtils;
@@ -17,8 +15,7 @@ import ua.org.cofriends.reades.utils.BusUtils;
 public class SavedBooksService extends IntentService {
 
     private static final int LOAD_LIST = 0;
-    public static final int SAVE = 1;
-    public static final int DELETE = 2;
+    private static final int DELETE = 1;
     private static final String EXTRA_TYPE = "extra_type";
 
     public SavedBooksService() {
@@ -40,12 +37,11 @@ public class SavedBooksService extends IntentService {
      * Does action upon book in the database.
      * @param context to use
      * @param book to save
-     * @param action to do. One of {@link #DELETE} or {@link #SAVE}.
      */
-    public static void actUpon(Context context, Book book, int action) {
+    public static void delete(Context context, Book book) {
         context.startService(new Intent(context, SavedBooksService.class)
                 .putExtras(BundleUtils.writeObject(Book.class, book))
-                .putExtra(EXTRA_TYPE, action));
+                .putExtra(EXTRA_TYPE, DELETE));
     }
 
 
@@ -54,21 +50,6 @@ public class SavedBooksService extends IntentService {
         int type = intent.getIntExtra(EXTRA_TYPE, LOAD_LIST);
 
         switch (type) {
-            case SAVE: {
-                // fetch book and dictionary ID from params bundle
-                Book book = BundleUtils.fetchFromBundle(Book.class, intent.getExtras());
-
-                // link book with existing in the database language
-                book.setLanguage(book.getLanguage().meFromDb());
-
-                // save book author if it's not yet or just link with existing in the database
-                book.setAuthor(book.getAuthor().meFromDb());
-
-                book.save();
-                loadBooks(intent);
-                break;
-            }
-
             case DELETE: {
                 // fetch book and dictionary ID from params bundle
                 Book book = BundleUtils.fetchFromBundle(Book.class, intent.getExtras()).meFromDb();
@@ -101,6 +82,20 @@ public class SavedBooksService extends IntentService {
 
         // delete book itself
         book.delete();
+    }
+
+    /**
+     * Saves book to the database.
+     * @param book to save
+     */
+    public static void saveBook(Book book) {
+        // link book with existing in the database language
+        book.setLanguage(book.getLanguage().meFromDb());
+
+        // save book author if it's not yet or just link with existing in the database
+        book.setAuthor(book.getAuthor().meFromDb());
+
+        book.save();
     }
 
     private void loadBooks(Intent intent) {

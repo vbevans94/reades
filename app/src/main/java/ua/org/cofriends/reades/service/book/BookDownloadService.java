@@ -1,8 +1,9 @@
-package ua.org.cofriends.reades.service;
+package ua.org.cofriends.reades.service.book;
 
 import android.content.Context;
 
 import ua.org.cofriends.reades.entity.Book;
+import ua.org.cofriends.reades.service.DownloadService;
 
 public class BookDownloadService extends DownloadService {
 
@@ -13,7 +14,7 @@ public class BookDownloadService extends DownloadService {
     @Override
     public void onLoaded(Loadable loadable) {
         if (loadable instanceof Book) {
-            SavedBooksService.actUpon(this, (Book) loadable, SavedBooksService.SAVE);
+            SavedBooksService.saveBook((Book) loadable);
         }
     }
 }

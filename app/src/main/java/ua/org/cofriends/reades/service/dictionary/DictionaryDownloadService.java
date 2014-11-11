@@ -1,8 +1,10 @@
-package ua.org.cofriends.reades.service;
+package ua.org.cofriends.reades.service.dictionary;
 
 import android.content.Context;
 
 import ua.org.cofriends.reades.entity.Dictionary;
+import ua.org.cofriends.reades.service.DownloadService;
+import ua.org.cofriends.reades.service.book.SavedBooksService;
 
 public class DictionaryDownloadService extends DownloadService {
 
@@ -13,7 +15,7 @@ public class DictionaryDownloadService extends DownloadService {
     @Override
     public void onLoaded(Loadable loadable) {
         if (loadable instanceof Dictionary) {
-            SavedDictionariesService.actUpon(this, (Dictionary) loadable, SavedBooksService.SAVE);
+            SavedDictionariesService.actUpon(this, (Dictionary) loadable, SavedDictionariesService.SAVE);
         }
     }
 }

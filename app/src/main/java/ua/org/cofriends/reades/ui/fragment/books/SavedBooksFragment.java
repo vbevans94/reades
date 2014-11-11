@@ -10,7 +10,7 @@ import com.cocosw.undobar.UndoBarController;
 import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
-import ua.org.cofriends.reades.service.SavedBooksService;
+import ua.org.cofriends.reades.service.book.SavedBooksService;
 import ua.org.cofriends.reades.ui.adapter.BookAdapter;
 import ua.org.cofriends.reades.ui.fragment.AddListFragment;
 import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeAdapter;
@@ -67,7 +67,7 @@ public class SavedBooksFragment extends AddListFragment implements UndoBarContro
     public void onHide(Parcelable token) {
         Bundle bundle = (Bundle) token;
         Book book = BundleUtils.fetchFromBundle(Book.class, bundle);
-        SavedBooksService.actUpon(getActivity(), book, SavedBooksService.DELETE);
+        SavedBooksService.delete(getActivity(), book);
     }
 
     @Override

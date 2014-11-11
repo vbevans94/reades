@@ -17,6 +17,7 @@ import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.ui.tools.BaseViewHolder;
 import ua.org.cofriends.reades.ui.tools.SemiCircleTarget;
 import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeAdapter;
+import ua.org.cofriends.reades.utils.PicassoUtil;
 
 public class DictionaryAdapter extends SwipeAdapter<Dictionary> {
 
@@ -49,12 +50,13 @@ public class DictionaryAdapter extends SwipeAdapter<Dictionary> {
 
         holder.textDetails.setText(mDetailsRes);
         holder.textName.setText(dictionary.getName());
-        Picasso.with(getContext())
+        PicassoUtil.getInstance(getContext())
                 .load(dictionary.getFromLanguage().getImageUrl())
                 .resize(mSize, mSize)
                 .centerCrop()
                 .into(holder.targetFrom);
-        Picasso.with(getContext())
+
+        PicassoUtil.getInstance(getContext())
                 .load(dictionary.getToLanguage().getImageUrl())
                 .resize(mSize, mSize)
                 .centerCrop()

@@ -10,7 +10,7 @@ import butterknife.ButterKnife;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.utils.BusUtils;
 
-public abstract class ListAddActivity extends BaseActivity {
+public abstract class  ListAddActivity extends BaseActivity {
 
     public static final String DOWNLOAD_FRAGMENT_TAG = "download_fragment";
 

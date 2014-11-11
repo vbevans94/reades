@@ -1,4 +1,4 @@
-package ua.org.cofriends.reades.service;
+package ua.org.cofriends.reades.service.dictionary;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -8,7 +8,7 @@ import java.util.List;
 
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
-import ua.org.cofriends.reades.entity.Language;
+import ua.org.cofriends.reades.service.book.SavedBooksService;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.ZipUtils;

@@ -32,10 +32,10 @@
             android:name=".ui.activity.DictionariesActivity"
             android:label="@string/title_dictionaries" />
 
-        <service android:name=".service.BookDownloadService" />
-        <service android:name=".service.DictionaryDownloadService" />
-        <service android:name=".service.SavedDictionariesService" />
-        <service android:name=".service.SavedBooksService" />
+        <service android:name=".service.book.BookDownloadService" />
+        <service android:name=".service.dictionary.DictionaryDownloadService" />
+        <service android:name=".service.dictionary.SavedDictionariesService" />
+        <service android:name=".service.book.SavedBooksService" />
         <service android:name=".service.SavedWordsService" />
 
         <meta-data

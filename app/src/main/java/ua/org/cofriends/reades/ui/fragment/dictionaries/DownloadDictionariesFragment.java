@@ -13,12 +13,10 @@ import java.util.List;
 import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Dictionary;
-import ua.org.cofriends.reades.service.DictionaryDownloadService;
-import ua.org.cofriends.reades.service.SavedDictionariesService;
-import ua.org.cofriends.reades.ui.activity.BaseActivity;
+import ua.org.cofriends.reades.service.dictionary.DictionaryDownloadService;
+import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.adapter.DictionaryAdapter;
 import ua.org.cofriends.reades.ui.fragment.BaseListDialogFragment;
-import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.RestClient;
 
 public class DownloadDictionariesFragment extends BaseListDialogFragment implements RestClient.Handler<Dictionary[]> {

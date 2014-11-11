@@ -16,6 +16,7 @@ import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.ui.tools.BaseViewHolder;
 import ua.org.cofriends.reades.ui.tools.CircleTransform;
 import ua.org.cofriends.reades.ui.tools.swipetoremove.SwipeAdapter;
+import ua.org.cofriends.reades.utils.PicassoUtil;
 
 public class BookAdapter extends SwipeAdapter<Book> {
 
@@ -46,7 +47,7 @@ public class BookAdapter extends SwipeAdapter<Book> {
 
         holder.textName.setText(book.getName());
         holder.textDetails.setText(book.getAuthor().getName());
-        Picasso.with(getContext())
+        PicassoUtil.getInstance(getContext())
                 .load(book.getImageUrl())
                 .resize(mSize, mSize)
                 .transform(new CircleTransform())

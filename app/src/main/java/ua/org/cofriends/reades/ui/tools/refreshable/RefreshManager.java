@@ -10,6 +10,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.activity.DictionariesActivity;
+import ua.org.cofriends.reades.ui.activity.ListAddActivity;
 import ua.org.cofriends.reades.utils.BusUtils;
 
 public class RefreshManager {
@@ -46,7 +47,7 @@ public class RefreshManager {
     class EventTransmitter {
 
         @SuppressWarnings("unused")
-        public void onEvent(DictionariesActivity.RefreshEvent event) {
+        public void onEvent(ListAddActivity.RefreshEvent event) {
             mRefreshable.refreshList();
         }
     }
