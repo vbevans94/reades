@@ -46,7 +46,7 @@ public class DownloadBooksFragment extends BaseListDialogFragment implements Res
     public void onSuccess(int statusCode, Header[] headers, Book[] response) {
         mBooks.clear();
         mBooks.addAll(Arrays.asList(response));
-        SavedBooksService.loadListByLanguage(getActivity(), mDictionaryCache.getDictionary().getFromLanguage());
+        reloadFromDatabase();
     }
 
     @OnItemClick(R.id.list)
@@ -55,6 +55,19 @@ public class DownloadBooksFragment extends BaseListDialogFragment implements Res
         // download book
         Book book = (Book) listView().getItemAtPosition(position);
         BookDownloadService.start(getActivity(), book);
+    }
+
+    /**
+     * Saved or deleted. Need to refresh list.
+     * @param event to respond on
+     */
+    @SuppressWarnings("unused")
+    public void onEventMainThread(Book.DoneEvent event) {
+        reloadFromDatabase();
+    }
+
+    private void reloadFromDatabase() {
+        SavedBooksService.loadListByLanguage(getActivity(), mDictionaryCache.getDictionary().getFromLanguage());
     }
 
     /**

@@ -48,6 +48,11 @@ public class SavedDictionariesFragment extends AddListFragment implements UndoBa
     }
 
     @SuppressWarnings("unused")
+    public void onEventMainThread(Dictionary.DoneEvent event) {
+        refreshList();
+    }
+
+    @SuppressWarnings("unused")
     public void onEvent(SwipeToRemoveTouchListener.RemoveEvent event) {
         new UndoBarController.UndoBar(getActivity())
                 .style(UndoBarController.UNDOSTYLE)
@@ -68,6 +73,8 @@ public class SavedDictionariesFragment extends AddListFragment implements UndoBa
         Dictionary dictionary = BundleUtils.fetchFromBundle(Dictionary.class, bundle);
         SavedDictionariesService.actUpon(getActivity(), dictionary, SavedDictionariesService.DELETE);
     }
+
+
 
     @Override
     public void onClear() {

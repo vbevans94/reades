@@ -138,6 +138,13 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
         }
     }
 
+    public static class DoneEvent extends Event {
+
+        public DoneEvent(Dictionary object) {
+            super(object);
+        }
+    }
+
     public static class ListLoadedEvent extends BusUtils.Event<List<Dictionary>> {
 
         public ListLoadedEvent(List<Dictionary> dictionaries) {

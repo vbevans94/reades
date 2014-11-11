@@ -11,15 +11,20 @@ import ua.org.cofriends.reades.entity.Language;
 import ua.org.cofriends.reades.entity.Page;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
+import ua.org.cofriends.reades.utils.Logger;
 
 public class SavedBooksService extends IntentService {
 
     private static final int LOAD_LIST = 0;
-    private static final int DELETE = 1;
+    public static final int DELETE = 1;
+    public static final int SAVE = 2;
     private static final String EXTRA_TYPE = "extra_type";
+    private static final String TAG = Logger.makeLogTag(SavedBooksService.class);
 
     public SavedBooksService() {
         super(SavedBooksService.class.getSimpleName());
+
+        setIntentRedelivery(true);
     }
 
     /**
@@ -37,27 +42,38 @@ public class SavedBooksService extends IntentService {
      * Does action upon book in the database.
      * @param context to use
      * @param book to save
+     * @param action to do upon the book
      */
-    public static void delete(Context context, Book book) {
+    public static void actUpon(Context context, Book book, int action) {
         context.startService(new Intent(context, SavedBooksService.class)
                 .putExtras(BundleUtils.writeObject(Book.class, book))
-                .putExtra(EXTRA_TYPE, DELETE));
+                .putExtra(EXTRA_TYPE, action));
     }
-
 
     @Override
     protected void onHandleIntent(Intent intent) {
         int type = intent.getIntExtra(EXTRA_TYPE, LOAD_LIST);
 
         switch (type) {
+            case SAVE: {
+                Book book = BundleUtils.fetchFromBundle(Book.class, intent.getExtras());
+
+                saveBook(book);
+
+                BusUtils.post(new Book.DoneEvent(book));
+
+                break;
+            }
+
             case DELETE: {
                 // fetch book and dictionary ID from params bundle
                 Book book = BundleUtils.fetchFromBundle(Book.class, intent.getExtras()).meFromDb();
 
                 deleteBook(book);
 
-                // load up to date book list
-                loadBooks(intent);
+                // tell the world we are done
+                BusUtils.post(new Book.DoneEvent(book));
+
                 break;
             }
 
@@ -88,8 +104,11 @@ public class SavedBooksService extends IntentService {
      * Saves book to the database.
      * @param book to save
      */
-    public static void saveBook(Book book) {
+    private static void saveBook(Book book) {
         // link book with existing in the database language
+
+        Logger.d(TAG, book.toString());
+
         book.setLanguage(book.getLanguage().meFromDb());
 
         // save book author if it's not yet or just link with existing in the database

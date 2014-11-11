@@ -112,7 +112,7 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(PageSplitter.ProgressEvent event) {
+    public void onEventMainThread(ProgressEvent event) {
         int progress = event.getData();
         mProgress.setProgress(progress);
     }
@@ -160,8 +160,9 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
         @Override
         protected List<CharSequence> doInBackground(Params... paramsArray) {
             Params params = paramsArray[0];
+            Book book = params.mBook.meFromDb();
             // fetch from database
-            List<Page> pages = Page.find(Page.class, "book = ?", Long.toString(params.mBook.getId()));
+            List<Page> pages = Page.find(Page.class, "book = ?", Long.toString(book.getId()));
             List<CharSequence> contents;
             if (!pages.isEmpty()) {
                 // extract content from pages
@@ -176,15 +177,20 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
                 PageSplitter splitter = new PageSplitter(params.mWidth, params.mHeight, 1, 0);
                 splitter.append(text, params.mTextPaint);
                 contents = splitter.getPages();
-                Book savedBook = Book.findById(Book.class, params.mBook.getId());
                 // save to database for next fetches
                 int pageNumber = 0;
                 for (CharSequence content : contents) {
-                    Page page = new Page(content.toString(), pageNumber, savedBook);
+                    Page page = new Page(content.toString(), pageNumber, book);
                     page.save();
+                    publishProgress(pageNumber++, contents.size());
                 }
             }
             return contents;
+        }
+
+        private void publishProgress(int i, int total) {
+            int progress = (int) ((1.0f * i / total) * 100);
+            BusUtils.post(new ProgressEvent(progress));
         }
 
         @Override
@@ -212,6 +218,13 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
             DoneEvent(List<CharSequence> object) {
                 super(object);
             }
+        }
+    }
+
+    public static class ProgressEvent extends BusUtils.Event<Integer> {
+
+        public ProgressEvent(Integer object) {
+            super(object);
         }
     }
 }

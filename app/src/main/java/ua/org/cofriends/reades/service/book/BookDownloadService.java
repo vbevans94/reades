@@ -14,7 +14,7 @@ public class BookDownloadService extends DownloadService {
     @Override
     public void onLoaded(Loadable loadable) {
         if (loadable instanceof Book) {
-            SavedBooksService.saveBook((Book) loadable);
+            SavedBooksService.actUpon(this, (Book) loadable, SavedBooksService.SAVE);
         }
     }
 }

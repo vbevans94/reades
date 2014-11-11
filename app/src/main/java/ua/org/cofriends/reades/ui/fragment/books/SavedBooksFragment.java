@@ -47,6 +47,15 @@ public class SavedBooksFragment extends AddListFragment implements UndoBarContro
                 , new BookAdapter(getActivity(), event.getData()));
     }
 
+    /**
+     * Saved or deleted. Need to refresh list.
+     * @param event to respond on
+     */
+    @SuppressWarnings("unused")
+    public void onEventMainThread(Book.DoneEvent event) {
+        refreshList();
+    }
+
     @SuppressWarnings("unused")
     public void onEvent(SwipeToRemoveTouchListener.RemoveEvent event) {
         Book book = (Book) event.getData();
@@ -67,7 +76,7 @@ public class SavedBooksFragment extends AddListFragment implements UndoBarContro
     public void onHide(Parcelable token) {
         Bundle bundle = (Bundle) token;
         Book book = BundleUtils.fetchFromBundle(Book.class, bundle);
-        SavedBooksService.delete(getActivity(), book);
+        SavedBooksService.actUpon(getActivity(), book, SavedBooksService.DELETE);
     }
 
     @Override

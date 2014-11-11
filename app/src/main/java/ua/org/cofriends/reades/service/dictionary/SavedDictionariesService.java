@@ -18,11 +18,12 @@ public class SavedDictionariesService extends IntentService {
     private static final int LOAD_LIST = 0;
     public static final int SAVE = 1;
     public static final int DELETE = 2;
-    private static final int SAVE_WORD = 3;
     private static final String EXTRA_TYPE = "extra_type";
 
     public SavedDictionariesService() {
         super(SavedDictionariesService.class.getSimpleName());
+
+        setIntentRedelivery(true);
     }
 
     public static void loadList(Context context) {
@@ -60,7 +61,9 @@ public class SavedDictionariesService extends IntentService {
 
                 // save to the database
                 dictionary.save();
-                loadAll();
+
+                BusUtils.post(new Dictionary.DoneEvent(dictionary));
+
                 break;
             }
 
@@ -73,7 +76,9 @@ public class SavedDictionariesService extends IntentService {
                 }
                 // delete dictionary itself
                 dictionary.delete();
-                loadAll();
+
+                // tell the world that we are done
+                BusUtils.post(new Dictionary.DoneEvent(dictionary));
 
                 break;
             }

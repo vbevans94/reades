@@ -12,6 +12,7 @@ import java.util.List;
 
 import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
+import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.dictionary.DictionaryDownloadService;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
@@ -40,7 +41,7 @@ public class DownloadDictionariesFragment extends BaseListDialogFragment impleme
     public void onSuccess(int statusCode, Header[] headers, Dictionary[] response) {
         mDictionaries.clear();
         mDictionaries.addAll(Arrays.asList(response));
-        SavedDictionariesService.loadList(getActivity());
+        reloadDictionariesFromDatabase();
     }
 
     @OnItemClick(R.id.list)
@@ -61,5 +62,18 @@ public class DownloadDictionariesFragment extends BaseListDialogFragment impleme
         mDictionaries.removeAll(event.getData());
         listView().setAdapter(new DictionaryAdapter(getActivity()
                 , mDictionaries, R.string.title_download));
+    }
+
+    /**
+     * Saved or deleted. Need to refresh list.
+     * @param event to respond on
+     */
+    @SuppressWarnings("unused")
+    public void onEventMainThread(Dictionary.DoneEvent event) {
+        reloadDictionariesFromDatabase();
+    }
+
+    private void reloadDictionariesFromDatabase() {
+        SavedDictionariesService.loadList(getActivity());
     }
 }
