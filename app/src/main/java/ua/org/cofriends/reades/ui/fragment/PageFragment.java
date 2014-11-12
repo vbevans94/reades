@@ -3,6 +3,7 @@ package ua.org.cofriends.reades.ui.fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -59,7 +60,7 @@ public class PageFragment extends BaseFragment {
             }
             if (nextSpace != -1) {
                 CharSequence word = text.subSequence(start, nextSpace);
-                spanText.append(word).append(delimiter);
+                spanText.append(Html.fromHtml(word.toString())).append(delimiter);
                 addSpannable(spanText, word);
                 text.delete(start, nextSpace + 1);
             } else {

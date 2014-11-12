@@ -84,10 +84,23 @@ public class BaseListDialogFragment extends DialogFragment implements Refreshabl
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        mRefreshManager.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        mRefreshManager.onStop();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
 
-        mRefreshManager.onDestroyView();
         ButterKnife.reset(this);
         BusUtils.unregister(this);
     }

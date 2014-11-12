@@ -16,7 +16,6 @@ import ua.org.cofriends.reades.utils.BusUtils;
 public class RefreshManager {
 
     private final Refreshable mRefreshable;
-    private final EventTransmitter mEventTransmitter = new EventTransmitter();
 
     public RefreshManager(Refreshable refreshable) {
         mRefreshable = refreshable;
@@ -30,8 +29,10 @@ public class RefreshManager {
         TextView textEmpty = (TextView) view.findViewById(R.id.text_empty);
         textEmpty.setText(R.string.message_no_items);
         mRefreshable.listView().setEmptyView(textEmpty);
+    }
 
-        BusUtils.register(mEventTransmitter);
+    public void onStart() {
+        BusUtils.register(this);
     }
 
     public void onResume() {
@@ -40,15 +41,12 @@ public class RefreshManager {
         }
     }
 
-    public void onDestroyView() {
-        BusUtils.unregister(mEventTransmitter);
+    public void onStop() {
+        BusUtils.unregister(this);
     }
 
-    class EventTransmitter {
-
-        @SuppressWarnings("unused")
-        public void onEvent(ListAddActivity.RefreshEvent event) {
-            mRefreshable.refreshList();
-        }
+    @SuppressWarnings("unused")
+    public void onEvent(ListAddActivity.RefreshEvent event) {
+        mRefreshable.refreshList();
     }
 }
