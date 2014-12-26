@@ -1,28 +1,53 @@
 package ua.org.cofriends.reades.ui.fragment;
 
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.OnItemClick;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Word;
 import ua.org.cofriends.reades.service.SavedWordsService;
 import ua.org.cofriends.reades.ui.adapter.WordsAdapter;
+import ua.org.cofriends.reades.ui.tools.CircleTransform;
+import ua.org.cofriends.reades.ui.tools.FillTransform;
+import ua.org.cofriends.reades.utils.BusUtils;
+import ua.org.cofriends.reades.utils.GoogleApi;
+import ua.org.cofriends.reades.utils.PicassoUtil;
 
 public class WordsDrawerFragment extends BaseFragment {
 
     @InjectView(R.id.list_words)
     ListView mListWords;
+
+    @InjectView(R.id.text_account_name)
+    TextView mTextAccountName;
+
+    @InjectView(R.id.image_account)
+    ImageView mImageAccount;
+
+    @Inject
+    GoogleApi mGoogleApi;
 
     /**
      * Helper component that ties the action bar to the navigation drawer.
@@ -42,6 +67,10 @@ public class WordsDrawerFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         mListWords.setEmptyView(view.findViewById(R.id.text_empty));
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_person);
+        icon = new FillTransform(getResources().getColor(R.color.white)).transform(icon);
+        icon = new CircleTransform().transform(icon);
+        mImageAccount.setImageBitmap(icon);
     }
 
     @Override
@@ -53,7 +82,6 @@ public class WordsDrawerFragment extends BaseFragment {
 
         mDrawerToggle = new ActionBarDrawerToggle(getActivity()
                 , mDrawerLayout
-                , android.R.color.transparent
                 , R.string.description_drawer_open
                 , R.string.description_drawer_close
         ) {
@@ -79,6 +107,8 @@ public class WordsDrawerFragment extends BaseFragment {
             }
         };
 
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+
         // Defer code dependent on restoration of previous instance state.
         mDrawerLayout.post(new Runnable() {
             @Override
@@ -88,6 +118,25 @@ public class WordsDrawerFragment extends BaseFragment {
         });
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    @OnClick(R.id.image_account)
+    @SuppressWarnings("unused")
+    void onAccountImageClicked() {
+        mGoogleApi.manualConnect();
+    }
+
+    @OnClick(R.id.text_account_name)
+    @SuppressWarnings("unused")
+    void onAccountNameClicked() {
+        mGoogleApi.manualConnect();
+    }
+
+
+    @OnClick(R.id.layout_home)
+    @SuppressWarnings("unused")
+    void onHomeClicked() {
+        BusUtils.post(new HomeEvent());
     }
 
     /**
@@ -154,4 +203,13 @@ public class WordsDrawerFragment extends BaseFragment {
     public void onEventMainThread(Word.RemoveEvent event) {
         SavedWordsService.delete(getActivity(), event.getData());
     }
+
+    @SuppressWarnings("unused")
+    public void onEvent(GoogleApi.ConnectedEvent event) {
+        GoogleApiClient client = event.getData();
+        mGoogleApi.loadImage(mImageAccount);
+        mTextAccountName.setText(Plus.AccountApi.getAccountName(client));
+    }
+
+    public static class HomeEvent {}
 }

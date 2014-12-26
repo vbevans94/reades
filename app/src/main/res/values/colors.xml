@@ -5,6 +5,7 @@
     <color name="text_black_secondary">#8a000000</color>
 
     <color name="light_grey_divider">#d1d1d1</color>
-    <color name="dark_indigo">#1e237e</color>
+    <color name="dark_indigo">#1B1464</color>
+    <color name="indigo">#1e237e</color>
     <color name="light_indigo">#8c9eff</color>
 </resources>

@@ -74,6 +74,8 @@ public class DownloadDictionariesFragment extends BaseListDialogFragment impleme
     }
 
     private void reloadDictionariesFromDatabase() {
-        SavedDictionariesService.loadList(getActivity());
+        if (isAdded()) {
+            SavedDictionariesService.loadList(getActivity());
+        }
     }
 }

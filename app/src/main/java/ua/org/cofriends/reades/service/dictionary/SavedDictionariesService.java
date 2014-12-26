@@ -16,9 +16,11 @@ import ua.org.cofriends.reades.utils.ZipUtils;
 public class SavedDictionariesService extends IntentService {
 
     private static final int LOAD_LIST = 0;
-    public static final int SAVE = 1;
-    public static final int DELETE = 2;
+    private static final int LOAD_BY_ID = 1;
+    public static final int SAVE = 2;
+    public static final int DELETE = 3;
     private static final String EXTRA_TYPE = "extra_type";
+    private static final String EXTRA_ID = "extra_id";
 
     public SavedDictionariesService() {
         super(SavedDictionariesService.class.getSimpleName());
@@ -29,6 +31,12 @@ public class SavedDictionariesService extends IntentService {
     public static void loadList(Context context) {
         context.startService(new Intent(context, SavedDictionariesService.class)
                 .putExtra(EXTRA_TYPE, LOAD_LIST));
+    }
+
+    public static void loadById(int dictionaryId, Context context) {
+        context.startService(new Intent(context, SavedDictionariesService.class)
+                .putExtra(EXTRA_TYPE, LOAD_BY_ID)
+                .putExtra(EXTRA_ID, dictionaryId));
     }
 
     /**
@@ -86,6 +94,11 @@ public class SavedDictionariesService extends IntentService {
             case LOAD_LIST:
                 loadAll();
                 break;
+
+            case LOAD_BY_ID:
+                int dictionaryId = intent.getIntExtra(EXTRA_ID, 0);
+                loadById(dictionaryId);
+                break;
         }
     }
 
@@ -93,5 +106,11 @@ public class SavedDictionariesService extends IntentService {
         // retrieve updated list of all dictionaries from the database
         List<Dictionary> dictionaries = Dictionary.listAll(Dictionary.class);
         BusUtils.post(new Dictionary.ListLoadedEvent(dictionaries));
+    }
+
+    private void loadById(int dictionaryId) {
+        // retrieve updated list of all dictionaries from the database
+        Dictionary dictionary = Dictionary.fromDb(dictionaryId);
+        BusUtils.post(new Dictionary.LoadedEvent(dictionary));
     }
 }

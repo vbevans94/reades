@@ -87,6 +87,8 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
 
         int page = mPager.getCurrentItem();
         LocalStorage.INSTANCE.setInt(getString(R.string.key_book, getBook().getBookId()), page);
+        LocalStorage.INSTANCE.setInt(getString(R.string.key_book_id), getBook().getBookId());
+        LocalStorage.INSTANCE.setInt(getString(R.string.key_dictionary_id), getDictionary().getDictionaryId());
     }
 
     @SuppressWarnings("unused")

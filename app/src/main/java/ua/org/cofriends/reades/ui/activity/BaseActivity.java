@@ -1,20 +1,36 @@
 package ua.org.cofriends.reades.ui.activity;
 
-import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.google.android.gms.plus.Plus;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
+import dagger.ObjectGraph;
+import ua.org.cofriends.reades.MainApplication;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.fragment.WordsDrawerFragment;
 import ua.org.cofriends.reades.utils.BusUtils;
+import ua.org.cofriends.reades.utils.GoogleApi;
 
 public class BaseActivity extends ActionBarActivity {
 
     FrameLayout mLayoutContainer;
+
+    @Inject
+    GoogleApi mGoogleApi;
+
+    private boolean mIntentPending;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +46,9 @@ public class BaseActivity extends ActionBarActivity {
                     .replace(R.id.layout_drawer, new WordsDrawerFragment())
                     .commit();
         }
-
-        BusUtils.register(this);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        MainApplication.get(this).inject(this);
     }
 
     /**
@@ -73,9 +88,54 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GoogleApi.RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                mGoogleApi.connect();
+            } else {
+                mGoogleApi.cancel();
+            }
+            mIntentPending = false;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void onEvent(WordsDrawerFragment.HomeEvent event) {
+        if (getClass() != DictionariesActivity.class) {
+            startActivity(new Intent(this, DictionariesActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        BusUtils.register(this);
+        mGoogleApi.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
 
         BusUtils.unregister(this);
+        mGoogleApi.disconnect();
+    }
+
+    @SuppressWarnings("unused")
+    public void onEvent(GoogleApi.ConnectionFailedEvent event) {
+        try {
+            if (!mIntentPending) {
+                mIntentPending = true;
+                startIntentSenderForResult(event.getData().getResolution().getIntentSender(),
+                        GoogleApi.RC_SIGN_IN, null, 0, 0, 0);
+            }
+        } catch (IntentSender.SendIntentException e) {
+            mGoogleApi.connect();
+            mIntentPending = false;
+        }
     }
 }

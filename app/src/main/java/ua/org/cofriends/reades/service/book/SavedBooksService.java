@@ -9,6 +9,7 @@ import java.util.List;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Language;
 import ua.org.cofriends.reades.entity.Page;
+import ua.org.cofriends.reades.ui.activity.SplashActivity;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.Logger;
@@ -16,9 +17,11 @@ import ua.org.cofriends.reades.utils.Logger;
 public class SavedBooksService extends IntentService {
 
     private static final int LOAD_LIST = 0;
-    public static final int DELETE = 1;
-    public static final int SAVE = 2;
+    private static final int LOAD_BY_ID = 1;
+    public static final int DELETE = 2;
+    public static final int SAVE = 3;
     private static final String EXTRA_TYPE = "extra_type";
+    private static final String EXTRA_ID = "extra_id";
     private static final String TAG = Logger.makeLogTag(SavedBooksService.class);
 
     public SavedBooksService() {
@@ -36,6 +39,17 @@ public class SavedBooksService extends IntentService {
         context.startService(new Intent(context, SavedBooksService.class)
                 .putExtras(BundleUtils.writeObject(Language.class, language))
                 .putExtra(EXTRA_TYPE, LOAD_LIST));
+    }
+
+    /**
+     * Loads single book by its id.
+     * @param bookId to search for in the database
+     * @param context to use
+     */
+    public static void loadById(int bookId, Context context) {
+        context.startService(new Intent(context, SavedBooksService.class)
+                .putExtra(EXTRA_TYPE, LOAD_BY_ID)
+                .putExtra(EXTRA_ID, bookId));
     }
 
     /**
@@ -80,6 +94,11 @@ public class SavedBooksService extends IntentService {
             case LOAD_LIST:
                 loadBooks(intent);
                 break;
+
+            case LOAD_BY_ID:
+                int bookId = intent.getIntExtra(EXTRA_ID, 0);
+                loadById(bookId);
+                break;
         }
     }
 
@@ -121,5 +140,10 @@ public class SavedBooksService extends IntentService {
         Language language = BundleUtils.fetchFromBundle(Language.class, intent.getExtras()).meFromDb();
         List<Book> books = Book.find(Book.class, "language = ?", Long.toString(language.getId()));
         BusUtils.post(new Book.ListLoadedEvent(books));
+    }
+
+    private void loadById(int bookId) {
+        Book book = Book.fromDb(bookId);
+        BusUtils.post(new Book.LoadedEvent(book));
     }
 }

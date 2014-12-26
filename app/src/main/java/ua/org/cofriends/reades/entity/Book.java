@@ -88,10 +88,19 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
     }
 
     public Book meFromDb() {
-        List<Book> books = Book.find(Book.class, "BOOK_ID = ?", Integer.toString(getBookId()));
-        if (books.isEmpty()) {
+        Book book = Book.fromDb(getBookId());
+        if (book == null) {
+            // there is no me in the database
             save();
             return this;
+        }
+        return book;
+    }
+
+    public static Book fromDb(int bookId) {
+        List<Book> books = Book.find(Book.class, "BOOK_ID = ?", Integer.toString(bookId));
+        if (books.isEmpty()) {
+            return null;
         }
         return books.get(0);
     }
@@ -150,6 +159,13 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
 
         public ListLoadedEvent(List<Book> dictionaries) {
             super(dictionaries);
+        }
+    }
+
+    public static class LoadedEvent extends Event {
+
+        public LoadedEvent(Book object) {
+            super(object);
         }
     }
 }

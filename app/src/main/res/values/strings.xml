@@ -16,6 +16,7 @@
     <string name="error_reading_book_file">Error reading book file</string>
     <string name="message_will_be_removed">Will be permanently removed in a moment</string>
     <string name="key_book">book_%d</string>
+    <string name="key_book_id">book_id</string>
     <string name="text_page_info">%1$d/%2$d</string>
     <string name="description_image">Image</string>
     <string name="title_add_to_my_words">Add to my words</string>
@@ -31,5 +32,9 @@
     <string name="description_drawer_open">Drawer open</string>
     <string name="description_drawer_close">Drawer closed</string>
     <string name="title_store">Store</string>
+    <string name="key_dictionary_id">dictionary_id</string>
+    <string name="title_home">Home</string>
+    <string name="title_sign_in">Sign in</string>
+    <string name="description_account_image">Account image</string>
 
 </resources>

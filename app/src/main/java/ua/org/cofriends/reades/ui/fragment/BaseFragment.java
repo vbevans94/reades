@@ -8,6 +8,7 @@ import android.view.View;
 import org.apache.http.Header;
 
 import butterknife.ButterKnife;
+import ua.org.cofriends.reades.MainApplication;
 import ua.org.cofriends.reades.entity.ApiError;
 import ua.org.cofriends.reades.ui.tools.BaseToast;
 import ua.org.cofriends.reades.utils.BusUtils;
@@ -20,6 +21,8 @@ public class BaseFragment extends Fragment implements RestClient.ErrorHandler {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+
+        MainApplication.get(getActivity()).inject(this);
     }
 
     @Override

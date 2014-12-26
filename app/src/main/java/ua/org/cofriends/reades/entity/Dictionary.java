@@ -85,10 +85,19 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
     }
 
     public Dictionary meFromDb() {
-        List<Dictionary> dictionaries = Dictionary.find(Dictionary.class, "DICTIONARY_ID = ?", Integer.toString(getDictionaryId()));
-        if (dictionaries.isEmpty()) {
+        Dictionary dictionary = Dictionary.fromDb(getDictionaryId());
+        if (dictionary == null) {
+            // there is no me in the database
             save();
             return this;
+        }
+        return dictionary;
+    }
+
+    public static Dictionary fromDb(int dictionaryId) {
+        List<Dictionary> dictionaries = Dictionary.find(Dictionary.class, "DICTIONARY_ID = ?", Integer.toString(dictionaryId));
+        if (dictionaries.isEmpty()) {
+            return null;
         }
         return dictionaries.get(0);
     }
@@ -149,6 +158,13 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
 
         public ListLoadedEvent(List<Dictionary> dictionaries) {
             super(dictionaries);
+        }
+    }
+
+    public static class LoadedEvent extends Event {
+
+        public LoadedEvent(Dictionary dictionary) {
+            super(dictionary);
         }
     }
 }

@@ -1,10 +1,13 @@
 package ua.org.cofriends.reades.dict;
 
+import org.dict.kernel.Answer;
 import org.dict.kernel.IAnswer;
 import org.dict.kernel.IDictEngine;
 import org.dict.kernel.IRequest;
 import org.dict.kernel.SimpleRequest;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.concurrent.BlockingQueue;
 
 import ua.org.cofriends.reades.utils.BusUtils;
@@ -27,14 +30,13 @@ class DictThread extends Thread {
         while (true) {
             try {
                 String word = mWordQueue.take();
-                IRequest request = new SimpleRequest("", "db=*&word=" + word);
-                IAnswer[] answers = mDictEngine.lookup(request);
+
+                IAnswer[] answers = request(word);
 
                 if (answers.length == 0 || answers[0].getDefinition() == null) {
                     while (word.length() > 3) {
                         word = word.substring(0, word.length() - 1);
-                        request = new SimpleRequest("", "db=*&word=" + word + "*");
-                        answers = mDictEngine.lookup(request);
+                        answers = request(word + "*");
                         if (answers.length > 0 && answers[0].getDefinition() != null) {
                             BusUtils.post(new DictService.AnswerEvent(answers));
                             break;
@@ -46,11 +48,18 @@ class DictThread extends Thread {
 
             } catch (InterruptedException e) {
                 Logger.e(TAG, "Interrupted when getting word", e);
+            } catch (UnsupportedEncodingException e) {
+                Logger.e(TAG, "Interrupted when getting word", e);
             }
             if (mCancelled) {
                 break;
             }
         }
+    }
+
+    private IAnswer[] request(String word) throws UnsupportedEncodingException {
+        IRequest request = new SimpleRequest("", "db=*&word=" + URLEncoder.encode(word, "utf-8"));
+        return mDictEngine.lookup(request);
     }
 
     void cancel() {

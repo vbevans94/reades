@@ -67,7 +67,9 @@ public class DownloadBooksFragment extends BaseListDialogFragment implements Res
     }
 
     private void reloadFromDatabase() {
-        SavedBooksService.loadListByLanguage(getActivity(), mDictionaryCache.getDictionary().getFromLanguage());
+        if (isAdded()) {
+            SavedBooksService.loadListByLanguage(getActivity(), mDictionaryCache.getDictionary().getFromLanguage());
+        }
     }
 
     /**

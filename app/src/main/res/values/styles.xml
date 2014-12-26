@@ -5,6 +5,9 @@
         <item name="android:actionBarStyle">@style/ActionBar.Solid.Reades.Large</item>
         <item name="actionBarStyle">@style/ActionBar.Solid.Reades.Large</item>
         <item name="android:windowBackground">@color/white</item>
+
+        <item name="colorPrimary">@color/indigo</item>
+        <item name="colorPrimaryDark">@color/dark_indigo</item>
     </style>
 
     <style name="ActionBar.Solid.Reades.Large">
