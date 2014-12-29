@@ -2,6 +2,7 @@ package ua.org.cofriends.reades.entity;
 
 import com.google.gson.annotations.Expose;
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 import java.util.List;
 
@@ -15,14 +16,19 @@ public class Word extends SugarRecord<Word> {
     @Expose
     private final String definition;
 
-    public Word(String word, String definition) {
+    @Ignore
+    @Expose
+    private final List<String> adjacent;
+
+    public Word(String word, String definition, List<String> adjacent) {
         this.word = word;
         this.definition = definition;
+        this.adjacent = adjacent;
     }
 
     @SuppressWarnings("unused")
     public Word() {
-        this(null, null);
+        this(null, null, null);
     }
 
     public String getDefinition() {
@@ -31,6 +37,10 @@ public class Word extends SugarRecord<Word> {
 
     public String getWord() {
         return word;
+    }
+
+    public List<String> getAdjacent() {
+        return adjacent;
     }
 
     @Override

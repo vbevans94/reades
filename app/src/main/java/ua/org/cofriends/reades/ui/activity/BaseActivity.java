@@ -114,7 +114,6 @@ public class BaseActivity extends ActionBarActivity {
         super.onStart();
 
         BusUtils.register(this);
-        mGoogleApi.connect();
     }
 
     @Override
@@ -122,7 +121,6 @@ public class BaseActivity extends ActionBarActivity {
         super.onStop();
 
         BusUtils.unregister(this);
-        mGoogleApi.disconnect();
     }
 
     @SuppressWarnings("unused")

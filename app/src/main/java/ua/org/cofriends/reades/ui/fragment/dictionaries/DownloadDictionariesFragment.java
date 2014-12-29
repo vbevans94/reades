@@ -62,6 +62,8 @@ public class DownloadDictionariesFragment extends BaseListDialogFragment impleme
         mDictionaries.removeAll(event.getData());
         listView().setAdapter(new DictionaryAdapter(getActivity()
                 , mDictionaries, R.string.title_download));
+
+        refreshed();
     }
 
     /**

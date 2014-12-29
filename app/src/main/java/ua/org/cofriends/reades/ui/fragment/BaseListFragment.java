@@ -57,16 +57,7 @@ public class BaseListFragment extends BaseFragment implements Refreshable {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        mRefreshManager.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        mRefreshManager.onStop();
+    public void refreshed() {
+        mRefreshManager.onRefreshed();
     }
 }

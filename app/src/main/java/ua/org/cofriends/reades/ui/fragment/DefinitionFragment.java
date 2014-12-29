@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.widget.ArrayAdapter;
 
 import org.dict.kernel.IAnswer;
+
+import java.util.List;
 
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Word;
@@ -20,12 +23,15 @@ public class DefinitionFragment extends DialogFragment implements DialogInterfac
     private static final String TAG_DEFINITION_FRAGMENT = "tag_definition_fragment";
     private static final String ARG_DEFINITION = "arg_definition";
     private static final String ARG_WORD = "arg_word";
+    private static final String ARG_ADJACENT = "arg_adjacent";
 
     public static void show(FragmentManager fragmentManager, IAnswer answer) {
         DefinitionFragment fragment = new DefinitionFragment();
-        fragment.setArguments(BundleUtils.putString(
-                    BundleUtils.putString(null, ARG_WORD, answer.getKey())
-                , ARG_DEFINITION, answer.getDefinition()));
+        Bundle args = BundleUtils.putString(
+                BundleUtils.putString(null, ARG_WORD, answer.getKey())
+                , ARG_DEFINITION, answer.getDefinition());
+        // args.putStringArrayList(ARG_ADJACENT, answer.getAdjacentWords().);
+        fragment.setArguments(args);
         fragment.show(fragmentManager, TAG_DEFINITION_FRAGMENT);
     }
 
@@ -52,9 +58,17 @@ public class DefinitionFragment extends DialogFragment implements DialogInterfac
         } else {
             wordName = BundleUtils.getString(getArguments(), ARG_WORD);
             wordDefinition = BundleUtils.getString(getArguments(), ARG_DEFINITION);
+            List<String> adjacentWords = getArguments().getStringArrayList(ARG_ADJACENT);
 
             builder.setPositiveButton(R.string.title_add_to_my_words, this)
-                    .setNegativeButton(android.R.string.cancel, null);
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, adjacentWords),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // TODO: go to adjacent word by its position
+                                }
+                            });
         }
 
         builder.setTitle(wordName)
@@ -67,7 +81,8 @@ public class DefinitionFragment extends DialogFragment implements DialogInterfac
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             Word word = new Word(BundleUtils.getString(getArguments(), ARG_WORD)
-                    , BundleUtils.getString(getArguments(), ARG_DEFINITION));
+                    , BundleUtils.getString(getArguments(), ARG_DEFINITION)
+                    , getArguments().getStringArrayList(ARG_ADJACENT));
             SavedWordsService.save(getActivity(), word);
         }
     }

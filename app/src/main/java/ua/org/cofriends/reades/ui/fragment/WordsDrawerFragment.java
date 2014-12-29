@@ -179,12 +179,24 @@ public class WordsDrawerFragment extends BaseFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApi.connect();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
         if (mListWords.getAdapter() == null) {
             SavedWordsService.loadList(getActivity());
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mGoogleApi.connect();
     }
 
     @SuppressWarnings("unused")

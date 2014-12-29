@@ -45,6 +45,8 @@ public class SavedDictionariesFragment extends AddListFragment implements UndoBa
                 , new DictionaryAdapter(getActivity()
                     , event.getData()
                     , R.string.title_open));
+
+        refreshed();
     }
 
     @SuppressWarnings("unused")

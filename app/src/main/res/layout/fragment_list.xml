@@ -1,51 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <ua.org.cofriends.reades.ui.view.BaseTextView
-        android:id="@+id/text_title"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/section_height"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/root_margin"
-        android:paddingRight="@dimen/root_margin"
-        android:textColor="@color/text_black_secondary"
-        android:textSize="@dimen/text_small"
-        tools:text="Saved" />
-
-    <ua.org.cofriends.reades.ui.tools.swipetoremove.BackgroundContainer
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ListView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            tools:listitem="@layout/item" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <ua.org.cofriends.reades.ui.view.BaseTextView
-            android:id="@+id/text_empty"
+            android:id="@+id/text_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:padding="@dimen/app_padding"
-            android:visibility="gone" />
+            android:layout_height="@dimen/section_height"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/root_margin"
+            android:paddingRight="@dimen/root_margin"
+            android:textColor="@color/text_black_secondary"
+            android:textSize="@dimen/text_small"
+            tools:text="Saved" />
 
-        <ImageView
-            android:id="@+id/image_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_margin="@dimen/root_margin"
-            android:contentDescription="@string/description_add"
-            android:src="@drawable/btn_add"
-            android:visibility="gone"
-            tools:visibility="visible" />
-    </ua.org.cofriends.reades.ui.tools.swipetoremove.BackgroundContainer>
-</LinearLayout>
+        <ua.org.cofriends.reades.ui.tools.swipetoremove.BackgroundContainer
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                tools:listitem="@layout/item" />
+
+            <ua.org.cofriends.reades.ui.view.BaseTextView
+                android:id="@+id/text_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="@dimen/app_padding"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/image_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="@dimen/root_margin"
+                android:contentDescription="@string/description_add"
+                android:src="@drawable/btn_add"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </ua.org.cofriends.reades.ui.tools.swipetoremove.BackgroundContainer>
+    </LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

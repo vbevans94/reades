@@ -45,6 +45,8 @@ public class SavedBooksFragment extends AddListFragment implements UndoBarContro
     public void onEventMainThread(Book.ListLoadedEvent event) {
         SwipeAdapter.wrapList(listView()
                 , new BookAdapter(getActivity(), event.getData()));
+
+        refreshed();
     }
 
     /**

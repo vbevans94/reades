@@ -46,26 +46,6 @@ public abstract class  ListAddActivity extends BaseActivity {
      */
     abstract Fragment getSavedFragment();
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.refresh, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_refresh) {
-            BusUtils.post(new RefreshEvent());
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    // TODO: test whether the it fires in stopped activities/fragments
-    public static class RefreshEvent {
-    }
-
     public static class AddEvent {
     }
 }

@@ -7,4 +7,6 @@ public interface Refreshable {
     void refreshList();
 
     ListView listView();
+
+    void refreshed();
 }

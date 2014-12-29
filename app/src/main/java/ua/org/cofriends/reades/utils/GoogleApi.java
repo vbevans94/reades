@@ -63,7 +63,8 @@ public class GoogleApi implements GoogleApiClient.ConnectionCallbacks, GoogleApi
      * Connects if possible.
      */
     public void manualConnect() {
-        if (mGoogleApiClient != null && !mGoogleApiClient.isConnecting()) {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()
+                && !mGoogleApiClient.isConnecting()) {
             LocalStorage.INSTANCE.remove(KEY_CANCELLED);
 
             mGoogleApiClient.connect();

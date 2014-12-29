@@ -84,17 +84,8 @@ public class BaseListDialogFragment extends DialogFragment implements Refreshabl
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        mRefreshManager.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        mRefreshManager.onStop();
+    public void refreshed() {
+        mRefreshManager.onRefreshed();
     }
 
     @Override

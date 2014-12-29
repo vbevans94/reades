@@ -80,6 +80,8 @@ public class DownloadBooksFragment extends BaseListDialogFragment implements Res
     public void onEventMainThread(Book.ListLoadedEvent event) {
         mBooks.removeAll(event.getData());
         listView().setAdapter(new BookAdapter(getActivity(), mBooks));
+
+        refreshed();
     }
 
     public static class DictionaryCache {
