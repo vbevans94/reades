@@ -32,7 +32,9 @@ class DictThread extends Thread {
                 String word = mWordQueue.take();
 
                 IAnswer[] answers = request(word);
+                BusUtils.post(new DictService.AnswerEvent(answers));
 
+/*
                 if (answers.length == 0 || answers[0].getDefinition() == null) {
                     while (word.length() > 3) {
                         word = word.substring(0, word.length() - 1);
@@ -45,6 +47,7 @@ class DictThread extends Thread {
                 } else {
                     BusUtils.post(new DictService.AnswerEvent(answers));
                 }
+*/
 
             } catch (InterruptedException e) {
                 Logger.e(TAG, "Interrupted when getting word", e);

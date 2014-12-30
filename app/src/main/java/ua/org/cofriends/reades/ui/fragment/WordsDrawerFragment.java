@@ -132,7 +132,6 @@ public class WordsDrawerFragment extends BaseFragment {
         mGoogleApi.manualConnect();
     }
 
-
     @OnClick(R.id.layout_home)
     @SuppressWarnings("unused")
     void onHomeClicked() {

@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_indigo"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/layout_home"
         android:layout_width="match_parent"
         android:layout_height="88dp"
+        android:background="@color/light_indigo"
         android:orientation="horizontal">
 
         <ImageView
@@ -36,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:padding="2dp"
                 android:text="@string/title_home"
-                android:textColor="@color/text_black_primary"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_large" />
 
             <ua.org.cofriends.reades.ui.view.BaseTextView
@@ -45,16 +46,10 @@
                 android:layout_height="wrap_content"
                 android:padding="2dp"
                 android:text="@string/title_sign_in"
-                android:textColor="@color/text_black_secondary"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_small"
                 tools:text="Open" />
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/divider_width"
-            android:layout_alignParentBottom="true"
-            android:background="@color/light_grey_divider" />
     </RelativeLayout>
 
     <ua.org.cofriends.reades.ui.view.BaseTextView
@@ -64,7 +59,7 @@
         android:gravity="center_vertical"
         android:padding="@dimen/root_margin"
         android:text="@string/title_learned_words"
-        android:textColor="@color/white"
+        android:textColor="@color/text_black_secondary"
         android:textSize="@dimen/text_small" />
 
     <ua.org.cofriends.reades.ui.view.BaseTextView
@@ -73,7 +68,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/message_no_learned_words"
-        android:textColor="@color/white"
+        android:textColor="@color/text_black_primary"
         android:textSize="@dimen/text_normal"
         android:visibility="gone" />
 

@@ -35,6 +35,7 @@ public class DownloadService extends Service {
     private static final String EXTRA_COMMAND = "extra_command";
 
     private Map<Loadable, Integer> mPendingToId;
+    private int mNotificationColor;
 
     /**
      * Starts load of db if it's not started yet.
@@ -93,7 +94,8 @@ public class DownloadService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        mPendingToId = new HashMap<Loadable, Integer>();
+        mPendingToId = new HashMap<>();
+        mNotificationColor = getResources().getColor(R.color.indigo);
     }
 
     @Override
@@ -149,7 +151,8 @@ public class DownloadService extends Service {
                     .setContentText(getString(R.string.message_file_loading, 0))
                     .setContentTitle(loadable.getName())
                     .setContentIntent(stopIntent(this, loadable, getClass()))
-                    .setSmallIcon(R.drawable.ic_launcher);
+                    .setSmallIcon(R.drawable.ic_stat_file_file_download)
+                    .setColor(mNotificationColor);
             final NotificationManagerCompat manager = NotificationManagerCompat.from(this);
             startForeground(mPendingToId.get(loadable), builder.build());
 

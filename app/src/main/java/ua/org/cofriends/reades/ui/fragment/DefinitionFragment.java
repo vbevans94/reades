@@ -10,13 +10,17 @@ import android.support.v4.app.FragmentManager;
 import android.widget.ArrayAdapter;
 
 import org.dict.kernel.IAnswer;
+import org.dict.kernel.IWordPosition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Word;
 import ua.org.cofriends.reades.service.SavedWordsService;
+import ua.org.cofriends.reades.ui.tools.BaseToast;
 import ua.org.cofriends.reades.utils.BundleUtils;
+import ua.org.cofriends.reades.utils.BusUtils;
 
 public class DefinitionFragment extends DialogFragment implements DialogInterface.OnClickListener {
 
@@ -30,7 +34,15 @@ public class DefinitionFragment extends DialogFragment implements DialogInterfac
         Bundle args = BundleUtils.putString(
                 BundleUtils.putString(null, ARG_WORD, answer.getKey())
                 , ARG_DEFINITION, answer.getDefinition());
-        // args.putStringArrayList(ARG_ADJACENT, answer.getAdjacentWords().);
+
+        IWordPosition[] wordPositions = answer.getAdjacentWords().getWordPositions();
+
+        CharSequence[] words = new CharSequence[wordPositions.length];
+        int count = 0;
+        for (IWordPosition position : wordPositions) {
+            words[count++] = position.getKey();
+        }
+        args.putCharSequenceArray(ARG_ADJACENT, words);
         fragment.setArguments(args);
         fragment.show(fragmentManager, TAG_DEFINITION_FRAGMENT);
     }
@@ -47,32 +59,38 @@ public class DefinitionFragment extends DialogFragment implements DialogInterfac
         // see if it's just learned word or newly translated
         Word word = BundleUtils.fetchFromBundle(Word.class, getArguments());
         String wordName;
-        String wordDefinition;
         // start building dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         if (word != null) {
             wordName = word.getWord();
-            wordDefinition = word.getDefinition();
 
-            builder.setNegativeButton(android.R.string.ok, null);
+            builder.setNegativeButton(android.R.string.ok, null)
+                    .setMessage(word.getDefinition());
         } else {
             wordName = BundleUtils.getString(getArguments(), ARG_WORD);
-            wordDefinition = BundleUtils.getString(getArguments(), ARG_DEFINITION);
-            List<String> adjacentWords = getArguments().getStringArrayList(ARG_ADJACENT);
+            String wordDefinition = BundleUtils.getString(getArguments(), ARG_DEFINITION);
 
-            builder.setPositiveButton(R.string.title_add_to_my_words, this)
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, adjacentWords),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // TODO: go to adjacent word by its position
-                                }
-                            });
+            if (wordDefinition == null) {
+                BaseToast.show(getActivity(), R.string.message_no_definition);
+
+                final CharSequence[] adjacentWords = getArguments().getCharSequenceArray(ARG_ADJACENT);
+
+                builder.setItems(adjacentWords, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        BusUtils.post(new PageFragment.WordRequestEvent(adjacentWords[which]));
+                        dismiss();
+                    }
+                });
+            } else {
+                builder.setMessage(wordDefinition)
+                        .setPositiveButton(R.string.title_add_to_my_words, this);
+            }
+
+            builder.setNegativeButton(android.R.string.cancel, null);
         }
 
-        builder.setTitle(wordName)
-                .setMessage(wordDefinition);
+        builder.setTitle(wordName);
 
         return builder.create();
     }

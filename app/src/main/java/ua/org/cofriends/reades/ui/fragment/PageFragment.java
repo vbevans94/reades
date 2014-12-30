@@ -32,7 +32,6 @@ public class PageFragment extends BaseFragment {
 
     public static PageFragment newInstance(CharSequence pageText) {
         PageFragment fragment = new PageFragment();
-        // TODO: see if we really need CharSequence
         fragment.setArguments(BundleUtils.putString(null, ARG_PAGE_TEXT, pageText.toString()));
         return fragment;
     }
