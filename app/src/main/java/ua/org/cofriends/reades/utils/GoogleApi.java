@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import ua.org.cofriends.reades.R;
-import ua.org.cofriends.reades.ui.tools.CircleTransform;
+import ua.org.cofriends.reades.ui.basic.tools.CircleTransform;
 
 @Singleton
 public class GoogleApi implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {

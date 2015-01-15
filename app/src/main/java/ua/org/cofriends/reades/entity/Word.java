@@ -16,19 +16,14 @@ public class Word extends SugarRecord<Word> {
     @Expose
     private final String definition;
 
-    @Ignore
-    @Expose
-    private final List<String> adjacent;
-
-    public Word(String word, String definition, List<String> adjacent) {
+    public Word(String word, String definition) {
         this.word = word;
         this.definition = definition;
-        this.adjacent = adjacent;
     }
 
     @SuppressWarnings("unused")
     public Word() {
-        this(null, null, null);
+        this(null, null);
     }
 
     public String getDefinition() {
@@ -37,10 +32,6 @@ public class Word extends SugarRecord<Word> {
 
     public String getWord() {
         return word;
-    }
-
-    public List<String> getAdjacent() {
-        return adjacent;
     }
 
     @Override

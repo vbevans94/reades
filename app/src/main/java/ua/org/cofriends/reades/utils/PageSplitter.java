@@ -9,7 +9,7 @@ import android.text.style.StyleSpan;
 import java.util.ArrayList;
 import java.util.List;
 
-import ua.org.cofriends.reades.ui.activity.ReadActivity;
+import ua.org.cofriends.reades.ui.read.ReadActivity;
 
 public class PageSplitter {
 

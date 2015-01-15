@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import ua.org.cofriends.reades.R;
-import ua.org.cofriends.reades.ui.tools.BaseToast;
+import ua.org.cofriends.reades.ui.basic.tools.BaseToast;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.GsonUtils;
 import ua.org.cofriends.reades.utils.Logger;

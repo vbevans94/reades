@@ -21,6 +21,7 @@ public class SavedDictionariesService extends IntentService {
     public static final int DELETE = 3;
     private static final String EXTRA_TYPE = "extra_type";
     private static final String EXTRA_ID = "extra_id";
+    private static Dictionary sCurrentDictionary;
 
     public SavedDictionariesService() {
         super(SavedDictionariesService.class.getSimpleName());
@@ -112,5 +113,13 @@ public class SavedDictionariesService extends IntentService {
         // retrieve updated list of all dictionaries from the database
         Dictionary dictionary = Dictionary.fromDb(dictionaryId);
         BusUtils.post(new Dictionary.LoadedEvent(dictionary));
+    }
+
+    public static Dictionary getCurrent() {
+        return sCurrentDictionary;
+    }
+
+    public static void setCurrentDictionary(Dictionary dictionary) {
+        sCurrentDictionary = dictionary;
     }
 }

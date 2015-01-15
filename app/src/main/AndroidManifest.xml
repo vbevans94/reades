@@ -16,11 +16,11 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ui.activity.ReadActivity"
+            android:name=".ui.read.ReadActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.SplashActivity"
+            android:name=".ui.SplashActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:label="@string/app_name">
             <intent-filter>
@@ -30,10 +30,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.BooksActivity"
+            android:name=".ui.books.BooksActivity"
             android:label="@string/title_books" />
         <activity
-            android:name=".ui.activity.DictionariesActivity"
+            android:name=".ui.dictionaries.DictionariesActivity"
             android:label="@string/title_dictionaries" />
 
         <service android:name=".service.book.BookDownloadService" />

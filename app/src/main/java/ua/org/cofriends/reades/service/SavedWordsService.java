@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 
+import java.util.Collections;
 import java.util.List;
 
 import ua.org.cofriends.reades.entity.Word;
@@ -80,6 +81,7 @@ public class SavedWordsService extends IntentService {
     private void loadAll() {
         // retrieve updated list of all word from the database and give to the world
         List<Word> words = Word.listAll(Word.class);
+        Collections.reverse(words);
         BusUtils.post(new Word.ListLoadedEvent(words));
     }
 }

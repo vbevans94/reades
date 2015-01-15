@@ -1,17 +1,12 @@
 package ua.org.cofriends.reades.entity;
 
-import android.os.Bundle;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
-import com.orm.dsl.Ignore;
 
 import java.util.List;
 
 import ua.org.cofriends.reades.service.DownloadService;
-import ua.org.cofriends.reades.ui.adapter.BookAdapter;
-import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 
 public class Dictionary extends SugarRecord<Dictionary> implements DownloadService.Loadable {

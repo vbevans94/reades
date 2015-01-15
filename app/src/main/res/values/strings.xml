@@ -23,7 +23,6 @@
     <string name="font_name">fonts/Roboto-Regular.ttf</string>
     <string name="description_add">Add</string>
     <string name="title_open">Open</string>
-    <string name="title_online">Online</string>
     <string name="description_logo">Logo</string>
     <string name="description_remove">Remove</string>
     <string name="description_definition">Definition</string>

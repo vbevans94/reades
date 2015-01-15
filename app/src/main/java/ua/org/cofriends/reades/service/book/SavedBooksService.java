@@ -9,7 +9,6 @@ import java.util.List;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Language;
 import ua.org.cofriends.reades.entity.Page;
-import ua.org.cofriends.reades.ui.activity.SplashActivity;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.Logger;
