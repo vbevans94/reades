@@ -2,7 +2,10 @@ language: android
 
 jdk:
  - oraclejdk7
- - oraclejdk8
+
+branches:
+ only:
+ - master
 
 before_install:
  - chmod +x gradlew
@@ -19,7 +22,3 @@ notifications:
   email: false
 
 sudo: true
-
-cache:
-  directories:
-    - $HOME/.gradle
