@@ -9,6 +9,7 @@ branches:
 
 before_install:
  - chmod +x gradlew
+ - ./install_android.sh
 
 android:
   components:
