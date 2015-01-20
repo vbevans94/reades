@@ -1,23 +1,22 @@
 package ua.org.cofriends.reades.ui.basic.tools.swipetoremove;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.support.v4.util.LongSparseArray;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.WrapperListAdapter;
-
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
-import com.nineoldandroids.view.animation.AnimatorProxy;
 
 import ua.org.cofriends.reades.ui.basic.tools.UiUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
@@ -58,8 +57,9 @@ public class SwipeToRemoveTouchListener implements View.OnTouchListener {
                 mDownX = event.getX();
                 break;
             case MotionEvent.ACTION_CANCEL: {
-                ViewHelper.setTranslationX(v, 0);
-                ViewHelper.setAlpha(v, 1);
+                ViewCompat.setTranslationX(v, 0);
+                ViewCompat.setAlpha(v, 1);
+
                 mItemPressed = false;
                 break;
             }
@@ -67,10 +67,7 @@ public class SwipeToRemoveTouchListener implements View.OnTouchListener {
                 if (mAnimating) {
                     return true;
                 }
-                float x = event.getX();
-                if (!AnimatorProxy.NEEDS_PROXY) {
-                    x += v.getTranslationX();
-                }
+                float x = event.getX() + ViewCompat.getTranslationX(v);
                 float deltaX = x - mDownX;
                 float deltaXAbs = Math.abs(deltaX);
                 if (!mSwiping) {
@@ -82,8 +79,8 @@ public class SwipeToRemoveTouchListener implements View.OnTouchListener {
                 }
                 if (mSwiping) {
                     float fraction = Math.abs(deltaX) / v.getWidth();
-                    ViewHelper.setTranslationX(v, deltaX);
-                    ViewHelper.setAlpha(v, 1 - fraction);
+                    ViewCompat.setTranslationX(v, deltaX);
+                    ViewCompat.setAlpha(v, 1 - fraction);
                 }
             }
             break;
@@ -93,10 +90,7 @@ public class SwipeToRemoveTouchListener implements View.OnTouchListener {
                 }
                 // User let go - figure out whether to animate the view out, or back into place
                 if (mSwiping) {
-                    float x = event.getX();
-                    if (!AnimatorProxy.NEEDS_PROXY) {
-                        x += v.getTranslationX();
-                    }
+                    float x = event.getX() + ViewCompat.getTranslationX(v);
                     float deltaX = x - mDownX;
                     float deltaXAbs = Math.abs(deltaX);
                     float fractionCovered;
@@ -135,19 +129,20 @@ public class SwipeToRemoveTouchListener implements View.OnTouchListener {
      * about animation. A real version should use velocity (via the VelocityTracker class)
      * to send the item_book off or back at an appropriate speed.
      */
-    @SuppressLint("NewApi")
     private void animateSwipe(final View view, float endX, long duration, final boolean remove) {
         mAnimating = true;
         mListView.setEnabled(false);
-        ViewPropertyAnimator.animate(view).setDuration(duration)
+        ViewCompat.animate(view).setDuration(duration)
                 .alpha(remove ? 0 : 1)
                 .translationX(endX)
-                .setListener(new AnimatorListenerAdapter() {
+                .setListener(new ViewPropertyAnimatorListenerAdapter() {
+
                     @Override
-                    public void onAnimationEnd(Animator animation) {
+                    public void onAnimationEnd(View view) {
+
                         // Restore animated values
-                        view.setAlpha(1);
-                        view.setTranslationX(0);
+                        ViewCompat.setAlpha(view, 1);
+                        ViewCompat.setTranslationX(view, 0);
                         if (remove) {
                             animateOtherViews(mListView, view);
                         } else {
@@ -248,35 +243,33 @@ public class SwipeToRemoveTouchListener implements View.OnTouchListener {
      * Animate a view between start and end X/Y locations, using either old (pre-3.0) or
      * new animation APIs.
      */
-    @SuppressLint("NewApi")
     private void moveView(View view, float startX, float endX, float startY, float endY,
                           final Runnable endAction) {
         if (startX != endX) {
-            ObjectAnimator anim = ObjectAnimator.ofFloat(view, UiUtils.TRANSLATION_X, startX, endX)
-                    .setDuration(MOVE_DURATION);
-            anim.setInterpolator(new AccelerateDecelerateInterpolator());
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (endAction != null) {
-                        endAction.run();
-                    }
-                }
-            });
-            anim.start();
+            ViewCompat.setTranslationX(view, startX);
+            ViewCompat.animate(view).translationX(endX).setDuration(MOVE_DURATION)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setListener(new ViewPropertyAnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(View view) {
+                            if (endAction != null) {
+                                endAction.run();
+                            }
+                        }
+                    }).start();
         }
         if (startY != endY) {
-            ObjectAnimator anim = ObjectAnimator.ofFloat(view, UiUtils.TRANSLATION_Y, startY, endY)
-                    .setDuration(MOVE_DURATION);
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (endAction != null) {
-                        endAction.run();
-                    }
-                }
-            });
-            anim.start();
+            ViewCompat.setTranslationY(view, startY);
+            ViewCompat.animate(view).translationY(endY)
+                    .setDuration(MOVE_DURATION)
+                    .setListener(new ViewPropertyAnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(View view) {
+                            if (endAction != null) {
+                                endAction.run();
+                            }
+                        }
+                    }).start();
         }
     }
 
