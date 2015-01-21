@@ -1,5 +1,7 @@
 package ua.org.cofriends.reades.utils;
 
+import android.os.Build;
+
 import com.google.gson.JsonSyntaxException;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -9,6 +11,7 @@ import org.apache.http.Header;
 import java.util.HashSet;
 import java.util.Set;
 
+import ua.org.cofriends.reades.BuildConfig;
 import ua.org.cofriends.reades.entity.ApiError;
 
 public class RestClient {
@@ -22,7 +25,7 @@ public class RestClient {
     private final static Set<Handler> sPendingHandlers = new HashSet<Handler>();
 
     static {
-        CLIENT.addHeader("Authorization", "Token b008d05b7bdea19e60ad2db31747910f7ed30ea4");
+        CLIENT.addHeader("Authorization", "Token " + BuildConfig.AUTH_TOKEN);
         CLIENT.addHeader(AsyncHttpClient.HEADER_CONTENT_TYPE, "application/json");
     }
 

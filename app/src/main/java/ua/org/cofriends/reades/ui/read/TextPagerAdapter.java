@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import ua.org.cofriends.reades.R;
+import ua.org.cofriends.reades.utils.Logger;
 
 public class TextPagerAdapter extends PagerAdapter {
 
+    private static final String TAG = Logger.makeLogTag(TextPagerAdapter.class);
     private final List<CharSequence> mPageTexts;
     private final Context mContext;
 
@@ -30,6 +32,11 @@ public class TextPagerAdapter extends PagerAdapter {
 
         PageView page = (PageView) object;
         page.setText(mPageTexts.get(position).toString());
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        Logger.d(TAG, "destroyed at " + position);
     }
 
     @Override

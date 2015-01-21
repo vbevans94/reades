@@ -52,7 +52,7 @@
             android:value="true" />
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
-            android:value="ua.org.cofriends.reades" />
+            android:value="${applicationId}" />
 
         <meta-data
             android:name="com.google.android.gms.version"
