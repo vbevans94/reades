@@ -33,25 +33,7 @@ class DictThread extends Thread {
 
                 IAnswer[] answers = request(word);
                 BusUtils.post(new DictService.AnswerEvent(answers));
-
-/*
-                if (answers.length == 0 || answers[0].getDefinition() == null) {
-                    while (word.length() > 3) {
-                        word = word.substring(0, word.length() - 1);
-                        answers = request(word + "*");
-                        if (answers.length > 0 && answers[0].getDefinition() != null) {
-                            BusUtils.post(new DictService.AnswerEvent(answers));
-                            break;
-                        }
-                    }
-                } else {
-                    BusUtils.post(new DictService.AnswerEvent(answers));
-                }
-*/
-
-            } catch (InterruptedException e) {
-                Logger.e(TAG, "Interrupted when getting word", e);
-            } catch (UnsupportedEncodingException e) {
+            } catch (InterruptedException | UnsupportedEncodingException e) {
                 Logger.e(TAG, "Interrupted when getting word", e);
             }
             if (mCancelled) {

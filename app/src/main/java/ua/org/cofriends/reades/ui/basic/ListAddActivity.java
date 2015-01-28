@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 
+import com.squareup.otto.Subscribe;
+
 public abstract class ListAddActivity extends BaseActivity {
 
     @Override
@@ -14,7 +16,8 @@ public abstract class ListAddActivity extends BaseActivity {
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(AddEvent event) {
+    @Subscribe
+    public void onAdd(AddEvent event) {
         View view = View.inflate(this, getDownloadViewId(), null);
         new AlertDialog.Builder(this)
                 .setView(view)

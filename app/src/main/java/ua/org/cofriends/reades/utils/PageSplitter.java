@@ -1,14 +1,21 @@
 package ua.org.cofriends.reades.utils;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.Html;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ua.org.cofriends.reades.ui.read.PageView;
 import ua.org.cofriends.reades.ui.read.ReadActivity;
 
 public class PageSplitter {
@@ -20,7 +27,6 @@ public class PageSplitter {
     private final List<CharSequence> pages = new ArrayList<CharSequence>();
     private SpannableStringBuilder currentLine = new SpannableStringBuilder();
     private SpannableStringBuilder currentPage = new SpannableStringBuilder();
-    private int currentLineHeight;
     private int pageContentHeight;
     private int currentLineWidth;
     private int textLineHeight;
@@ -63,11 +69,11 @@ public class PageSplitter {
     private void appendNewLine() {
         currentLine.append("\n");
         checkForPageEnd();
-        appendLineToPage(textLineHeight);
+        appendLineToPage();
     }
 
     private void checkForPageEnd() {
-        if (pageContentHeight + currentLineHeight > pageHeight) {
+        if (pageContentHeight + textLineHeight > pageHeight) {
             pages.add(currentPage);
             currentPage = new SpannableStringBuilder();
             pageContentHeight = 0;
@@ -78,22 +84,20 @@ public class PageSplitter {
         int textWidth = (int) Math.ceil(textPaint.measureText(appendedText));
         if (currentLineWidth + textWidth >= pageWidth) {
             checkForPageEnd();
-            appendLineToPage(textLineHeight);
+            appendLineToPage();
         }
         appendTextToLine(appendedText, textPaint, textWidth);
     }
 
-    private void appendLineToPage(int textLineHeight) {
+    private void appendLineToPage() {
         currentPage.append(currentLine);
-        pageContentHeight += currentLineHeight;
+        pageContentHeight += textLineHeight;
 
         currentLine = new SpannableStringBuilder();
-        currentLineHeight = textLineHeight;
         currentLineWidth = 0;
     }
 
     private void appendTextToLine(String appendedText, TextPaint textPaint, int textWidth) {
-        currentLineHeight = Math.max(currentLineHeight, textLineHeight);
         currentLine.append(renderToSpannable(appendedText, textPaint));
         currentLineWidth += textWidth;
     }
@@ -101,7 +105,7 @@ public class PageSplitter {
     public List<CharSequence> getPages() {
         List<CharSequence> copyPages = new ArrayList<CharSequence>(pages);
         SpannableStringBuilder lastPage = new SpannableStringBuilder(currentPage);
-        if (pageContentHeight + currentLineHeight > pageHeight) {
+        if (pageContentHeight + textLineHeight > pageHeight) {
             copyPages.add(lastPage);
             lastPage = new SpannableStringBuilder();
         }
@@ -117,5 +121,53 @@ public class PageSplitter {
             spannable.setSpan(new StyleSpan(Typeface.BOLD), 0, spannable.length(), 0);
         }
         return spannable;
+    }
+
+    public static Spannable splitWords(String textInput) {
+        StringBuilder text = new StringBuilder(textInput);
+        int start = 0;
+        SpannableStringBuilder spanText = new SpannableStringBuilder();
+        while (text.length() > 0) {
+            int nextSpace = text.indexOf(" ");
+            int nextBreak = text.indexOf("\n");
+            String delimiter = " ";
+            if (nextBreak != -1 && nextBreak < nextSpace) {
+                nextSpace = nextBreak;
+                delimiter = "\n";
+            }
+            if (nextSpace != -1) {
+                CharSequence word = text.subSequence(start, nextSpace);
+                spanText.append(Html.fromHtml(word.toString())).append(delimiter);
+                addSpannable(spanText, word);
+                text.delete(start, nextSpace + 1);
+            } else {
+                CharSequence word = text.substring(start);
+                spanText.append(word);
+                addSpannable(spanText, word);
+                break;
+            }
+        }
+
+        return spanText;
+    }
+
+    private static void addSpannable(Spannable spannable, final CharSequence word) {
+        ClickableSpan clickableSpan = new ClickableSpan() {
+
+            @Override
+            public void onClick(View textView) {
+                String escaped = word.toString().replaceAll("\\W", "");
+                BusUtils.post(new PageView.WordRequestEvent(escaped));
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+
+                ds.setUnderlineText(false);
+                ds.setColor(Color.BLACK);
+            }
+        };
+        spannable.setSpan(clickableSpan, spannable.length() - word.length() - 1, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 }

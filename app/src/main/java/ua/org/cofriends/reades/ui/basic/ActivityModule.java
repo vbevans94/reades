@@ -13,6 +13,7 @@ import ua.org.cofriends.reades.ui.books.SavedBooksView;
 import ua.org.cofriends.reades.ui.dictionaries.DictionariesActivity;
 import ua.org.cofriends.reades.ui.dictionaries.DownloadDictionariesView;
 import ua.org.cofriends.reades.ui.dictionaries.SavedDictionariesView;
+import ua.org.cofriends.reades.ui.read.PageView;
 import ua.org.cofriends.reades.ui.read.ReadActivity;
 import ua.org.cofriends.reades.ui.words.WordsDrawerView;
 
@@ -22,12 +23,13 @@ injects = {
         DictionariesActivity.class,
         BooksActivity.class,
         ReadActivity.class,
+        PageView.class,
         WordsDrawerView.class,
         SavedDictionariesView.class,
         SavedBooksView.class,
         DownloadBooksView.class,
         DownloadDictionariesView.class
-})
+}, complete = false)
 public final class ActivityModule {
 
     private final BaseActivity baseActivity;

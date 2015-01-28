@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -23,19 +24,15 @@ public class TextPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        return View.inflate(mContext, R.layout.page, null);
-    }
-
-    @Override
-    public void setPrimaryItem(ViewGroup container, int position, Object object) {
-        super.setPrimaryItem(container, position, object);
-
-        PageView page = (PageView) object;
+        PageView page = (PageView) View.inflate(mContext, R.layout.page_view, null);
         page.setText(mPageTexts.get(position).toString());
+        container.addView(page);
+        return page;
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
+        container.removeView((View) object);
         Logger.d(TAG, "destroyed at " + position);
     }
 
@@ -46,6 +43,6 @@ public class TextPagerAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return false;
+        return view == object;
     }
 }

@@ -3,6 +3,8 @@ package ua.org.cofriends.reades.ui.books;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.squareup.otto.Subscribe;
+
 import org.apache.http.Header;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class DownloadBooksView extends BaseListLayout implements RestClient.Hand
     }
 
     @Override
-    public void refreshList() {
+    public void onRefresh() {
         // load books from server
         RestClient.get(String.format("/languages/%d/books/"
                 , SavedDictionariesService.getCurrent().getFromLanguage().getLanguageId())
@@ -61,7 +63,8 @@ public class DownloadBooksView extends BaseListLayout implements RestClient.Hand
      * @param event to respond on
      */
     @SuppressWarnings("unused")
-    public void onEventMainThread(Book.DoneEvent event) {
+    @Subscribe
+    public void onBookActionDone(Book.DoneEvent event) {
         reloadFromDatabase();
     }
 
@@ -74,7 +77,8 @@ public class DownloadBooksView extends BaseListLayout implements RestClient.Hand
      * @param event to retrieve books from
      */
     @SuppressWarnings("unused")
-    public void onEventMainThread(Book.ListLoadedEvent event) {
+    @Subscribe
+    public void onBooksLoaded(Book.ListLoadedEvent event) {
         mBooks.removeAll(event.getData());
         listView().setAdapter(new BookAdapter(getContext(), mBooks));
 

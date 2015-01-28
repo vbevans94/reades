@@ -6,6 +6,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.squareup.otto.Subscribe;
+
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
@@ -47,12 +49,14 @@ public class SplashActivity extends ActionBarActivity {
 	}
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(Dictionary.LoadedEvent event) {
+    @Subscribe
+    public void onDictionaryLoaded(Dictionary.LoadedEvent event) {
         mLoadedDictionary = event.getData();
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(Book.LoadedEvent event) {
+    @Subscribe
+    public void onBooksLoaded(Book.LoadedEvent event) {
         mLoadedBook = event.getData();
     }
 

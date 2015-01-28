@@ -30,6 +30,10 @@ public class BaseFrameLayout extends FrameLayout implements RestClient.ErrorHand
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
+        if (isInEditMode()) {
+            return;
+        }
+
         BaseActivity.get(getContext()).inject(this);
         BusUtils.register(this);
     }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
@@ -111,7 +112,8 @@ public class WordsDrawerView extends BaseFrameLayout {
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(Word.ListLoadedEvent event) {
+    @Subscribe
+    public void onWordListLoaded(Word.ListLoadedEvent event) {
         mListWords.setAdapter(new WordsAdapter(getContext(), event.getData()));
     }
 
@@ -123,12 +125,14 @@ public class WordsDrawerView extends BaseFrameLayout {
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(Word.RemoveEvent event) {
+    @Subscribe
+    public void onWordRemove(Word.RemoveEvent event) {
         SavedWordsService.delete(getContext(), event.getData());
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(GoogleApi.ConnectedEvent event) {
+    @Subscribe
+    public void onGoogleConnected(GoogleApi.ConnectedEvent event) {
         GoogleApiClient client = event.getData();
         mGoogleApi.loadImage(mImageAccount);
         mTextAccountName.setText(Plus.AccountApi.getAccountName(client));

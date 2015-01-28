@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 
 import com.cocosw.undobar.UndoBarController;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
@@ -29,7 +30,8 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
         super(context, attrs);
     }
 
-    public void refreshList() {
+    @Override
+    public void onRefresh() {
         SavedDictionariesService.loadList(getContext());
     }
 
@@ -48,7 +50,8 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(Dictionary.ListLoadedEvent event) {
+    @Subscribe
+    public void onDictionariesListLoaded(Dictionary.ListLoadedEvent event) {
         SwipeAdapter.wrapList(listView()
                 , new DictionaryAdapter(getContext()
                     , event.getData()
@@ -58,12 +61,14 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(Dictionary.DoneEvent event) {
-        refreshList();
+    @Subscribe
+    public void onDicionaryActionDone(Dictionary.DoneEvent event) {
+        refreshController.refresh();
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(SwipeToRemoveTouchListener.RemoveEvent event) {
+    @Subscribe
+    public void onSwipeRemove(SwipeToRemoveTouchListener.RemoveEvent event) {
         mUndoBar.message(R.string.message_will_be_removed)
                 .listener(this)
                 .token(BundleUtils.writeObject(Dictionary.class, (Dictionary) event.getData()))
@@ -72,7 +77,7 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
 
     @Override
     public void onUndo(Parcelable parcelable) {
-        refreshList();
+        refreshController.refresh();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package ua.org.cofriends.reades.ui.dictionaries;
 
+import com.squareup.otto.Subscribe;
+
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.ui.books.BooksActivity;
@@ -8,7 +10,8 @@ import ua.org.cofriends.reades.ui.basic.ListAddActivity;
 public class DictionariesActivity extends ListAddActivity {
 
     @SuppressWarnings("unused")
-    public void onEvent(Dictionary.SelectedEvent event) {
+    @Subscribe
+    public void onDictionarySelected(Dictionary.SelectedEvent event) {
         BooksActivity.start(event.getData(), this);
     }
 

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 
 import com.cocosw.undobar.UndoBarController;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
@@ -38,7 +39,7 @@ public class SavedBooksView extends AddListLayout implements UndoBarController.A
     }
 
     @Override
-    public void refreshList() {
+    public void onRefresh() {
         SavedBooksService.loadListByLanguage(getContext(), SavedDictionariesService.getCurrent().getFromLanguage());
     }
 
@@ -50,7 +51,8 @@ public class SavedBooksView extends AddListLayout implements UndoBarController.A
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(Book.ListLoadedEvent event) {
+    @Subscribe
+    public void onBooksListLoaded(Book.ListLoadedEvent event) {
         SwipeAdapter.wrapList(listView()
                 , new BookAdapter(getContext(), event.getData()));
 
@@ -62,12 +64,14 @@ public class SavedBooksView extends AddListLayout implements UndoBarController.A
      * @param event to respond on
      */
     @SuppressWarnings("unused")
-    public void onEventMainThread(Book.DoneEvent event) {
-        refreshList();
+    @Subscribe
+    public void onBookActionDone(Book.DoneEvent event) {
+        refreshController.refresh();
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(SwipeToRemoveTouchListener.RemoveEvent event) {
+    @Subscribe
+    public void onRemove(SwipeToRemoveTouchListener.RemoveEvent event) {
         Book book = (Book) event.getData();
         mUndoBar.message(R.string.message_will_be_removed)
                 .listener(this)
@@ -77,7 +81,7 @@ public class SavedBooksView extends AddListLayout implements UndoBarController.A
 
     @Override
     public void onUndo(Parcelable parcelable) {
-        refreshList();
+        refreshController.refresh();
     }
 
     @Override

@@ -3,6 +3,8 @@ package ua.org.cofriends.reades.ui.dictionaries;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.squareup.otto.Subscribe;
+
 import org.apache.http.Header;
 
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class DownloadDictionariesView extends BaseListLayout implements RestClie
     }
 
     @Override
-    public void refreshList() {
+    public void onRefresh() {
         // load dictionaries from server
         RestClient.get("/dictionaries/", RestClient.GsonHandler.create(Dictionary[].class, this, this));
     }
@@ -59,7 +61,8 @@ public class DownloadDictionariesView extends BaseListLayout implements RestClie
      * @param event to retrieve dictionaries from
      */
     @SuppressWarnings("unused")
-    public void onEventMainThread(Dictionary.ListLoadedEvent event) {
+    @Subscribe
+    public void onDictionariesListLoaded(Dictionary.ListLoadedEvent event) {
         mDictionaries.removeAll(event.getData());
         listView().setAdapter(new DictionaryAdapter(getContext()
                 , mDictionaries, R.string.title_download));
@@ -72,7 +75,8 @@ public class DownloadDictionariesView extends BaseListLayout implements RestClie
      * @param event to respond on
      */
     @SuppressWarnings("unused")
-    public void onEventMainThread(Dictionary.DoneEvent event) {
+    @Subscribe
+    public void onDictionaryActionDone(Dictionary.DoneEvent event) {
         reloadDictionariesFromDatabase();
     }
 

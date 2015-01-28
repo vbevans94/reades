@@ -23,7 +23,7 @@ public class MainApplication extends SugarApp {
     }
 
     /**
-     * Can be inherited to provide additional modules. Just call super implementation and add to it.
+     * Can be inherited to provide additional modules. Just call super implemen tation and add to it.
      * @return list of modules
      */
     protected List<Object> getModules() {

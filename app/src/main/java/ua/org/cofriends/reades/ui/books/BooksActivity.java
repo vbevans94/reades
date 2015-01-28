@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.squareup.otto.Subscribe;
+
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
@@ -38,7 +40,8 @@ public class BooksActivity extends ListAddActivity {
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(Book.SelectedEvent event) {
+    @Subscribe
+    public void onBookSelected(Book.SelectedEvent event) {
         Dictionary dictionary = BundleUtils.fetchFromBundle(Dictionary.class, getIntent().getExtras());
         ReadActivity.start(event.getData(), dictionary, this);
     }

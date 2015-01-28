@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.squareup.otto.Subscribe;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,6 +71,10 @@ public class BaseActivity extends ActionBarActivity {
         return Arrays.<Object>asList(new ActivityModule(this));
     }
 
+    public ObjectGraph getActivityGraph() {
+        return mObjectGraph;
+    }
+
     /**
      * Sets content view under given resource id.
      *
@@ -125,7 +131,8 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(WordsDrawerView.HomeEvent event) {
+    @Subscribe
+    public void onHome(WordsDrawerView.HomeEvent event) {
         if (getClass() != DictionariesActivity.class) {
             startActivity(new Intent(this, DictionariesActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
@@ -147,7 +154,8 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(GoogleApi.ConnectionFailedEvent event) {
+    @Subscribe
+    public void onConnectionFailed(GoogleApi.ConnectionFailedEvent event) {
         try {
             if (!mIntentPending) {
                 mIntentPending = true;

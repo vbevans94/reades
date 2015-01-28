@@ -9,6 +9,8 @@ import android.text.TextPaint;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.otto.Subscribe;
+
 import org.dict.kernel.IAnswer;
 
 import java.util.ArrayList;
@@ -91,7 +93,8 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(BaseViewPager.SizeChangedEvent event) {
+    @Subscribe
+    public void onSizeChanged(BaseViewPager.SizeChangedEvent event) {
         TextPaint textPaint = new TextPaint();
         textPaint.setTextSize(getResources().getDimension(R.dimen.text_normal));
         int marginRoot = (int) getResources().getDimension(R.dimen.root_margin);
@@ -101,7 +104,8 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(PagingTask.DoneEvent event) {
+    @Subscribe
+    public void onPagingDone(PagingTask.DoneEvent event) {
         UiUtils.hide(mProgress);
         UiUtils.show(mTextPageInfo);
 
@@ -113,18 +117,21 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(ProgressEvent event) {
+    @Subscribe
+    public void onProgress(ProgressEvent event) {
         int progress = event.getData();
         mProgress.setProgress(progress);
     }
 
     @SuppressWarnings("unused")
-    public void onEvent(PageView.WordRequestEvent event) {
+    @Subscribe
+    public void onWordRequested(PageView.WordRequestEvent event) {
         mDictService.search(event.getData());
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(DictService.AnswerEvent event) {
+    @Subscribe
+    public void onAnswerReady(DictService.AnswerEvent event) {
         IAnswer[] answers = event.getData();
         if (answers.length > 0) {
             DefinitionDialogFactory.show(this, answers[0]);
@@ -168,7 +175,7 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
             int pageNumber = 0;
             if (!pages.isEmpty()) {
                 // extract content from pages
-                contents = new ArrayList<CharSequence>();
+                contents = new ArrayList<>();
                 for (Page page : pages) {
                     contents.add(page.getContent());
                     publishProgress(pageNumber++, pages.size());
