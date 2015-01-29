@@ -106,13 +106,13 @@ public class SavedDictionariesService extends IntentService {
     private void loadAll() {
         // retrieve updated list of all dictionaries from the database
         List<Dictionary> dictionaries = Dictionary.listAll(Dictionary.class);
-        BusUtils.post(new Dictionary.ListLoadedEvent(dictionaries));
+        BusUtils.postToUi(new Dictionary.ListLoadedEvent(dictionaries));
     }
 
     private void loadById(int dictionaryId) {
         // retrieve updated list of all dictionaries from the database
         Dictionary dictionary = Dictionary.fromDb(dictionaryId);
-        BusUtils.post(new Dictionary.LoadedEvent(dictionary));
+        BusUtils.postToUi(new Dictionary.LoadedEvent(dictionary));
     }
 
     public static Dictionary getCurrent() {

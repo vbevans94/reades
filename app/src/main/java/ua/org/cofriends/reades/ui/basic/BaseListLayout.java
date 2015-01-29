@@ -3,6 +3,8 @@ package ua.org.cofriends.reades.ui.basic;
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
+import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -13,8 +15,9 @@ import butterknife.InjectView;
 import dagger.ObjectGraph;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.basic.tools.SwipeToRefreshModule;
+import ua.org.cofriends.reades.utils.BusUtils;
 
-public class BaseListLayout extends BaseFrameLayout implements SwipeRefreshLayout.OnRefreshListener {
+public class BaseListLayout extends FrameLayout implements SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.list)
     ListView mListView;
@@ -26,8 +29,11 @@ public class BaseListLayout extends BaseFrameLayout implements SwipeRefreshLayou
     SwipeRefreshLayout mLayoutRefresh;
 
     @Inject
-    @SwipeToRefreshModule.ForSwipe
-    protected SwipeToRefreshModule.RefreshController refreshController;
+    protected SwipeToRefreshModule.RefreshController mRefreshController;
+
+    @Inject
+    @SwipeToRefreshModule.SwipeListener
+    AbsListView.OnScrollListener mScrollListener;
 
     public BaseListLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -39,25 +45,32 @@ public class BaseListLayout extends BaseFrameLayout implements SwipeRefreshLayou
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        ObjectGraph objectGraph = BaseActivity.get(getContext()).getActivityGraph();
-        objectGraph.plus(new SwipeToRefreshModule(mLayoutRefresh, this)).inject(this);
+        ButterKnife.inject(this);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
+        ObjectGraph objectGraph = BaseActivity.get(getContext()).getActivityGraph();
+        objectGraph.plus(new SwipeToRefreshModule(mLayoutRefresh, this)).inject(this);
+
         TextView textEmpty = ButterKnife.findById(this, R.id.text_empty);
         textEmpty.setText(R.string.message_no_items);
         mListView.setEmptyView(textEmpty);
 
-        BaseActivity.get(getContext()).inject(this);
+        BusUtils.register(this);
 
-        refreshController.refresh();
+        mListView.setOnScrollListener(mScrollListener);
+
+        mRefreshController.refresh();
     }
 
-    public void refreshed() {
-        mLayoutRefresh.setRefreshing(false);
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        BusUtils.unregister(this);
     }
 
     public ListView listView() {

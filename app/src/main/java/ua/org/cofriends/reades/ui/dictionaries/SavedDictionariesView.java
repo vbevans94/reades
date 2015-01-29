@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 
 import com.cocosw.undobar.UndoBarController;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -15,7 +16,6 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.basic.AddListLayout;
-import ua.org.cofriends.reades.ui.basic.BaseActivity;
 import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeAdapter;
 import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeToRemoveTouchListener;
 import ua.org.cofriends.reades.utils.BundleUtils;
@@ -25,6 +25,9 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
 
     @Inject
     UndoBarController.UndoBar mUndoBar;
+
+    @Inject
+    Picasso mPicasso;
 
     public SavedDictionariesView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -52,18 +55,15 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
     @SuppressWarnings("unused")
     @Subscribe
     public void onDictionariesListLoaded(Dictionary.ListLoadedEvent event) {
-        SwipeAdapter.wrapList(listView()
-                , new DictionaryAdapter(getContext()
-                    , event.getData()
-                    , R.string.title_open));
+        SwipeAdapter.wrapList(listView(), new DictionaryAdapter(getContext(), event.getData(), R.string.title_open, mPicasso));
 
-        refreshed();
+        mRefreshController.onStopRefresh();
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onDicionaryActionDone(Dictionary.DoneEvent event) {
-        refreshController.refresh();
+        mRefreshController.refresh();
     }
 
     @SuppressWarnings("unused")
@@ -77,7 +77,7 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
 
     @Override
     public void onUndo(Parcelable parcelable) {
-        refreshController.refresh();
+        mRefreshController.refresh();
     }
 
     @Override

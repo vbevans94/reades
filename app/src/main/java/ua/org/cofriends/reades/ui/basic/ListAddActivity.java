@@ -6,6 +6,8 @@ import android.view.View;
 
 import com.squareup.otto.Subscribe;
 
+import ua.org.cofriends.reades.utils.BusUtils;
+
 public abstract class ListAddActivity extends BaseActivity {
 
     @Override
@@ -15,15 +17,34 @@ public abstract class ListAddActivity extends BaseActivity {
         setContentView(getSavedViewId());
     }
 
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onAdd(AddEvent event) {
-        View view = View.inflate(this, getDownloadViewId(), null);
-        new AlertDialog.Builder(this)
-                .setView(view)
-                .setPositiveButton(android.R.string.ok, null)
-                .create().show();
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        BusUtils.register(mAddHandler);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        BusUtils.unregister(mAddHandler);
+    }
+
+    class AddHandler {
+
+        @SuppressWarnings("unused")
+        @Subscribe
+        public void onAdd(AddEvent event) {
+            View view = View.inflate(ListAddActivity.this, getDownloadViewId(), null);
+            new AlertDialog.Builder(ListAddActivity.this)
+                    .setView(view)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .create().show();
+        }
+    }
+
+    private final AddHandler mAddHandler = new AddHandler();
 
     /**
      * @return fragment to show under 'download' tab

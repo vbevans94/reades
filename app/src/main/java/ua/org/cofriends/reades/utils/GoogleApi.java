@@ -8,6 +8,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -21,16 +22,20 @@ public class GoogleApi implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     public static final int RC_SIGN_IN = 0;
     public static final String KEY_CANCELLED = "key_google_api_cancelled";
 
+    private final Picasso mPicasso;
+
     private GoogleApiClient mGoogleApiClient;
 
     @Inject
-    public GoogleApi(Application context) {
+    public GoogleApi(Application context, Picasso picasso) {
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
+
+        mPicasso = picasso;
     }
 
     @Override
@@ -88,8 +93,7 @@ public class GoogleApi implements GoogleApiClient.ConnectionCallbacks, GoogleApi
         Person.Image profilePicture = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage();
         if (profilePicture != null && profilePicture.hasUrl()) {
             int size = (int) imageView.getContext().getResources().getDimension(R.dimen.item_icon_size);
-            PicassoUtil.getInstance(imageView.getContext())
-                    .load(profilePicture.getUrl() + "&size=" + size)
+            mPicasso.load(profilePicture.getUrl() + "&size=" + size)
                     .transform(new CircleTransform())
                     .resize(size, size)
                     .centerCrop()

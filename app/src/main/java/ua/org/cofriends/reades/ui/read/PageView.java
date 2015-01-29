@@ -5,13 +5,13 @@ import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
-import ua.org.cofriends.reades.ui.basic.BaseFrameLayout;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.PageSplitter;
 
-public class PageView extends BaseFrameLayout {
+public class PageView extends TextView {
 
     @InjectView(R.id.text_page)
     TextView textPage;
@@ -31,6 +31,8 @@ public class PageView extends BaseFrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        ButterKnife.inject(this);
 
         textPage.setMovementMethod(LinkMovementMethod.getInstance());
     }

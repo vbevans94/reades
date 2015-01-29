@@ -32,7 +32,7 @@ class DictThread extends Thread {
                 String word = mWordQueue.take();
 
                 IAnswer[] answers = request(word);
-                BusUtils.post(new DictService.AnswerEvent(answers));
+                BusUtils.postToUi(new DictService.AnswerEvent(answers));
             } catch (InterruptedException | UnsupportedEncodingException e) {
                 Logger.e(TAG, "Interrupted when getting word", e);
             }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 
@@ -11,15 +12,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.OnItemClick;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import ua.org.cofriends.reades.R;
+import ua.org.cofriends.reades.data.api.ApiService;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.dictionary.DictionaryDownloadService;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.basic.BaseListLayout;
-import ua.org.cofriends.reades.utils.RestClient;
+import ua.org.cofriends.reades.utils.HttpUtils;
 
-public class DownloadDictionariesView extends BaseListLayout implements RestClient.Handler<Dictionary[]> {
+public class DownloadDictionariesView extends BaseListLayout implements Callback<List<Dictionary>> {
+
+    @Inject
+    ApiService mApiService;
+
+    @Inject
+    Picasso mPicasso;
 
     private List<Dictionary> mDictionaries = new ArrayList<Dictionary>();
 
@@ -37,14 +50,20 @@ public class DownloadDictionariesView extends BaseListLayout implements RestClie
     @Override
     public void onRefresh() {
         // load dictionaries from server
-        RestClient.get("/dictionaries/", RestClient.GsonHandler.create(Dictionary[].class, this, this));
+        mApiService.listDictionaries(this);
     }
 
     @Override
-    public void onSuccess(int statusCode, Header[] headers, Dictionary[] response) {
+    public void success(List<Dictionary> dictionaries, Response response) {
         mDictionaries.clear();
-        mDictionaries.addAll(Arrays.asList(response));
+        mDictionaries.addAll(dictionaries);
         reloadDictionariesFromDatabase();
+    }
+
+    @Override
+    public void failure(RetrofitError error) {
+        // TODO: handle error
+        mRefreshController.onStopRefresh();
     }
 
     @OnItemClick(R.id.list)
@@ -65,9 +84,9 @@ public class DownloadDictionariesView extends BaseListLayout implements RestClie
     public void onDictionariesListLoaded(Dictionary.ListLoadedEvent event) {
         mDictionaries.removeAll(event.getData());
         listView().setAdapter(new DictionaryAdapter(getContext()
-                , mDictionaries, R.string.title_download));
+                , mDictionaries, R.string.title_download, mPicasso));
 
-        refreshed();
+        mRefreshController.onStopRefresh();
     }
 
     /**

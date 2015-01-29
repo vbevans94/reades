@@ -138,11 +138,11 @@ public class SavedBooksService extends IntentService {
     private void loadBooks(Intent intent) {
         Language language = BundleUtils.fetchFromBundle(Language.class, intent.getExtras()).meFromDb();
         List<Book> books = Book.find(Book.class, "language = ?", Long.toString(language.getId()));
-        BusUtils.post(new Book.ListLoadedEvent(books));
+        BusUtils.postToUi(new Book.ListLoadedEvent(books));
     }
 
     private void loadById(int bookId) {
         Book book = Book.fromDb(bookId);
-        BusUtils.post(new Book.LoadedEvent(book));
+        BusUtils.postToUi(new Book.LoadedEvent(book));
     }
 }

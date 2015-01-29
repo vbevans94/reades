@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 
@@ -11,16 +12,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.OnItemClick;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import ua.org.cofriends.reades.R;
+import ua.org.cofriends.reades.data.api.ApiService;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.service.book.BookDownloadService;
 import ua.org.cofriends.reades.service.book.SavedBooksService;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.basic.BaseListLayout;
-import ua.org.cofriends.reades.utils.RestClient;
+import ua.org.cofriends.reades.utils.HttpUtils;
 
-public class DownloadBooksView extends BaseListLayout implements RestClient.Handler<Book[]> {
+public class DownloadBooksView extends BaseListLayout implements Callback<List<Book>> {
+
+    @Inject
+    ApiService apiService;
+
+    @Inject
+    Picasso mPicasso;
 
     private List<Book> mBooks = new ArrayList<>();
 
@@ -38,16 +51,20 @@ public class DownloadBooksView extends BaseListLayout implements RestClient.Hand
     @Override
     public void onRefresh() {
         // load books from server
-        RestClient.get(String.format("/languages/%d/books/"
-                , SavedDictionariesService.getCurrent().getFromLanguage().getLanguageId())
-                , RestClient.GsonHandler.create(Book[].class, this, this));
+        apiService.listBooks(String.valueOf(SavedDictionariesService.getCurrent().getFromLanguage().getLanguageId()), this);
     }
 
     @Override
-    public void onSuccess(int statusCode, Header[] headers, Book[] response) {
+    public void success(List<Book> books, Response response) {
         mBooks.clear();
-        mBooks.addAll(Arrays.asList(response));
+        mBooks.addAll(books);
         reloadFromDatabase();
+    }
+
+    @Override
+    public void failure(RetrofitError error) {
+        // TODO: handle error
+        mRefreshController.onStopRefresh();
     }
 
     @OnItemClick(R.id.list)
@@ -80,8 +97,8 @@ public class DownloadBooksView extends BaseListLayout implements RestClient.Hand
     @Subscribe
     public void onBooksLoaded(Book.ListLoadedEvent event) {
         mBooks.removeAll(event.getData());
-        listView().setAdapter(new BookAdapter(getContext(), mBooks));
+        listView().setAdapter(new BookAdapter(getContext(), mBooks, mPicasso));
 
-        refreshed();
+        mRefreshController.onStopRefresh();
     }
 }

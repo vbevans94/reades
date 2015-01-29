@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,6 +18,7 @@ import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
@@ -25,14 +26,13 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Word;
 import ua.org.cofriends.reades.service.SavedWordsService;
 import ua.org.cofriends.reades.ui.basic.BaseActivity;
-import ua.org.cofriends.reades.ui.basic.BaseFrameLayout;
 import ua.org.cofriends.reades.ui.basic.DrawerToggle;
 import ua.org.cofriends.reades.ui.basic.tools.CircleTransform;
 import ua.org.cofriends.reades.ui.basic.tools.FillTransform;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.GoogleApi;
 
-public class WordsDrawerView extends BaseFrameLayout {
+public class WordsDrawerView extends LinearLayout {
 
     @InjectView(R.id.list_words)
     ListView mListWords;
@@ -53,11 +53,24 @@ public class WordsDrawerView extends BaseFrameLayout {
         super(context, attrs);
 
         View.inflate(context, R.layout.words_drawer_view, this);
+
+        setBackgroundResource(R.color.white);
+        setOrientation(VERTICAL);
+        setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        ButterKnife.inject(this);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+
+        BaseActivity.get(getContext()).inject(this);
 
         mListWords.setEmptyView(findViewById(R.id.text_empty));
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_person);
@@ -77,6 +90,8 @@ public class WordsDrawerView extends BaseFrameLayout {
         if (mListWords.getAdapter() == null) {
             SavedWordsService.loadList(getContext());
         }
+
+        BusUtils.register(this);
     }
 
     @OnClick(R.id.image_account)
@@ -108,7 +123,8 @@ public class WordsDrawerView extends BaseFrameLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        mGoogleApi.connect();
+        mGoogleApi.disconnect();
+        BusUtils.unregister(this);
     }
 
     @SuppressWarnings("unused")

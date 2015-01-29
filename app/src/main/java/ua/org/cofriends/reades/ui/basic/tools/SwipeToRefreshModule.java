@@ -13,16 +13,20 @@ import dagger.Module;
 import dagger.Provides;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.basic.ActivityModule;
+import ua.org.cofriends.reades.ui.basic.BaseListLayout;
 import ua.org.cofriends.reades.ui.books.DownloadBooksView;
 import ua.org.cofriends.reades.ui.books.SavedBooksView;
+import ua.org.cofriends.reades.ui.dictionaries.DownloadDictionariesView;
 import ua.org.cofriends.reades.ui.dictionaries.SavedDictionariesView;
 
 @Module(injects = {
         SavedDictionariesView.class,
         SavedBooksView.class,
         DownloadBooksView.class,
-        DownloadBooksView.class
-}, addsTo = ActivityModule.class, complete = false, library = true)
+        DownloadDictionariesView.class,
+        DownloadBooksView.class,
+        BaseListLayout.class
+}, addsTo = ActivityModule.class, complete = false)
 public class SwipeToRefreshModule {
 
     private final SwipeRefreshLayout swipeToRefresh;
@@ -37,7 +41,7 @@ public class SwipeToRefreshModule {
 
     @Singleton
     @Provides
-    @ForSwipe
+    @SwipeListener
     public AbsListView.OnScrollListener provideListener() {
         return new AbsListView.OnScrollListener() {
             @Override
@@ -91,6 +95,6 @@ public class SwipeToRefreshModule {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Qualifier
-    public static @interface ForSwipe {
+    public static @interface SwipeListener {
     }
 }

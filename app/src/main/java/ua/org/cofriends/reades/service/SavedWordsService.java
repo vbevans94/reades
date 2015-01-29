@@ -82,6 +82,6 @@ public class SavedWordsService extends IntentService {
         // retrieve updated list of all word from the database and give to the world
         List<Word> words = Word.listAll(Word.class);
         Collections.reverse(words);
-        BusUtils.post(new Word.ListLoadedEvent(words));
+        BusUtils.postToUi(new Word.ListLoadedEvent(words));
     }
 }

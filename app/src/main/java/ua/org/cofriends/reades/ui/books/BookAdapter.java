@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import butterknife.InjectView;
@@ -14,16 +16,17 @@ import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.ui.basic.tools.BaseViewHolder;
 import ua.org.cofriends.reades.ui.basic.tools.CircleTransform;
 import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeAdapter;
-import ua.org.cofriends.reades.utils.PicassoUtil;
 
 public class BookAdapter extends SwipeAdapter<Book> {
 
     final int mSize;
+    private final Picasso mPicasso;
 
-    public BookAdapter(Context context, List<Book> items) {
+    public BookAdapter(Context context, List<Book> items, Picasso picasso) {
         super(context, R.layout.book_item, items);
 
         mSize = (int) context.getResources().getDimension(R.dimen.item_icon_size);
+        mPicasso = picasso;
     }
 
     @Override
@@ -45,8 +48,7 @@ public class BookAdapter extends SwipeAdapter<Book> {
 
         holder.textName.setText(book.getName());
         holder.textDetails.setText(book.getAuthor().getName());
-        PicassoUtil.getInstance(getContext())
-                .load(book.getImageUrl())
+        mPicasso.load(book.getImageUrl())
                 .resize(mSize, mSize)
                 .transform(new CircleTransform())
                 .centerCrop()

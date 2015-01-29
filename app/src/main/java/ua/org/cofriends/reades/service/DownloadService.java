@@ -21,8 +21,8 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.basic.tools.BaseToast;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.GsonUtils;
+import ua.org.cofriends.reades.utils.HttpUtils;
 import ua.org.cofriends.reades.utils.Logger;
-import ua.org.cofriends.reades.utils.RestClient;
 
 public class DownloadService extends Service {
 
@@ -157,7 +157,7 @@ public class DownloadService extends Service {
             startForeground(mPendingToId.get(loadable), builder.build());
 
             // start loading
-            RestClient.getClient().get(loadable.getDownloadUrl(), new FileAsyncHttpResponseHandler(this) {
+            HttpUtils.getClient().get(loadable.getDownloadUrl(), new FileAsyncHttpResponseHandler(this) {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
                     BusUtils.post(new Loadable.FailedEvent());
