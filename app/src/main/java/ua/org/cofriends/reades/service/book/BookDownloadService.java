@@ -14,7 +14,10 @@ public class BookDownloadService extends DownloadService {
     @Override
     public void onLoaded(Loadable loadable) {
         if (loadable instanceof Book) {
-            SavedBooksService.actUpon(this, (Book) loadable, SavedBooksService.SAVE);
+            Book book = (Book) loadable;
+            // mention that it was taken from library
+            book.setSourceType(Book.SourceType.LIBRARY);
+            SavedBooksService.actUpon(this, book, SavedBooksService.SAVE);
         }
     }
 }

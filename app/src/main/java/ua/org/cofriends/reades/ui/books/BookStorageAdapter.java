@@ -17,16 +17,14 @@ import ua.org.cofriends.reades.ui.basic.tools.BaseViewHolder;
 import ua.org.cofriends.reades.ui.basic.tools.CircleTransform;
 import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeAdapter;
 
-public class BookAdapter extends SwipeAdapter<Book> {
+public class BookStorageAdapter extends SwipeAdapter<Book> {
 
     final int mSize;
-    private final Picasso mPicasso;
 
-    public BookAdapter(Context context, List<Book> items, Picasso picasso) {
+    public BookStorageAdapter(Context context, List<Book> items) {
         super(context, R.layout.book_item, items);
 
         mSize = (int) context.getResources().getDimension(R.dimen.item_icon_size);
-        mPicasso = picasso;
     }
 
     @Override
@@ -48,11 +46,6 @@ public class BookAdapter extends SwipeAdapter<Book> {
 
         holder.textName.setText(book.getName());
         holder.textDetails.setText(book.getAuthor().getName());
-        mPicasso.load(book.getImageUrl())
-                .resize(mSize, mSize)
-                .transform(new CircleTransform())
-                .centerCrop()
-                .into(holder.image);
 
         return view;
     }
@@ -64,9 +57,6 @@ public class BookAdapter extends SwipeAdapter<Book> {
 
         @InjectView(R.id.text_details)
         TextView textDetails;
-
-        @InjectView(R.id.image)
-        ImageView image;
 
         ViewHolder(View view) {
             super(view);

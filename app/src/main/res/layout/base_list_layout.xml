@@ -37,7 +37,7 @@
                     android:divider="@null"
                     android:dividerHeight="0dp"
                     android:listSelector="@drawable/selectable_background_reades"
-                    tools:listitem="@layout/item" />
+                    tools:listitem="@layout/book_item" />
 
                 <ua.org.cofriends.reades.ui.basic.BaseTextView
                     android:id="@+id/text_empty"

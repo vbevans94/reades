@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import com.squareup.otto.Subscribe;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -68,7 +69,7 @@ public class BaseActivity extends ActionBarActivity {
      * @return array of modules
      */
     protected List<Object> getModules() {
-        return Arrays.<Object>asList(new ActivityModule(this));
+        return Collections.<Object>singletonList(new ActivityModule(this));
     }
 
     public ObjectGraph getActivityGraph() {

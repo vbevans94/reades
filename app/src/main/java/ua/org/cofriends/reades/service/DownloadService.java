@@ -160,7 +160,6 @@ public class DownloadService extends Service {
             HttpUtils.getClient().get(loadable.getDownloadUrl(), new FileAsyncHttpResponseHandler(this) {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-                    BusUtils.post(new Loadable.FailedEvent());
                     stopWithMessage(getString(R.string.error_download_failed), loadable);
                 }
 
@@ -169,9 +168,6 @@ public class DownloadService extends Service {
                     loadable.setLoadedPath(file.getAbsolutePath());
 
                     onLoaded(loadable);
-
-                    // notify eco-system that we are done
-                    BusUtils.post(new Loadable.LoadedEvent(loadable));
 
                     stopWithMessage(getString(R.string.message_download_success, loadable.getName()), loadable);
                 }
@@ -234,14 +230,5 @@ public class DownloadService extends Service {
         void setLoadedPath(String url);
 
         String getName();
-
-        public static class LoadedEvent extends BusUtils.Event<Loadable> {
-
-            public LoadedEvent(Loadable object) {
-                super(object);
-            }
-        }
-
-        public static class FailedEvent {}
     }
 }

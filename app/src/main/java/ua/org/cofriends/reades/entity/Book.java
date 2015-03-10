@@ -6,6 +6,7 @@ import com.orm.SugarRecord;
 
 import java.util.List;
 
+import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.service.DownloadService;
 import ua.org.cofriends.reades.utils.BusUtils;
 
@@ -29,6 +30,9 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
 
     @Expose
     private Language language;
+
+    @Expose
+    private SourceType sourceType;
 
     private Book(int bookId, String name, String imageUrl) {
         this.bookId = bookId;
@@ -85,6 +89,14 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
 
     public void setAuthor(Author author) {
         this.author = author;
+    }
+
+    public SourceType getSourceType() {
+        return sourceType;
+    }
+
+    public void setSourceType(SourceType sourceType) {
+        this.sourceType = sourceType;
     }
 
     public Book meFromDb() {
@@ -166,6 +178,27 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
 
         public LoadedEvent(Book object) {
             super(object);
+        }
+    }
+
+    public enum SourceType {
+
+        LIBRARY(R.string.title_library, R.layout.saved_books_view), DEVICE(R.string.title_device, R.layout.device_books_view);
+
+        private final int titleString;
+        private final int viewId;
+
+        SourceType(int titleString, int viewId) {
+            this.titleString = titleString;
+            this.viewId = viewId;
+        }
+
+        public int getTitleString() {
+            return titleString;
+        }
+
+        public int getViewId() {
+            return viewId;
         }
     }
 }

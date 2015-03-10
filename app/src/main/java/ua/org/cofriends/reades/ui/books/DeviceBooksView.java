@@ -3,7 +3,9 @@ package ua.org.cofriends.reades.ui.books;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.cocosw.undobar.UndoBarController;
 import com.squareup.otto.Subscribe;
@@ -22,28 +24,37 @@ import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeToRemoveTouchLi
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 
-public class SavedBooksView extends AddListLayout implements UndoBarController.AdvancedUndoListener {
+public class DeviceBooksView extends AddListLayout implements UndoBarController.AdvancedUndoListener, View.OnClickListener {
 
     @Inject
     UndoBarController.UndoBar mUndoBar;
 
-    @Inject
-    Picasso mPicasso;
-
-    public SavedBooksView(Context context, AttributeSet attrs) {
+    public DeviceBooksView(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        findViewById(R.id.image_add).setOnClickListener(this);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        mTextTitle.setText(R.string.title_saved);
+        mTextTitle.setText(R.string.title_opened);
+    }
+
+    @Override
+    public void onClick(@NonNull View v) {
+        BusUtils.post(new OpenBookEvent());
     }
 
     @Override
     public void onRefresh() {
-        SavedBooksService.loadList(getContext(), SavedDictionariesService.getCurrent().getFromLanguage(), Book.SourceType.LIBRARY);
+        SavedBooksService.loadList(getContext(), SavedDictionariesService.getCurrent().getFromLanguage(), Book.SourceType.DEVICE);
     }
 
     @OnItemClick(R.id.list)
@@ -56,7 +67,7 @@ public class SavedBooksView extends AddListLayout implements UndoBarController.A
     @SuppressWarnings("unused")
     @Subscribe
     public void onBooksListLoaded(Book.ListLoadedEvent event) {
-        SwipeAdapter.wrapList(listView(), new BookLibraryAdapter(getContext(), event.getData(), mPicasso));
+        SwipeAdapter.wrapList(listView(), new BookStorageAdapter(getContext(), event.getData()));
 
         mRefreshController.onStopRefresh();
     }
@@ -96,4 +107,6 @@ public class SavedBooksView extends AddListLayout implements UndoBarController.A
     @Override
     public void onClear() {
     }
+
+    public static class OpenBookEvent {}
 }

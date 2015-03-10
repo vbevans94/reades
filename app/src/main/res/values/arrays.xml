@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="books_sources">
+        <item>@string/title_library</item>
+        <item>@string/title_device</item>
+    </array>
+</resources>

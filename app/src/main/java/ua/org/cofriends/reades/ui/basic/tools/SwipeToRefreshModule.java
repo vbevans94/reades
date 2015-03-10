@@ -14,19 +14,22 @@ import dagger.Provides;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.basic.ActivityModule;
 import ua.org.cofriends.reades.ui.basic.BaseListLayout;
+import ua.org.cofriends.reades.ui.books.DeviceBooksView;
 import ua.org.cofriends.reades.ui.books.DownloadBooksView;
 import ua.org.cofriends.reades.ui.books.SavedBooksView;
 import ua.org.cofriends.reades.ui.dictionaries.DownloadDictionariesView;
 import ua.org.cofriends.reades.ui.dictionaries.SavedDictionariesView;
 
-@Module(injects = {
+@Module(addsTo = ActivityModule.class, complete = false, library = true,
+injects = {
+        BaseListLayout.class,
+        DeviceBooksView.class,
         SavedDictionariesView.class,
         SavedBooksView.class,
         DownloadBooksView.class,
         DownloadDictionariesView.class,
-        DownloadBooksView.class,
-        BaseListLayout.class
-}, addsTo = ActivityModule.class, complete = false)
+        DownloadBooksView.class
+})
 public class SwipeToRefreshModule {
 
     private final SwipeRefreshLayout swipeToRefresh;

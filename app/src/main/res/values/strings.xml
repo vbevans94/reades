@@ -36,5 +36,8 @@
     <string name="title_sign_in">Sign in</string>
     <string name="description_account_image">Account image</string>
     <string name="message_no_definition">No matching found, see adjacent words</string>
+    <string name="title_library">Library</string>
+    <string name="title_device">From device</string>
+    <string name="title_opened">Opened</string>
 
 </resources>

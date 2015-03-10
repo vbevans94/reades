@@ -21,6 +21,7 @@ public class SavedBooksService extends IntentService {
     public static final int SAVE = 3;
     private static final String EXTRA_TYPE = "extra_type";
     private static final String EXTRA_ID = "extra_id";
+    private static final String EXTRA_SOURCE = "extra_source";
     private static final String TAG = Logger.makeLogTag(SavedBooksService.class);
 
     public SavedBooksService() {
@@ -30,19 +31,23 @@ public class SavedBooksService extends IntentService {
     }
 
     /**
-     * Loads books that were saved under given language.
-     * @param context to use
-     * @param language to search books with
+     * Loads books that were saved under given language from given source.
+     *
+     * @param context    to use
+     * @param language   to search books with
+     * @param sourceType of the books
      */
-    public static void loadListByLanguage(Context context, Language language) {
+    public static void loadList(Context context, Language language, Book.SourceType sourceType) {
         context.startService(new Intent(context, SavedBooksService.class)
                 .putExtras(BundleUtils.writeObject(Language.class, language))
+                .putExtra(EXTRA_SOURCE, sourceType)
                 .putExtra(EXTRA_TYPE, LOAD_LIST));
     }
 
     /**
      * Loads single book by its id.
-     * @param bookId to search for in the database
+     *
+     * @param bookId  to search for in the database
      * @param context to use
      */
     public static void loadById(int bookId, Context context) {
@@ -53,9 +58,10 @@ public class SavedBooksService extends IntentService {
 
     /**
      * Does action upon book in the database.
+     *
      * @param context to use
-     * @param book to save
-     * @param action to do upon the book
+     * @param book    to save
+     * @param action  to do upon the book
      */
     public static void actUpon(Context context, Book book, int action) {
         context.startService(new Intent(context, SavedBooksService.class)
@@ -103,6 +109,7 @@ public class SavedBooksService extends IntentService {
 
     /**
      * Deletes book's pages and book's itself record from the database.
+     *
      * @param book to delete
      */
     public static void deleteBook(Book book) {
@@ -120,6 +127,7 @@ public class SavedBooksService extends IntentService {
 
     /**
      * Saves book to the database.
+     *
      * @param book to save
      */
     private static void saveBook(Book book) {
@@ -137,7 +145,8 @@ public class SavedBooksService extends IntentService {
 
     private void loadBooks(Intent intent) {
         Language language = BundleUtils.fetchFromBundle(Language.class, intent.getExtras()).meFromDb();
-        List<Book> books = Book.find(Book.class, "language = ?", Long.toString(language.getId()));
+        Book.SourceType sourceType = (Book.SourceType) intent.getExtras().getSerializable(EXTRA_SOURCE);
+        List<Book> books = Book.find(Book.class, "language = ? and SOURCE_TYPE = ?", Long.toString(language.getId()), sourceType.toString());
         BusUtils.postToUi(new Book.ListLoadedEvent(books));
     }
 
