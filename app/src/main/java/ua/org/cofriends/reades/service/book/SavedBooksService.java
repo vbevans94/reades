@@ -135,6 +135,9 @@ public class SavedBooksService extends IntentService {
 
         Logger.d(TAG, book.toString());
 
+        // TODO: get transform factory by format type
+        // TODO: copy transformed file into our app's local storage if source type is device
+
         book.setLanguage(book.getLanguage().meFromDb());
 
         // save book author if it's not yet or just link with existing in the database

@@ -34,6 +34,9 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
     @Expose
     private SourceType sourceType;
 
+    @Expose
+    private FormatType formatType;
+
     private Book(int bookId, String name, String imageUrl) {
         this.bookId = bookId;
         this.name = name;
@@ -97,6 +100,14 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
 
     public void setSourceType(SourceType sourceType) {
         this.sourceType = sourceType;
+    }
+
+    public FormatType getFormatType() {
+        return formatType;
+    }
+
+    public void setFormatType(FormatType formatType) {
+        this.formatType = formatType;
     }
 
     public Book meFromDb() {
@@ -200,5 +211,10 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
         public int getViewId() {
             return viewId;
         }
+    }
+
+    public enum FormatType {
+
+        TXT, PDF
     }
 }

@@ -1,5 +1,7 @@
 package ua.org.cofriends.reades.ui.basic;
 
+import android.app.Activity;
+
 import com.cocosw.undobar.UndoBarController;
 
 import javax.inject.Singleton;
@@ -7,6 +9,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import ua.org.cofriends.reades.AppModule;
+import ua.org.cofriends.reades.local.FormatFactory;
+import ua.org.cofriends.reades.local.OpenFileController;
 import ua.org.cofriends.reades.ui.books.BooksActivity;
 import ua.org.cofriends.reades.ui.books.DeviceBooksView;
 import ua.org.cofriends.reades.ui.books.DownloadBooksView;
@@ -33,6 +37,12 @@ public final class ActivityModule {
 
     public ActivityModule(BaseActivity activity) {
         this.mBaseActivity = activity;
+    }
+
+    @Provides
+    @Singleton
+    Activity provideActivity() {
+        return mBaseActivity;
     }
 
     @Provides
