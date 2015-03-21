@@ -6,9 +6,14 @@ import android.content.Intent;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import ua.org.cofriends.reades.MainApplication;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Language;
 import ua.org.cofriends.reades.entity.Page;
+import ua.org.cofriends.reades.local.BookAdapterFactory;
+import ua.org.cofriends.reades.service.ServiceModule;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.Logger;
@@ -23,6 +28,9 @@ public class SavedBooksService extends IntentService {
     private static final String EXTRA_ID = "extra_id";
     private static final String EXTRA_SOURCE = "extra_source";
     private static final String TAG = Logger.makeLogTag(SavedBooksService.class);
+
+    @Inject
+    BookAdapterFactory bookAdapterFactory;
 
     public SavedBooksService() {
         super(SavedBooksService.class.getSimpleName());
@@ -67,6 +75,13 @@ public class SavedBooksService extends IntentService {
         context.startService(new Intent(context, SavedBooksService.class)
                 .putExtras(BundleUtils.writeObject(Book.class, book))
                 .putExtra(EXTRA_TYPE, action));
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        ServiceModule.serviceScopeGraph(this).inject(this);
     }
 
     @Override
@@ -130,18 +145,20 @@ public class SavedBooksService extends IntentService {
      *
      * @param book to save
      */
-    private static void saveBook(Book book) {
+    private void saveBook(Book book) {
         // link book with existing in the database language
 
         Logger.d(TAG, book.toString());
 
-        // TODO: get transform factory by format type
-        // TODO: copy transformed file into our app's local storage if source type is device
+        BookAdapterFactory.BookAdapter adapter = bookAdapterFactory.adapterFor(book.getFormatType());
+        adapter.adapt(this, book);
 
         book.setLanguage(book.getLanguage().meFromDb());
 
-        // save book author if it's not yet or just link with existing in the database
-        book.setAuthor(book.getAuthor().meFromDb());
+        if (book.getSourceType() == Book.SourceType.LIBRARY) {
+            // author is present only if a book is loaded from the API server
+            book.setAuthor(book.getAuthor().meFromDb());
+        }
 
         book.save();
     }
@@ -150,7 +167,10 @@ public class SavedBooksService extends IntentService {
         Language language = BundleUtils.fetchFromBundle(Language.class, intent.getExtras()).meFromDb();
         Book.SourceType sourceType = (Book.SourceType) intent.getExtras().getSerializable(EXTRA_SOURCE);
         List<Book> books = Book.find(Book.class, "language = ? and SOURCE_TYPE = ?", Long.toString(language.getId()), sourceType.toString());
-        BusUtils.postToUi(new Book.ListLoadedEvent(books));
+        Book.ListLoadedEvent event = sourceType == Book.SourceType.DEVICE
+                ? new Book.DeviceListLoadedEvent(books)
+                : new Book.LibraryListLoadedEvent(books);
+        BusUtils.postToUi(event);
     }
 
     private void loadById(int bookId) {

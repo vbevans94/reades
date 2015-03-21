@@ -9,7 +9,6 @@ import android.view.View;
 
 import com.cocosw.undobar.UndoBarController;
 import com.squareup.otto.Subscribe;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -66,8 +65,8 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onBooksListLoaded(Book.ListLoadedEvent event) {
-        SwipeAdapter.wrapList(listView(), new BookStorageAdapter(getContext(), event.getData()));
+    public void onBooksListLoaded(Book.DeviceListLoadedEvent event) {
+        SwipeAdapter.wrapList(listView(), new DeviceBooksAdapter(getContext(), event.getData()));
 
         mRefreshController.onStopRefresh();
     }

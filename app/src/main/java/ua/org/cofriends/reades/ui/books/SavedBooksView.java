@@ -55,7 +55,7 @@ public class SavedBooksView extends AddListLayout implements UndoBarController.A
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onBooksListLoaded(Book.ListLoadedEvent event) {
+    public void onBooksListLoaded(Book.LibraryListLoadedEvent event) {
         SwipeAdapter.wrapList(listView(), new BookLibraryAdapter(getContext(), event.getData(), mPicasso));
 
         mRefreshController.onStopRefresh();

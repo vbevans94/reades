@@ -5,10 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
-import com.devpaul.filepickerlibrary.FilePickerActivity;
-import com.devpaul.filepickerlibrary.enums.FileScopeType;
-import com.devpaul.filepickerlibrary.enums.FileType;
-import com.devpaul.filepickerlibrary.enums.ThemeType;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
@@ -69,12 +65,12 @@ public class BooksActivity extends ListAddActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void oтBookOpen(DeviceBooksView.OpenBookEvent event) {
-        openFileController.showOpenDialog();
+        openFileController.showOpenDialog(this);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        openFileController.processResult(requestCode, resultCode, data);
+        openFileController.processResult(this, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -17,7 +17,7 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
     private final int bookId;
 
     @Expose
-    private final String name;
+    private String name;
 
     @Expose
     private String fileUrl;
@@ -67,6 +67,10 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
     @Override
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -181,6 +185,20 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
     public static class ListLoadedEvent extends BusUtils.Event<List<Book>> {
 
         public ListLoadedEvent(List<Book> dictionaries) {
+            super(dictionaries);
+        }
+    }
+
+    public static class DeviceListLoadedEvent extends ListLoadedEvent {
+
+        public DeviceListLoadedEvent(List<Book> dictionaries) {
+            super(dictionaries);
+        }
+    }
+
+    public static class LibraryListLoadedEvent extends ListLoadedEvent {
+
+        public LibraryListLoadedEvent(List<Book> dictionaries) {
             super(dictionaries);
         }
     }
