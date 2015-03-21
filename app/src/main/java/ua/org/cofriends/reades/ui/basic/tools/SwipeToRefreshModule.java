@@ -16,7 +16,7 @@ import ua.org.cofriends.reades.ui.basic.ActivityModule;
 import ua.org.cofriends.reades.ui.basic.BaseListLayout;
 import ua.org.cofriends.reades.ui.books.DeviceBooksView;
 import ua.org.cofriends.reades.ui.books.DownloadBooksView;
-import ua.org.cofriends.reades.ui.books.SavedBooksView;
+import ua.org.cofriends.reades.ui.books.LibraryBooksView;
 import ua.org.cofriends.reades.ui.dictionaries.DownloadDictionariesView;
 import ua.org.cofriends.reades.ui.dictionaries.SavedDictionariesView;
 
@@ -25,7 +25,7 @@ injects = {
         BaseListLayout.class,
         DeviceBooksView.class,
         SavedDictionariesView.class,
-        SavedBooksView.class,
+        LibraryBooksView.class,
         DownloadBooksView.class,
         DownloadDictionariesView.class,
         DownloadBooksView.class

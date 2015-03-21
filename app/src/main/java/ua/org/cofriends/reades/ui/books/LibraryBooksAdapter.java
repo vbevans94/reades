@@ -3,6 +3,7 @@ package ua.org.cofriends.reades.ui.books;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,14 +16,13 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.ui.basic.tools.BaseViewHolder;
 import ua.org.cofriends.reades.ui.basic.tools.CircleTransform;
-import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeAdapter;
 
-public class BookLibraryAdapter extends SwipeAdapter<Book> {
+public class LibraryBooksAdapter extends ArrayAdapter<Book> {
 
     final int mSize;
     private final Picasso mPicasso;
 
-    public BookLibraryAdapter(Context context, List<Book> items, Picasso picasso) {
+    public LibraryBooksAdapter(Context context, List<Book> items, Picasso picasso) {
         super(context, R.layout.book_item, items);
 
         mSize = (int) context.getResources().getDimension(R.dimen.item_icon_size);
@@ -30,12 +30,12 @@ public class BookLibraryAdapter extends SwipeAdapter<Book> {
     }
 
     @Override
-    public long getItemIdImpl(int position) {
+    public long getItemId(int position) {
         return getItem(position).getBookId();
     }
 
     @Override
-    public View getViewImpl(int position, View view, ViewGroup viewGroup) {
+    public View getView(int position, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         if (view == null) {
             view = View.inflate(getContext(), R.layout.book_item, null);

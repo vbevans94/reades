@@ -3,6 +3,7 @@ package ua.org.cofriends.reades.ui.dictionaries;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,9 +17,8 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.ui.basic.tools.BaseViewHolder;
 import ua.org.cofriends.reades.ui.basic.tools.SemiCircleTarget;
-import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeAdapter;
 
-public class DictionaryAdapter extends SwipeAdapter<Dictionary> {
+public class DictionaryAdapter extends ArrayAdapter<Dictionary> {
 
     private final int mDetailsRes;
     private final int mSize;
@@ -33,12 +33,12 @@ public class DictionaryAdapter extends SwipeAdapter<Dictionary> {
     }
 
     @Override
-    public long getItemIdImpl(int position) {
+    public long getItemId(int position) {
         return getItem(position).getDictionaryId();
     }
 
     @Override
-    public View getViewImpl(int position, View view, ViewGroup viewGroup) {
+    public View getView(int position, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         if (view == null) {
             view = View.inflate(getContext(), R.layout.dictionary_item, null);

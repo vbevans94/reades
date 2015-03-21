@@ -12,17 +12,17 @@ import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
 
 import butterknife.OnItemClick;
+import butterknife.OnItemLongClick;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.service.book.SavedBooksService;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.basic.AddListLayout;
-import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeAdapter;
-import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeToRemoveTouchListener;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
+import ua.org.cofriends.reades.utils.Events;
 
-public class SavedBooksView extends AddListLayout implements UndoBarController.AdvancedUndoListener {
+public class LibraryBooksView extends AddListLayout implements UndoBarController.AdvancedUndoListener {
 
     @Inject
     UndoBarController.UndoBar mUndoBar;
@@ -30,7 +30,7 @@ public class SavedBooksView extends AddListLayout implements UndoBarController.A
     @Inject
     Picasso mPicasso;
 
-    public SavedBooksView(Context context, AttributeSet attrs) {
+    public LibraryBooksView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -53,10 +53,17 @@ public class SavedBooksView extends AddListLayout implements UndoBarController.A
         BusUtils.post(new Book.SelectedEvent(book));
     }
 
+    @OnItemLongClick(R.id.list)
+    @SuppressWarnings("unused")
+    boolean onBookLongClicked() {
+        // TODO: show dialog with options
+        return true;
+    }
+
     @SuppressWarnings("unused")
     @Subscribe
     public void onBooksListLoaded(Book.LibraryListLoadedEvent event) {
-        SwipeAdapter.wrapList(listView(), new BookLibraryAdapter(getContext(), event.getData(), mPicasso));
+        listView().setAdapter(new LibraryBooksAdapter(getContext(), event.getData(), mPicasso));
 
         mRefreshController.onStopRefresh();
     }
@@ -73,7 +80,7 @@ public class SavedBooksView extends AddListLayout implements UndoBarController.A
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onRemove(SwipeToRemoveTouchListener.RemoveEvent event) {
+    public void onRemove(Events.RemoveEvent event) {
         Book book = (Book) event.getData();
         mUndoBar.message(R.string.message_will_be_removed)
                 .listener(this)

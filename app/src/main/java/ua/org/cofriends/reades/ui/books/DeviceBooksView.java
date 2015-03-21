@@ -18,10 +18,9 @@ import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.service.book.SavedBooksService;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.basic.AddListLayout;
-import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeAdapter;
-import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeToRemoveTouchListener;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
+import ua.org.cofriends.reades.utils.Events;
 
 public class DeviceBooksView extends AddListLayout implements UndoBarController.AdvancedUndoListener, View.OnClickListener {
 
@@ -66,7 +65,7 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
     @SuppressWarnings("unused")
     @Subscribe
     public void onBooksListLoaded(Book.DeviceListLoadedEvent event) {
-        SwipeAdapter.wrapList(listView(), new DeviceBooksAdapter(getContext(), event.getData()));
+        listView().setAdapter(new DeviceBooksAdapter(getContext(), event.getData()));
 
         mRefreshController.onStopRefresh();
     }
@@ -83,7 +82,7 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onRemove(SwipeToRemoveTouchListener.RemoveEvent event) {
+    public void onRemove(Events.RemoveEvent event) {
         Book book = (Book) event.getData();
         mUndoBar.message(R.string.message_will_be_removed)
                 .listener(this)

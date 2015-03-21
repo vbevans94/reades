@@ -3,14 +3,14 @@ package ua.org.cofriends.reades.ui.books;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import java.util.List;
 
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
-import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeAdapter;
 
-public class DeviceBooksAdapter extends SwipeAdapter<Book> {
+public class DeviceBooksAdapter extends ArrayAdapter<Book> {
 
     final int mSize;
 
@@ -21,18 +21,18 @@ public class DeviceBooksAdapter extends SwipeAdapter<Book> {
     }
 
     @Override
-    public long getItemIdImpl(int position) {
+    public long getItemId(int position) {
         return getItem(position).getBookId();
     }
 
     @Override
-    public View getViewImpl(int position, View view, ViewGroup viewGroup) {
-        BookLibraryAdapter.ViewHolder holder;
+    public View getView(int position, View view, ViewGroup viewGroup) {
+        LibraryBooksAdapter.ViewHolder holder;
         if (view == null) {
             view = View.inflate(getContext(), R.layout.book_item, null);
-            holder = new BookLibraryAdapter.ViewHolder(view);
+            holder = new LibraryBooksAdapter.ViewHolder(view);
         } else {
-            holder = (BookLibraryAdapter.ViewHolder) view.getTag();
+            holder = (LibraryBooksAdapter.ViewHolder) view.getTag();
         }
 
         Book book = getItem(position);

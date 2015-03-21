@@ -16,10 +16,9 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.basic.AddListLayout;
-import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeAdapter;
-import ua.org.cofriends.reades.ui.basic.tools.swipetoremove.SwipeToRemoveTouchListener;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
+import ua.org.cofriends.reades.utils.Events;
 
 public class SavedDictionariesView extends AddListLayout implements UndoBarController.AdvancedUndoListener {
 
@@ -55,7 +54,7 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
     @SuppressWarnings("unused")
     @Subscribe
     public void onDictionariesListLoaded(Dictionary.ListLoadedEvent event) {
-        SwipeAdapter.wrapList(listView(), new DictionaryAdapter(getContext(), event.getData(), R.string.title_open, mPicasso));
+        listView().setAdapter(new DictionaryAdapter(getContext(), event.getData(), R.string.title_open, mPicasso));
 
         mRefreshController.onStopRefresh();
     }
@@ -68,7 +67,7 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onSwipeRemove(SwipeToRemoveTouchListener.RemoveEvent event) {
+    public void onSwipeRemove(Events.RemoveEvent event) {
         mUndoBar.message(R.string.message_will_be_removed)
                 .listener(this)
                 .token(BundleUtils.writeObject(Dictionary.class, (Dictionary) event.getData()))

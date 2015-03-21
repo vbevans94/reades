@@ -93,7 +93,7 @@ public class DownloadBooksView extends BaseListLayout implements Callback<List<B
     @Subscribe
     public void onBooksLoaded(Book.ListLoadedEvent event) {
         mBooks.removeAll(event.getData());
-        listView().setAdapter(new BookLibraryAdapter(getContext(), mBooks, mPicasso));
+        listView().setAdapter(new LibraryBooksAdapter(getContext(), mBooks, mPicasso));
 
         mRefreshController.onStopRefresh();
     }
