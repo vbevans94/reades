@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import ua.org.cofriends.reades.AppModule;
+import ua.org.cofriends.reades.ui.basic.tools.ContextMenuController;
 import ua.org.cofriends.reades.ui.books.BooksActivity;
 import ua.org.cofriends.reades.ui.dictionaries.DictionariesActivity;
 import ua.org.cofriends.reades.ui.read.PageView;
@@ -41,5 +42,11 @@ public final class ActivityModule {
     UndoBarController.UndoBar provideUndoBar() {
         return new UndoBarController.UndoBar(mBaseActivity)
                 .style(UndoBarController.UNDOSTYLE);
+    }
+
+    @Provides
+    @Singleton
+    ContextMenuController provideMenuController() {
+        return new ContextMenuController(mBaseActivity);
     }
 }

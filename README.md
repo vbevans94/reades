@@ -12,4 +12,6 @@ Read and study language app exclusively for Android
         - add reading from offline books on the device(txt, pdf, html, epub ...)
         - add ability to change page and font(make text scrollable, not changing total page count)
         - use item long press context menu to remove
+        - stylize undo bar
+        - open in functionality
 ```

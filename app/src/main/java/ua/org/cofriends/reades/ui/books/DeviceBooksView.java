@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.cocosw.undobar.UndoBarController;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -18,14 +21,22 @@ import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.service.book.SavedBooksService;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.basic.AddListLayout;
+import ua.org.cofriends.reades.ui.basic.tools.ContextMenuController;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
-import ua.org.cofriends.reades.utils.Events;
 
-public class DeviceBooksView extends AddListLayout implements UndoBarController.AdvancedUndoListener, View.OnClickListener {
+public class DeviceBooksView extends AddListLayout implements UndoBarController.AdvancedUndoListener, View.OnClickListener, ContextMenuController.MenuTarget {
 
     @Inject
     UndoBarController.UndoBar mUndoBar;
+
+    @Inject
+    ContextMenuController mContextMenu;
+
+    @Inject
+    Picasso mPicasso;
+
+    private BooksAdapter mAdapter;
 
     public DeviceBooksView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -42,7 +53,18 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
+        mAdapter = new BooksAdapter(getContext(), mPicasso);
+        listView().setAdapter(mAdapter);
         mTextTitle.setText(R.string.title_opened);
+
+        mContextMenu.registerForContextMenu(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        mContextMenu.unregisterView(getView());
     }
 
     @Override
@@ -65,7 +87,7 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
     @SuppressWarnings("unused")
     @Subscribe
     public void onBooksListLoaded(Book.DeviceListLoadedEvent event) {
-        listView().setAdapter(new DeviceBooksAdapter(getContext(), event.getData()));
+        mAdapter.replaceWith(event.getData());
 
         mRefreshController.onStopRefresh();
     }
@@ -80,10 +102,8 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
         mRefreshController.refresh();
     }
 
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onRemove(Events.RemoveEvent event) {
-        Book book = (Book) event.getData();
+    private void removeItem(int position) {
+        Book book = mAdapter.getItem(position);
         mUndoBar.message(R.string.message_will_be_removed)
                 .listener(this)
                 .token(BundleUtils.writeObject(Book.class, book))
@@ -104,6 +124,25 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
 
     @Override
     public void onClear() {
+    }
+
+    @Override
+    public View getView() {
+        return listView();
+    }
+
+    @Override
+    public int getMenuRes() {
+        return R.menu.menu_for_item;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(MenuItem item, AdapterView.AdapterContextMenuInfo adapterInfo) {
+        if (item.getItemId() == R.id.action_delete) {
+            removeItem(adapterInfo.position);
+            return true;
+        }
+        return false;
     }
 
     public static class OpenBookEvent {}

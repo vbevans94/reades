@@ -34,8 +34,8 @@
                     android:id="@+id/list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:divider="@null"
-                    android:dividerHeight="0dp"
+                    android:divider="@drawable/divider_list"
+                    android:dividerHeight="2dp"
                     android:listSelector="@drawable/selectable_background_reades"
                     tools:listitem="@layout/book_item" />
 

@@ -49,10 +49,14 @@ public class WordsDrawerView extends LinearLayout {
     @Inject
     DrawerToggle mDrawerToggle;
 
+    private final WordsAdapter mAdapter;
+
     public WordsDrawerView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        View.inflate(context, R.layout.words_drawer_view, this);
+        inflate(context, R.layout.words_drawer_view, this);
+
+        mAdapter = new WordsAdapter(context);
 
         setBackgroundResource(R.color.white);
         setOrientation(VERTICAL);
@@ -64,6 +68,8 @@ public class WordsDrawerView extends LinearLayout {
         super.onFinishInflate();
 
         ButterKnife.inject(this);
+
+        mListWords.setAdapter(mAdapter);
     }
 
     @Override
@@ -130,7 +136,7 @@ public class WordsDrawerView extends LinearLayout {
     @SuppressWarnings("unused")
     @Subscribe
     public void onWordListLoaded(Word.ListLoadedEvent event) {
-        mListWords.setAdapter(new WordsAdapter(getContext(), event.getData()));
+        mAdapter.replaceWith(event.getData());
     }
 
     @OnItemClick(R.id.list_words)

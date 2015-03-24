@@ -32,9 +32,23 @@ public class DownloadBooksView extends BaseListLayout implements Callback<List<B
     Picasso mPicasso;
 
     private List<Book> mBooks = new ArrayList<>();
+    private final BooksAdapter mAdapter;
 
     public DownloadBooksView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        mAdapter = new BooksAdapter(context, mPicasso);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        if (isInEditMode()) {
+            return;
+        }
+
+        listView().setAdapter(mAdapter);
     }
 
     @Override
@@ -93,7 +107,7 @@ public class DownloadBooksView extends BaseListLayout implements Callback<List<B
     @Subscribe
     public void onBooksLoaded(Book.ListLoadedEvent event) {
         mBooks.removeAll(event.getData());
-        listView().setAdapter(new LibraryBooksAdapter(getContext(), mBooks, mPicasso));
+        mAdapter.replaceWith(mBooks);
 
         mRefreshController.onStopRefresh();
     }

@@ -30,6 +30,8 @@ public class LibraryBooksView extends AddListLayout implements UndoBarController
     @Inject
     Picasso mPicasso;
 
+    private BooksAdapter mAdapter;
+
     public LibraryBooksView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -38,6 +40,8 @@ public class LibraryBooksView extends AddListLayout implements UndoBarController
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
+        mAdapter = new BooksAdapter(getContext(), mPicasso);
+        listView().setAdapter(mAdapter);
         mTextTitle.setText(R.string.title_saved);
     }
 
@@ -63,7 +67,7 @@ public class LibraryBooksView extends AddListLayout implements UndoBarController
     @SuppressWarnings("unused")
     @Subscribe
     public void onBooksListLoaded(Book.LibraryListLoadedEvent event) {
-        listView().setAdapter(new LibraryBooksAdapter(getContext(), event.getData(), mPicasso));
+        mAdapter.replaceWith(event.getData());
 
         mRefreshController.onStopRefresh();
     }

@@ -28,20 +28,24 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
     @Inject
     Picasso mPicasso;
 
+    private DictionaryAdapter mAdapter;
+
     public SavedDictionariesView(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    @Override
-    public void onRefresh() {
-        SavedDictionariesService.loadList(getContext());
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
+        mAdapter = new DictionaryAdapter(getContext(), R.string.title_open, mPicasso);
+        listView().setAdapter(mAdapter);
         mTextTitle.setText(R.string.title_saved);
+    }
+
+    @Override
+    public void onRefresh() {
+        SavedDictionariesService.loadList(getContext());
     }
 
     @OnItemClick(R.id.list)
@@ -54,14 +58,14 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
     @SuppressWarnings("unused")
     @Subscribe
     public void onDictionariesListLoaded(Dictionary.ListLoadedEvent event) {
-        listView().setAdapter(new DictionaryAdapter(getContext(), event.getData(), R.string.title_open, mPicasso));
+        mAdapter.replaceWith(event.getData());
 
         mRefreshController.onStopRefresh();
     }
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onDicionaryActionDone(Dictionary.DoneEvent event) {
+    public void onDictionaryActionDone(Dictionary.DoneEvent event) {
         mRefreshController.refresh();
     }
 

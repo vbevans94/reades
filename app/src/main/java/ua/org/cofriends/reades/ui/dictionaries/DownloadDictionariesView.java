@@ -6,10 +6,7 @@ import android.util.AttributeSet;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
-import org.apache.http.Header;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,7 +21,6 @@ import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.dictionary.DictionaryDownloadService;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.basic.BaseListLayout;
-import ua.org.cofriends.reades.utils.HttpUtils;
 
 public class DownloadDictionariesView extends BaseListLayout implements Callback<List<Dictionary>> {
 
@@ -34,7 +30,8 @@ public class DownloadDictionariesView extends BaseListLayout implements Callback
     @Inject
     Picasso mPicasso;
 
-    private List<Dictionary> mDictionaries = new ArrayList<Dictionary>();
+    private final List<Dictionary> mDictionaries = new ArrayList<Dictionary>();
+    private DictionaryAdapter mAdapter;
 
     public DownloadDictionariesView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -44,6 +41,8 @@ public class DownloadDictionariesView extends BaseListLayout implements Callback
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
+        mAdapter = new DictionaryAdapter(getContext(), R.string.title_download, mPicasso);
+        listView().setAdapter(mAdapter);
         mTextTitle.setText(R.string.title_store);
     }
 
@@ -83,8 +82,7 @@ public class DownloadDictionariesView extends BaseListLayout implements Callback
     @Subscribe
     public void onDictionariesListLoaded(Dictionary.ListLoadedEvent event) {
         mDictionaries.removeAll(event.getData());
-        listView().setAdapter(new DictionaryAdapter(getContext()
-                , mDictionaries, R.string.title_download, mPicasso));
+        mAdapter.replaceWith(mDictionaries);
 
         mRefreshController.onStopRefresh();
     }
