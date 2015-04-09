@@ -32,7 +32,7 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
     private Language language;
 
     @Expose
-    private SourceType sourceType;
+    private SourceType sourceType = SourceType.LIBRARY; // default source is library
 
     @Expose
     private FormatType formatType;

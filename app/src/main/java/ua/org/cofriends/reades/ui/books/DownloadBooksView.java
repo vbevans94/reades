@@ -15,6 +15,7 @@ import butterknife.OnItemClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import ua.org.cofriends.reades.MainApplication;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.data.api.ApiService;
 import ua.org.cofriends.reades.entity.Book;
@@ -26,34 +27,24 @@ import ua.org.cofriends.reades.ui.basic.BaseListLayout;
 public class DownloadBooksView extends BaseListLayout implements Callback<List<Book>> {
 
     @Inject
-    ApiService apiService;
+    ApiService mApiService;
 
     @Inject
     Picasso mPicasso;
 
     private List<Book> mBooks = new ArrayList<>();
-    private final BooksAdapter mAdapter;
+    private BooksAdapter mAdapter;
 
     public DownloadBooksView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        mAdapter = new BooksAdapter(context, mPicasso);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
-        if (isInEditMode()) {
-            return;
-        }
-
-        listView().setAdapter(mAdapter);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+
+        mAdapter = new BooksAdapter(getContext(), mPicasso);
+        listView().setAdapter(mAdapter);
 
         mTextTitle.setText(R.string.title_store);
     }
@@ -61,7 +52,7 @@ public class DownloadBooksView extends BaseListLayout implements Callback<List<B
     @Override
     public void onRefresh() {
         // load books from server
-        apiService.listBooks(String.valueOf(SavedDictionariesService.getCurrent().getFromLanguage().getLanguageId()), this);
+        mApiService.listBooks(String.valueOf(SavedDictionariesService.getCurrent().getFromLanguage().getLanguageId()), this);
     }
 
     @Override

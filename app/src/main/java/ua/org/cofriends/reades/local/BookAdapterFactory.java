@@ -62,7 +62,6 @@ public class BookAdapterFactory {
 
         @Override
         public void adapt(Context context, Book book) {
-            book.setFormatType(Book.FormatType.TXT);
             if (book.getSourceType() == Book.SourceType.DEVICE) {
                 // if book is opened on device by user we should just copy it into our local storage
                 File oldFile = new File(book.getFileUrl());

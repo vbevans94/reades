@@ -35,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:divider="@drawable/divider_list"
-                    android:dividerHeight="2dp"
+                    android:dividerHeight="1dp"
                     android:listSelector="@drawable/selectable_background_reades"
                     tools:listitem="@layout/book_item" />
 
