@@ -3,9 +3,12 @@ package ua.org.cofriends.reades.local;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
-import com.devpaul.filepickerlibrary.FilePickerActivity;
-import com.devpaul.filepickerlibrary.enums.FileScopeType;
+import com.ipaulpro.afilechooser.FileChooserActivity;
+import com.ipaulpro.afilechooser.utils.FileUtils;
+
+import java.io.File;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -14,6 +17,7 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.service.book.SavedBooksService;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
+import ua.org.cofriends.reades.utils.RequestCodes;
 
 @Singleton
 public class OpenFileController {
@@ -22,20 +26,23 @@ public class OpenFileController {
     BookAdapterFactory bookAdapterFactory;
 
     public void showOpenDialog(Activity activity) {
-        Intent filePicker = new Intent(activity, FilePickerActivity.class);
-        filePicker.putExtra(FilePickerActivity.SCOPE_TYPE, FileScopeType.ALL);
-        filePicker.putExtra(FilePickerActivity.REQUEST_CODE, FilePickerActivity.REQUEST_FILE);
-        filePicker.putExtra(FilePickerActivity.INTENT_EXTRA_COLOR_ID, R.color.light_indigo);
+        Intent filePicker = new Intent(activity, FileChooserActivity.class);
         bookAdapterFactory.addFormats(filePicker);
-        activity.startActivityForResult(filePicker, FilePickerActivity.REQUEST_FILE);
+        Intent getContentIntent = FileUtils.createGetContentIntent();
+
+        Intent intent = Intent.createChooser(getContentIntent, activity.getString(R.string.title_file_picker));
+        activity.startActivityForResult(intent, RequestCodes.FILE_PICKER);
     }
 
     public void processResult(Context context, int requestCode, int resultCode, Intent data) {
-        if (requestCode == FilePickerActivity.REQUEST_FILE && resultCode == Activity.RESULT_OK) {
-            String filePath = data.getStringExtra(FilePickerActivity.FILE_EXTRA_DATA_PATH);
-            if (filePath != null) {
+        if (requestCode == RequestCodes.FILE_PICKER && resultCode == Activity.RESULT_OK) {
+            Uri uri = data.getData();
+            File file = FileUtils.getFile(context, uri);
+            if (file != null) {
+                String filePath = file.getAbsolutePath();
+
                 Book book = new Book();
-                book.setFormatType(bookAdapterFactory.formatType(filePath));
+                book.setName(file.getName()); // when book opened from device, file name is book name
                 book.setSourceType(Book.SourceType.DEVICE);
                 book.setLoadedPath(filePath);
                 book.setLanguage(SavedDictionariesService.getCurrent().getFromLanguage());

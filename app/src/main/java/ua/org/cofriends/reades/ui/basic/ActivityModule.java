@@ -40,13 +40,12 @@ public final class ActivityModule {
     @Provides
     @Singleton
     UndoBarController.UndoBar provideUndoBar() {
-        return new UndoBarController.UndoBar(mBaseActivity)
-                .style(UndoBarController.UNDOSTYLE);
+        return new UndoBarController.UndoBar(mBaseActivity);
     }
 
     @Provides
     @Singleton
     ContextMenuController provideMenuController() {
-        return new ContextMenuController(mBaseActivity);
+        return new ContextMenuController();
     }
 }

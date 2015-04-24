@@ -7,11 +7,13 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.cocosw.undobar.UndoBarController;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -55,16 +57,9 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
 
         mAdapter = new BooksAdapter(getContext(), mPicasso);
         listView().setAdapter(mAdapter);
-        mTextTitle.setText(R.string.title_opened);
+        textTitle.setText(R.string.title_opened);
 
         mContextMenu.registerForContextMenu(this);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        mContextMenu.unregisterView(getView());
     }
 
     @Override
@@ -89,7 +84,7 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
     public void onBooksListLoaded(Book.DeviceListLoadedEvent event) {
         mAdapter.replaceWith(event.getData());
 
-        mRefreshController.onStopRefresh();
+        refreshController.onStopRefresh();
     }
 
     /**
@@ -99,7 +94,7 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
     @SuppressWarnings("unused")
     @Subscribe
     public void onBookActionDone(Book.DoneEvent event) {
-        mRefreshController.refresh();
+        refreshController.refresh();
     }
 
     private void removeItem(int position) {
@@ -112,7 +107,7 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
 
     @Override
     public void onUndo(Parcelable parcelable) {
-        mRefreshController.refresh();
+        refreshController.refresh();
     }
 
     @Override
@@ -123,11 +118,12 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
     }
 
     @Override
-    public void onClear() {
+    public void onClear(@NonNull Parcelable[] parcelables) {
+
     }
 
     @Override
-    public View getView() {
+    public ListView getView() {
         return listView();
     }
 
@@ -137,9 +133,12 @@ public class DeviceBooksView extends AddListLayout implements UndoBarController.
     }
 
     @Override
-    public boolean onMenuItemSelected(MenuItem item, AdapterView.AdapterContextMenuInfo adapterInfo) {
+    public boolean onMenuItemSelected(MenuItem item, List<Integer> positions) {
         if (item.getItemId() == R.id.action_delete) {
-            removeItem(adapterInfo.position);
+            for (Integer position : positions) {
+                removeItem(position);
+            }
+
             return true;
         }
         return false;

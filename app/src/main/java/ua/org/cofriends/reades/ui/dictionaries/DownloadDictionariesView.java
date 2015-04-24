@@ -43,7 +43,7 @@ public class DownloadDictionariesView extends BaseListLayout implements Callback
 
         mAdapter = new DictionaryAdapter(getContext(), R.string.title_download, mPicasso);
         listView().setAdapter(mAdapter);
-        mTextTitle.setText(R.string.title_store);
+        textTitle.setText(R.string.title_store);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class DownloadDictionariesView extends BaseListLayout implements Callback
     @Override
     public void failure(RetrofitError error) {
         // TODO: handle error
-        mRefreshController.onStopRefresh();
+        refreshController.onStopRefresh();
     }
 
     @OnItemClick(R.id.list)
@@ -84,7 +84,7 @@ public class DownloadDictionariesView extends BaseListLayout implements Callback
         mDictionaries.removeAll(event.getData());
         mAdapter.replaceWith(mDictionaries);
 
-        mRefreshController.onStopRefresh();
+        refreshController.onStopRefresh();
     }
 
     /**

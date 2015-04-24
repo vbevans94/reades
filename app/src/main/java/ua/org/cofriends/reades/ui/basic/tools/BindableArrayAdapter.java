@@ -30,6 +30,16 @@ public class BindableArrayAdapter<T> extends BindableAdapter<T> {
         notifyDataSetChanged();
     }
 
+    public void remove(T item) {
+        items.remove(item);
+        notifyDataSetChanged();
+    }
+
+    public void add(int position, T item) {
+        items.add(position, item);
+        notifyDataSetChanged();
+    }
+
     public void appendLoaded(List<T> items) {
         this.items.addAll(items);
         notifyDataSetChanged();

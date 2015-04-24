@@ -40,5 +40,6 @@
     <string name="title_device">From device</string>
     <string name="title_opened">Opened</string>
     <string name="title_delete">Delete</string>
+    <string name="title_file_picker">Open file</string>
 
 </resources>

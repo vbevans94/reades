@@ -15,7 +15,6 @@ import butterknife.OnItemClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import ua.org.cofriends.reades.MainApplication;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.data.api.ApiService;
 import ua.org.cofriends.reades.entity.Book;
@@ -46,7 +45,7 @@ public class DownloadBooksView extends BaseListLayout implements Callback<List<B
         mAdapter = new BooksAdapter(getContext(), mPicasso);
         listView().setAdapter(mAdapter);
 
-        mTextTitle.setText(R.string.title_store);
+        textTitle.setText(R.string.title_store);
     }
 
     @Override
@@ -65,7 +64,7 @@ public class DownloadBooksView extends BaseListLayout implements Callback<List<B
     @Override
     public void failure(RetrofitError error) {
         // TODO: handle error
-        mRefreshController.onStopRefresh();
+        refreshController.onStopRefresh();
     }
 
     @OnItemClick(R.id.list)
@@ -100,6 +99,6 @@ public class DownloadBooksView extends BaseListLayout implements Callback<List<B
         mBooks.removeAll(event.getData());
         mAdapter.replaceWith(mBooks);
 
-        mRefreshController.onStopRefresh();
+        refreshController.onStopRefresh();
     }
 }

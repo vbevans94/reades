@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ua.org.cofriends.reades.ui.words.WordItemView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -26,4 +26,4 @@
         android:contentDescription="@string/description_remove"
         android:padding="@dimen/action_icon_padding"
         android:src="@drawable/ic_remove_circle" />
-</LinearLayout>
+</ua.org.cofriends.reades.ui.words.WordItemView>

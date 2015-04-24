@@ -4,10 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.view.MenuItem;
+import android.widget.ListView;
 
 import com.cocosw.undobar.UndoBarController;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -16,17 +20,20 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.basic.AddListLayout;
+import ua.org.cofriends.reades.ui.basic.tools.ContextMenuController;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
-import ua.org.cofriends.reades.utils.Events;
 
-public class SavedDictionariesView extends AddListLayout implements UndoBarController.AdvancedUndoListener {
+public class SavedDictionariesView extends AddListLayout implements UndoBarController.AdvancedUndoListener, ContextMenuController.MenuTarget {
 
     @Inject
     UndoBarController.UndoBar mUndoBar;
 
     @Inject
     Picasso mPicasso;
+
+    @Inject
+    ContextMenuController menuController;
 
     private DictionaryAdapter mAdapter;
 
@@ -40,7 +47,9 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
 
         mAdapter = new DictionaryAdapter(getContext(), R.string.title_open, mPicasso);
         listView().setAdapter(mAdapter);
-        mTextTitle.setText(R.string.title_saved);
+        textTitle.setText(R.string.title_saved);
+
+        menuController.registerForContextMenu(this);
     }
 
     @Override
@@ -60,27 +69,26 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
     public void onDictionariesListLoaded(Dictionary.ListLoadedEvent event) {
         mAdapter.replaceWith(event.getData());
 
-        mRefreshController.onStopRefresh();
+        refreshController.onStopRefresh();
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onDictionaryActionDone(Dictionary.DoneEvent event) {
-        mRefreshController.refresh();
+        refreshController.refresh();
     }
 
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onSwipeRemove(Events.RemoveEvent event) {
+    private void removeDictionary(int position) {
+        Dictionary dictionary = mAdapter.getItem(position);
         mUndoBar.message(R.string.message_will_be_removed)
                 .listener(this)
-                .token(BundleUtils.writeObject(Dictionary.class, (Dictionary) event.getData()))
+                .token(BundleUtils.writeObject(Dictionary.class, dictionary))
                 .show();
     }
 
     @Override
     public void onUndo(Parcelable parcelable) {
-        mRefreshController.refresh();
+        refreshController.refresh();
     }
 
     @Override
@@ -91,6 +99,28 @@ public class SavedDictionariesView extends AddListLayout implements UndoBarContr
     }
 
     @Override
-    public void onClear() {
+    public void onClear(Parcelable[] parcelables) {
+
+    }
+
+    @Override
+    public ListView getView() {
+        return listView();
+    }
+
+    @Override
+    public int getMenuRes() {
+        return R.menu.menu_for_item;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(MenuItem item, List<Integer> positions) {
+        if (item.getItemId() == R.id.action_delete) {
+            for (Integer position : positions) {
+                removeDictionary(position);
+            }
+            return true;
+        }
+        return false;
     }
 }

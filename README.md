@@ -9,9 +9,8 @@ Read and study language app exclusively for Android
         - test extensively
         - remove all logging to debug flavour
         - fix size of page so that there were no words outside of visible area
-        - add reading from offline books on the device(txt, pdf, html, epub ...)
+        - add reading from offline books on the device(html, epub ...)
         - add ability to change page and font(make text scrollable, not changing total page count)
-        - use item long press context menu to remove
-        - stylize undo bar
         - open in functionality
+        - migrate to Realm database
 ```

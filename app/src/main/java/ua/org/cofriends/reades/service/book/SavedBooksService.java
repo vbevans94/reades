@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import ua.org.cofriends.reades.MainApplication;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Language;
 import ua.org.cofriends.reades.entity.Page;
@@ -150,7 +149,7 @@ public class SavedBooksService extends IntentService {
 
         Logger.d(TAG, book.toString());
 
-        BookAdapterFactory.BookAdapter adapter = bookAdapterFactory.adapterFor(book.getFormatType());
+        BookAdapterFactory.BookFileAdapter adapter = bookAdapterFactory.adapterFor(book);
         adapter.adapt(this, book);
 
         book.setLanguage(book.getLanguage().meFromDb());

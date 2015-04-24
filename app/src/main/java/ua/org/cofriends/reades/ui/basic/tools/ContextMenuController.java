@@ -1,60 +1,70 @@
 package ua.org.cofriends.reades.ui.basic.tools;
 
-import android.app.Activity;
-import android.view.ContextMenu;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
+import android.widget.AbsListView;
+import android.widget.ListView;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContextMenuController {
 
-    private final Activity activity;
-    private Map<View, MenuTarget> mTargets = new HashMap<>();
-
-    public ContextMenuController(Activity activity) {
-        this.activity = activity;
-    }
-
     /**
      * Registers target for context menu.
+     *
      * @param target to register
      */
-    public void registerForContextMenu(MenuTarget target) {
-        mTargets.put(target.getView(), target);
-        activity.registerForContextMenu(target.getView());
-    }
+    public void registerForContextMenu(final MenuTarget target) {
+        target.getView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+        target.getView().setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
 
-    public void onCreateMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-        if (mTargets.containsKey(view)) {
-            activity.getMenuInflater().inflate(mTargets.get(view).getMenuRes(), menu);
-        }
-    }
+            private final List<Integer> positions = new ArrayList<>();
 
-    public void onMenuItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo adapterInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        MenuTarget target = mTargets.get(adapterInfo.targetView);
-        if (target != null) {
-            target.onMenuItemSelected(item, adapterInfo);
-        }
-    }
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                if (checked) {
+                    if (!positions.contains(position)) {
+                        positions.add(position);
+                    }
+                } else {
+                    positions.remove(Integer.valueOf(position));
+                }
+            }
 
-    /**
-     * Unregisters from context menu for releasing the reference to the view.
-     * @param view {@link MenuTarget#getView()} passed in the register call
-     */
-    public void unregisterView(View view) {
-        mTargets.remove(view);
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(target.getMenuRes(), menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                positions.clear();
+                return true;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                target.onMenuItemSelected(item, positions);
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+        });
     }
 
     public interface MenuTarget {
 
-        View getView();
+        ListView getView();
 
         int getMenuRes();
 
-        boolean onMenuItemSelected(MenuItem item, AdapterView.AdapterContextMenuInfo adapterInfo);
+        boolean onMenuItemSelected(MenuItem item, List<Integer> positions);
     }
 }

@@ -12,7 +12,6 @@ import android.widget.FrameLayout;
 
 import com.squareup.otto.Subscribe;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

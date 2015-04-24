@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/libs/aFileChooser/aFileChooser.iml" filepath="$PROJECT_DIR$/libs/aFileChooser/aFileChooser.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/mupdf/mupdf.iml" filepath="$PROJECT_DIR$/libs/mupdf/mupdf.iml" />
       <module fileurl="file://$PROJECT_DIR$/reades.iml" filepath="$PROJECT_DIR$/reades.iml" />
     </modules>
   </component>
 </project>
-

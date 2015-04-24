@@ -8,6 +8,8 @@
 
         <item name="colorPrimary">@color/indigo</item>
         <item name="colorPrimaryDark">@color/dark_indigo</item>
+
+        <item name="undoBarStyle">@style/UndoBarClassicStyle</item>
     </style>
 
     <style name="ActionBar.Solid.Reades.Large">

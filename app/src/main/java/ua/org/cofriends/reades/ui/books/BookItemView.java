@@ -3,7 +3,6 @@ package ua.org.cofriends.reades.ui.books;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -12,9 +11,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
+import ua.org.cofriends.reades.ui.basic.CheckableRelativeLayout;
 import ua.org.cofriends.reades.ui.basic.tools.CircleTransform;
 
-public class BookItemView extends RelativeLayout {
+public class BookItemView extends CheckableRelativeLayout {
 
     @InjectView(R.id.text_name)
     TextView textName;

@@ -3,7 +3,6 @@ package ua.org.cofriends.reades.ui.dictionaries;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -13,9 +12,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Dictionary;
+import ua.org.cofriends.reades.ui.basic.CheckableRelativeLayout;
 import ua.org.cofriends.reades.ui.basic.tools.SemiCircleTarget;
 
-public class DictionaryItemView extends RelativeLayout {
+public class DictionaryItemView extends CheckableRelativeLayout {
 
     @InjectView(R.id.text_name)
     TextView textName;

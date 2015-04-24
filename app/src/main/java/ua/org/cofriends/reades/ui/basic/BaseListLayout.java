@@ -23,13 +23,13 @@ public class BaseListLayout extends FrameLayout implements SwipeRefreshLayout.On
     ListView mListView;
 
     @InjectView(R.id.text_title)
-    protected TextView mTextTitle;
+    protected TextView textTitle;
 
     @InjectView(R.id.layout_refresh)
     SwipeRefreshLayout mLayoutRefresh;
 
     @Inject
-    protected SwipeToRefreshModule.RefreshController mRefreshController;
+    protected SwipeToRefreshModule.RefreshController refreshController;
 
     @Inject
     @SwipeToRefreshModule.SwipeListener
@@ -63,7 +63,7 @@ public class BaseListLayout extends FrameLayout implements SwipeRefreshLayout.On
 
         mListView.setOnScrollListener(mScrollListener);
 
-        mRefreshController.refresh();
+        refreshController.refresh();
     }
 
     @Override
