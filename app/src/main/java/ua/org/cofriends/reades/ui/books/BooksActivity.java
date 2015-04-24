@@ -2,10 +2,15 @@ package ua.org.cofriends.reades.ui.books;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import javax.inject.Inject;
 
@@ -28,6 +33,9 @@ public class BooksActivity extends ListAddActivity {
     @Inject
     OpenFileController openFileController;
 
+    @Inject
+    Picasso picasso;
+
     public static void start(Dictionary dictionary, Context context) {
         Bundle extras = BundleUtils.writeObject(Dictionary.class, dictionary);
         context.startActivity(new Intent(context, BooksActivity.class).putExtras(extras));
@@ -43,6 +51,26 @@ public class BooksActivity extends ListAddActivity {
         ButterKnife.inject(this);
 
         pager.setAdapter(new BookPagerAdapter(this));
+
+        setTitle(getString(R.string.title_languaged_books, dictionary.getFromLanguage().getName()));
+        // TODO: fix it
+        /*picasso.load(dictionary.getFromLanguage().getImageUrl())
+                .into(new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                BitmapDrawable logo = new BitmapDrawable(getResources(), bitmap);
+                getSupportActionBar().setDisplayUseLogoEnabled(true);
+                getSupportActionBar().setLogo(logo);
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            }
+        });*/
     }
 
     @Override

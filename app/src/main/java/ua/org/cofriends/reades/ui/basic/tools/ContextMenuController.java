@@ -50,6 +50,7 @@ public class ContextMenuController {
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 target.onMenuItemSelected(item, positions);
+                mode.finish();
                 return true;
             }
 

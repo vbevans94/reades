@@ -6,11 +6,12 @@ Read and study language app exclusively for Android
 ```
 
     // TODO:
-        - test extensively
-        - remove all logging to debug flavour
-        - fix size of page so that there were no words outside of visible area
-        - add reading from offline books on the device(html, epub ...)
-        - add ability to change page and font(make text scrollable, not changing total page count)
-        - open in functionality
-        - migrate to Realm database
+        - bug: fix size of page so that there were no words outside of visible area
+        - feature: add reading from offline books on the device(html, epub ...)
+        - feature: add ability to change page and font(make text scrollable, not changing total page count)
+        - feature: open in functionality
+        - improvement: migrate to Realm database
+        - bug: notification not removed after item downloaded(reproduced when few items started simultaneously)
+        - bug: add checkable background
+        - bug: google plus auth not working
 ```

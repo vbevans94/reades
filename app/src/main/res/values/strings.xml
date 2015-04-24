@@ -12,9 +12,10 @@
     <string name="action_refresh">Refresh</string>
     <string name="title_dictionaries">Dictionaries</string>
     <string name="title_books">Books</string>
+    <string name="title_languaged_books">%s Books</string>
     <string name="message_no_items">There are no items in the list</string>
     <string name="error_reading_book_file">Error reading book file</string>
-    <string name="message_will_be_removed">Will be permanently removed in a moment</string>
+    <string name="message_item_deleted">Deleted</string>
     <string name="key_book">book_%d</string>
     <string name="key_book_id">book_id</string>
     <string name="text_page_info">%1$d/%2$d</string>

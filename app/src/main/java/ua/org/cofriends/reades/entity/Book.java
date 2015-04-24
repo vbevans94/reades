@@ -149,16 +149,18 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Book that = (Book) o;
+        Book book = (Book) o;
 
-        if (bookId != that.bookId) return false;
+        if (bookId != book.bookId) return false;
+        return !(name != null ? !name.equals(book.name) : book.name != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        return bookId;
+        int result = bookId;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 
     public static class Event extends BusUtils.Event<Book> {

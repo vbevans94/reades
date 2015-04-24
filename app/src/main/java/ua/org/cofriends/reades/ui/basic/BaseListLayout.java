@@ -20,20 +20,20 @@ import ua.org.cofriends.reades.utils.BusUtils;
 public class BaseListLayout extends FrameLayout implements SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.list)
-    ListView mListView;
+    ListView listView;
 
     @InjectView(R.id.text_title)
     protected TextView textTitle;
 
     @InjectView(R.id.layout_refresh)
-    SwipeRefreshLayout mLayoutRefresh;
+    SwipeRefreshLayout layoutRefresh;
 
     @Inject
     protected SwipeToRefreshModule.RefreshController refreshController;
 
     @Inject
     @SwipeToRefreshModule.SwipeListener
-    AbsListView.OnScrollListener mScrollListener;
+    AbsListView.OnScrollListener swipeScrollListener;
 
     public BaseListLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -53,15 +53,15 @@ public class BaseListLayout extends FrameLayout implements SwipeRefreshLayout.On
         super.onAttachedToWindow();
 
         ObjectGraph objectGraph = BaseActivity.get(getContext()).getActivityGraph();
-        objectGraph.plus(new SwipeToRefreshModule(mLayoutRefresh, this)).inject(this);
+        objectGraph.plus(new SwipeToRefreshModule(layoutRefresh, this)).inject(this);
 
         TextView textEmpty = ButterKnife.findById(this, R.id.text_empty);
         textEmpty.setText(R.string.message_no_items);
-        mListView.setEmptyView(textEmpty);
+        listView.setEmptyView(textEmpty);
 
         BusUtils.register(this);
 
-        mListView.setOnScrollListener(mScrollListener);
+        listView.setOnScrollListener(swipeScrollListener);
 
         refreshController.refresh();
     }
@@ -74,7 +74,7 @@ public class BaseListLayout extends FrameLayout implements SwipeRefreshLayout.On
     }
 
     public ListView listView() {
-        return mListView;
+        return listView;
     }
 
     /**
