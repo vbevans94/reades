@@ -64,7 +64,7 @@ public class SavedDictionariesView extends AddListLayout implements ContextDelet
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onDictionaryActionDone(Dictionary.DoneEvent event) {
+    public void onDictionaryActionDone(Dictionary.SavedEvent event) {
         refreshController.refresh();
     }
 

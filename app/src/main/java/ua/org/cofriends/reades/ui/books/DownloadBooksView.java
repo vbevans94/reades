@@ -81,7 +81,7 @@ public class DownloadBooksView extends BaseListLayout implements Callback<List<B
      */
     @SuppressWarnings("unused")
     @Subscribe
-    public void onBookActionDone(Book.DoneEvent event) {
+    public void onBookActionDone(Book.SavedEvent event) {
         reloadFromDatabase();
     }
 

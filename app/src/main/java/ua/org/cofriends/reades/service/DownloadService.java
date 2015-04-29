@@ -193,9 +193,12 @@ public class DownloadService extends Service {
                 private void stopWithMessage(String message, Loadable loadable) {
                     // only when load isn't cancelled, we cancel it with notifying user
                     if (mPendingToId.containsKey(loadable)) {
+                        manager.cancel(mPendingToId.get(loadable));
+
                         // tell user of the result of action
                         BaseToast.show(getApplicationContext(), message);
                         mPendingToId.remove(loadable);
+
                         if (mPendingToId.isEmpty()) {
                             stopForeground(true);
                             stopSelf(startId);

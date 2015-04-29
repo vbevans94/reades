@@ -93,7 +93,7 @@ public class DownloadDictionariesView extends BaseListLayout implements Callback
      */
     @SuppressWarnings("unused")
     @Subscribe
-    public void onDictionaryActionDone(Dictionary.DoneEvent event) {
+    public void onDictionaryActionDone(Dictionary.SavedEvent event) {
         reloadDictionariesFromDatabase();
     }
 

@@ -1,14 +1,11 @@
 package ua.org.cofriends.reades.ui.books;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
 
-import com.cocosw.undobar.UndoBarController;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -21,8 +18,6 @@ import ua.org.cofriends.reades.service.book.SavedBooksService;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.basic.AddListLayout;
 import ua.org.cofriends.reades.ui.basic.tools.ContextDeleteController;
-import ua.org.cofriends.reades.ui.basic.tools.ContextMenuController;
-import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 
 public class DeviceBooksView extends AddListLayout implements View.OnClickListener, ContextDeleteController.DeleteTarget<Book> {
@@ -85,11 +80,12 @@ public class DeviceBooksView extends AddListLayout implements View.OnClickListen
 
     /**
      * Saved or deleted. Need to refresh list.
+     *
      * @param event to respond on
      */
     @SuppressWarnings("unused")
     @Subscribe
-    public void onBookActionDone(Book.DoneEvent event) {
+    public void onBookActionDone(Book.SavedEvent event) {
         refreshController.refresh();
     }
 
@@ -103,5 +99,6 @@ public class DeviceBooksView extends AddListLayout implements View.OnClickListen
         SavedBooksService.actUpon(getContext(), item, SavedBooksService.DELETE);
     }
 
-    public static class OpenBookEvent {}
+    public static class OpenBookEvent {
+    }
 }

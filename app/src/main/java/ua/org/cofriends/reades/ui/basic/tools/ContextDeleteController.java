@@ -44,6 +44,8 @@ public class ContextDeleteController implements UndoBarController.AdvancedUndoLi
     @Override
     public boolean onMenuItemSelected(MenuItem item, List<Integer> positions) {
         if (item.getItemId() == R.id.action_delete) {
+            undoBar.clear();
+
             deletedItems = new ArrayList<>();
 
             // remember to be able to restore

@@ -142,9 +142,9 @@ public class Dictionary extends SugarRecord<Dictionary> implements DownloadServi
         }
     }
 
-    public static class DoneEvent extends Event {
+    public static class SavedEvent extends Event {
 
-        public DoneEvent(Dictionary object) {
+        public SavedEvent(Dictionary object) {
             super(object);
         }
     }

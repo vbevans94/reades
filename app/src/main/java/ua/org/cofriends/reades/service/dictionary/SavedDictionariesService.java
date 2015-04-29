@@ -71,23 +71,15 @@ public class SavedDictionariesService extends IntentService {
                 // save to the database
                 dictionary.save();
 
-                BusUtils.post(new Dictionary.DoneEvent(dictionary));
+                BusUtils.post(new Dictionary.SavedEvent(dictionary));
 
                 break;
             }
 
             case DELETE: {
                 Dictionary dictionary = BundleUtils.fetchFromBundle(Dictionary.class, intent.getExtras()).meFromDb();
-                // delete all books with this dictionary's 'from language'
-                List<Book> books = Book.find(Book.class, "language = ?", Long.toString(dictionary.getFromLanguage().getId()));
-                for (Book book : books) {
-                    SavedBooksService.deleteBook(book);
-                }
                 // delete dictionary itself
                 dictionary.delete();
-
-                // tell the world that we are done
-                BusUtils.post(new Dictionary.DoneEvent(dictionary));
 
                 break;
             }

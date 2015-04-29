@@ -69,7 +69,7 @@ public class LibraryBooksView extends AddListLayout implements ContextDeleteCont
      */
     @SuppressWarnings("unused")
     @Subscribe
-    public void onBookActionDone(Book.DoneEvent event) {
+    public void onBookActionDone(Book.SavedEvent event) {
         refreshController.refresh();
     }
 

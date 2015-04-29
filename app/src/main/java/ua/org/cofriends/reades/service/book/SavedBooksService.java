@@ -93,7 +93,7 @@ public class SavedBooksService extends IntentService {
 
                 saveBook(book);
 
-                BusUtils.post(new Book.DoneEvent(book));
+                BusUtils.post(new Book.SavedEvent(book));
 
                 break;
             }
@@ -103,9 +103,6 @@ public class SavedBooksService extends IntentService {
                 Book book = BundleUtils.fetchFromBundle(Book.class, intent.getExtras()).meFromDb();
 
                 deleteBook(book);
-
-                // tell the world we are done
-                BusUtils.post(new Book.DoneEvent(book));
 
                 break;
             }
@@ -157,6 +154,8 @@ public class SavedBooksService extends IntentService {
         if (book.getSourceType() == Book.SourceType.LIBRARY) {
             // author is present only if a book is loaded from the API server
             book.setAuthor(book.getAuthor().meFromDb());
+        } else {
+            book.setBookId((int) System.currentTimeMillis());
         }
 
         book.save();

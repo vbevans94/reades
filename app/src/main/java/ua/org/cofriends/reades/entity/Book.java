@@ -14,7 +14,7 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
 
     @Expose
     @SerializedName("id")
-    private final int bookId;
+    private int bookId;
 
     @Expose
     private String name;
@@ -62,6 +62,10 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
 
     public int getBookId() {
         return bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
     }
 
     @Override
@@ -177,9 +181,9 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
         }
     }
 
-    public static class DoneEvent extends Event {
+    public static class SavedEvent extends Event {
 
-        public DoneEvent(Book object) {
+        public SavedEvent(Book object) {
             super(object);
         }
     }
