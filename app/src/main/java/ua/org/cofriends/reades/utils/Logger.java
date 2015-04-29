@@ -36,6 +36,10 @@ public class Logger {
         }
     }
 
+    public static void d(final String tag, String format, Object...params) {
+        d(tag, String.format(format, params));
+    }
+
     public static void d(final String tag, String message, Throwable cause) {
         //noinspection PointlessBooleanExpression,ConstantConditions
         if (BuildConfig.DEBUG || Log.isLoggable(tag, Log.DEBUG)) {

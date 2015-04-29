@@ -2,15 +2,11 @@ package ua.org.cofriends.reades.ui.books;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import javax.inject.Inject;
 
@@ -19,9 +15,9 @@ import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
-import ua.org.cofriends.reades.local.OpenFileController;
 import ua.org.cofriends.reades.service.dictionary.SavedDictionariesService;
 import ua.org.cofriends.reades.ui.basic.ListAddActivity;
+import ua.org.cofriends.reades.ui.open.OpenFileController;
 import ua.org.cofriends.reades.ui.read.ReadActivity;
 import ua.org.cofriends.reades.utils.BundleUtils;
 
@@ -94,11 +90,5 @@ public class BooksActivity extends ListAddActivity {
     @Subscribe
     public void oтBookOpen(DeviceBooksView.OpenBookEvent event) {
         openFileController.showOpenDialog(this);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        openFileController.processResult(this, requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

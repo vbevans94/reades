@@ -1,1 +1,1 @@
-include ':app', ':libs:mupdf', ':libs:aFileChooser'
+include ':app', ':libs:mupdf'

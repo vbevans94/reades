@@ -20,8 +20,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.SplashActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,20 +34,6 @@
         <activity
             android:name=".ui.dictionaries.DictionariesActivity"
             android:label="@string/title_dictionaries" />
-        <activity
-            android:name="com.ipaulpro.afilechooser.FileChooserActivity"
-            android:icon="@drawable/ic_launcher"
-            android:exported="true"
-            android:label="@string/title_file_picker">
-            <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.OPENABLE" />
-
-                <data android:mimeType="*/*" />
-            </intent-filter>
-        </activity>
 
         <service android:name=".service.book.BookDownloadService" />
         <service android:name=".service.dictionary.DictionaryDownloadService" />

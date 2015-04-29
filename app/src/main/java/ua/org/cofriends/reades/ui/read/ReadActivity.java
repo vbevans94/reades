@@ -40,17 +40,17 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
 
     @Optional
     @InjectView(R.id.pager)
-    ViewPager mPager;
+    ViewPager pager;
 
     @Optional
     @InjectView(R.id.progress)
-    ProgressBar mProgress;
+    ProgressBar progressBar;
 
     @Optional
     @InjectView(R.id.text_page_info)
-    TextView mTextPageInfo;
+    TextView textPageInfo;
 
-    private DictService mDictService;
+    private DictService dictService;
 
     public static void start(Book book, Dictionary dictionary, Context context) {
         Bundle extras = BundleUtils.writeObject(Book.class, book
@@ -67,11 +67,11 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
 
         ButterKnife.inject(this);
 
-        mDictService = DictService.getStartedService(getDictionary().getDbConfigPath());
+        dictService = DictService.getStartedService(getDictionary().getDbConfigPath());
 
         setTitle(getBook().getName());
 
-        mPager.setOnPageChangeListener(this);
+        pager.setOnPageChangeListener(this);
     }
 
     private Book getBook() {
@@ -86,7 +86,7 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     protected void onStop() {
         super.onStop();
 
-        int page = mPager.getCurrentItem();
+        int page = pager.getCurrentItem();
         LocalStorage.INSTANCE.setInt(getString(R.string.key_book, getBook().getBookId()), page);
         LocalStorage.INSTANCE.setInt(getString(R.string.key_book_id), getBook().getBookId());
         LocalStorage.INSTANCE.setInt(getString(R.string.key_dictionary_id), getDictionary().getDictionaryId());
@@ -97,22 +97,22 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     public void onSizeChanged(BaseViewPager.SizeChangedEvent event) {
         TextPaint textPaint = new TextPaint();
         textPaint.setTextSize(getResources().getDimension(R.dimen.text_normal));
-        int marginRoot = (int) getResources().getDimension(R.dimen.root_margin);
-        int height = mPager.getHeight() - 2 * marginRoot;
-        int width = mPager.getWidth() - 2 * marginRoot;
+        int marginRoot = getResources().getDimensionPixelSize(R.dimen.root_margin);
+        int height = pager.getHeight() - 2 * marginRoot;
+        int width = pager.getWidth() - 2 * marginRoot;
         TaskUtils.execute(new PagingTask(), new PagingTask.Params(getBook(), height, width, textPaint));
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onPagingDone(PagingTask.DoneEvent event) {
-        UiUtils.hide(mProgress);
-        UiUtils.show(mTextPageInfo);
+        UiUtils.hide(progressBar);
+        UiUtils.show(textPageInfo);
 
         // set pages and go to previously finished-on page
-        mPager.setAdapter(new TextPagerAdapter(this, event.getData()));
+        pager.setAdapter(new TextPagerAdapter(this, event.getData()));
         int page = LocalStorage.INSTANCE.getInt(getString(R.string.key_book, getBook().getBookId()));
-        mPager.setCurrentItem(page);
+        pager.setCurrentItem(page);
         displayPage(page);
     }
 
@@ -120,13 +120,13 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     @Subscribe
     public void onProgress(ProgressEvent event) {
         int progress = event.getData();
-        mProgress.setProgress(progress);
+        progressBar.setProgress(progress);
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onWordRequested(PageView.WordRequestEvent event) {
-        mDictService.search(event.getData());
+        dictService.search(event.getData());
     }
 
     @SuppressWarnings("unused")
@@ -156,7 +156,7 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
     private void displayPage(int page) {
-        mTextPageInfo.setText(getString(R.string.text_page_info, page + 1, mPager.getAdapter().getCount()));
+        textPageInfo.setText(getString(R.string.text_page_info, page + 1, pager.getAdapter().getCount()));
     }
 
     @Override
@@ -184,7 +184,7 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
                 // read book text
                 String text = FileUtils.readText(params.mBook.getFileUrl());
                 // split text to pages
-                PageSplitter splitter = new PageSplitter(params.mWidth, params.mHeight, 1, 0);
+                PageSplitter splitter = new PageSplitter(params.mWidth, params.mHeight);
                 splitter.append(text, params.mTextPaint);
                 contents = splitter.getPages();
                 // save to database for next fetches

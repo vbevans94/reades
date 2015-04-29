@@ -1,6 +1,8 @@
 package ua.org.cofriends.reades.utils;
 
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.Html;
 import android.text.Spannable;
@@ -8,6 +10,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
@@ -20,10 +23,10 @@ import ua.org.cofriends.reades.ui.read.ReadActivity;
 
 public class PageSplitter {
 
+    private static final String TAG = Logger.makeLogTag(PageSplitter.class);
+
     private final int pageWidth;
     private final int pageHeight;
-    private final float lineSpacingMultiplier;
-    private final int lineSpacingExtra;
     private final List<CharSequence> pages = new ArrayList<CharSequence>();
     private SpannableStringBuilder currentLine = new SpannableStringBuilder();
     private SpannableStringBuilder currentPage = new SpannableStringBuilder();
@@ -31,16 +34,16 @@ public class PageSplitter {
     private int currentLineWidth;
     private int textLineHeight;
 
-    public PageSplitter(int pageWidth, int pageHeight, float lineSpacingMultiplier, int lineSpacingExtra) {
+    public PageSplitter(int pageWidth, int pageHeight) {
         this.pageWidth = pageWidth;
         this.pageHeight = pageHeight;
-        this.lineSpacingMultiplier = lineSpacingMultiplier;
-        this.lineSpacingExtra = lineSpacingExtra;
     }
 
     public void append(String text, TextPaint textPaint) {
-        textLineHeight = (int) Math.ceil(textPaint.getFontMetrics(null) * lineSpacingMultiplier + lineSpacingExtra);
-        String[] paragraphs = text.split("\n", -1);
+        Paint.FontMetricsInt fontMetrics = textPaint.getFontMetricsInt();
+        textLineHeight = fontMetrics.bottom - fontMetrics.top;
+        String[] paragraphs = text.split("\n\n", -1);
+
         int i;
         int total = paragraphs.length;
         for (i = 0; i < paragraphs.length - 1; i++) {
@@ -58,7 +61,7 @@ public class PageSplitter {
     }
 
     private void appendText(String text, TextPaint textPaint) {
-        String[] words = text.split(" ", -1);
+        String[] words = text.replace('\n', ' ').split(" ", -1);
         int i;
         for (i = 0; i < words.length - 1; i++) {
             appendWord(words[i] + " ", textPaint);
@@ -155,9 +158,14 @@ public class PageSplitter {
         ClickableSpan clickableSpan = new ClickableSpan() {
 
             @Override
-            public void onClick(View textView) {
-                String escaped = word.toString().replaceAll("\\W", "");
-                BusUtils.post(new PageView.WordRequestEvent(escaped));
+            public void onClick(View view) {
+                if (view instanceof PageView) {
+                    PageView pageView = (PageView) view;
+                    if (!pageView.hasMoved()) {
+                        String escaped = word.toString().replaceAll("\\W", "");
+                        BusUtils.post(new PageView.WordRequestEvent(escaped));
+                    }
+                }
             }
 
             @Override
@@ -168,6 +176,11 @@ public class PageSplitter {
                 ds.setColor(Color.BLACK);
             }
         };
-        spannable.setSpan(clickableSpan, spannable.length() - word.length() - 1, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        Logger.d(TAG, "Spannable: %s, word: %s", spannable, word);
+        int start = spannable.length() - word.length() - 1;
+        if (start < 0) {
+            start = 0;
+        }
+        spannable.setSpan(clickableSpan, start, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 }

@@ -42,5 +42,6 @@
     <string name="title_opened">Opened</string>
     <string name="title_delete">Delete</string>
     <string name="title_file_picker">Open file</string>
+    <string name="message_access_denied">Access denied</string>
 
 </resources>

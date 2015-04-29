@@ -235,6 +235,16 @@ public class Book extends SugarRecord<Book> implements DownloadService.Loadable 
 
     public enum FormatType {
 
-        TXT, PDF
+        TXT(".+\\.txt"), PDF(".+\\.pdf");
+
+        private final String pattern;
+
+        FormatType(String pattern) {
+            this.pattern = pattern;
+        }
+
+        public String getPattern() {
+            return pattern;
+        }
     }
 }
