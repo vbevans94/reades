@@ -2,7 +2,6 @@ package ua.org.cofriends.reades.ui.basic;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
@@ -28,31 +27,29 @@ import ua.org.cofriends.reades.utils.GoogleApi;
 
 public class BaseActivity extends ActionBarActivity {
 
-    FrameLayout mLayoutContainer;
+    FrameLayout layoutContainer;
 
-    private boolean mIntentPending;
-
-    private ObjectGraph mObjectGraph;
+    private ObjectGraph objectGraph;
 
     @Inject
-    GoogleApi mGoogleApi;
+    GoogleApi googleApi;
 
     @Inject
-    DrawerToggle mDrawerToggle;
+    DrawerToggle drawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mObjectGraph = MainApplication.get(this).objectGraph().plus(getModules().toArray());
+        objectGraph = MainApplication.get(this).objectGraph().plus(getModules().toArray());
 
         super.setContentView(R.layout.base_activity);
 
-        mLayoutContainer = ButterKnife.findById(this, R.id.layout_container);
+        layoutContainer = ButterKnife.findById(this, R.id.layout_container);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mObjectGraph.inject(this);
+        objectGraph.inject(this);
     }
 
     public static BaseActivity get(Context context) {
@@ -60,7 +57,7 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public void inject(Object object) {
-        mObjectGraph.inject(object);
+        objectGraph.inject(object);
     }
 
     /**
@@ -72,7 +69,7 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public ObjectGraph getActivityGraph() {
-        return mObjectGraph;
+        return objectGraph;
     }
 
     /**
@@ -94,21 +91,21 @@ public class BaseActivity extends ActionBarActivity {
      */
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
-        if (mLayoutContainer == null) {
+        if (layoutContainer == null) {
             throw new IllegalStateException("You can set content view only after super.onCreate() is called!");
         } else {
-            mLayoutContainer.removeAllViews();
+            layoutContainer.removeAllViews();
             if (params == null) {
-                mLayoutContainer.addView(view);
+                layoutContainer.addView(view);
             } else {
-                mLayoutContainer.addView(view, params);
+                layoutContainer.addView(view, params);
             }
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -122,11 +119,10 @@ public class BaseActivity extends ActionBarActivity {
 
         if (requestCode == GoogleApi.RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                mGoogleApi.connect();
+                googleApi.connect();
             } else {
-                mGoogleApi.cancel();
+                googleApi.cancel();
             }
-            mIntentPending = false;
         }
     }
 
@@ -151,20 +147,5 @@ public class BaseActivity extends ActionBarActivity {
         super.onStop();
 
         BusUtils.unregister(this);
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onConnectionFailed(GoogleApi.ConnectionFailedEvent event) {
-        try {
-            if (!mIntentPending) {
-                mIntentPending = true;
-                startIntentSenderForResult(event.getData().getResolution().getIntentSender(),
-                        GoogleApi.RC_SIGN_IN, null, 0, 0, 0);
-            }
-        } catch (IntentSender.SendIntentException e) {
-            mGoogleApi.connect();
-            mIntentPending = false;
-        }
     }
 }

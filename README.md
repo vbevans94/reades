@@ -6,7 +6,6 @@ Read and study language app exclusively for Android
 ```
 
     // TODO:
-        - bug: google plus auth not working
         - feature: add ability to change page and font(make text scrollable, not changing total page count)
         - feature: open in functionality
 ```

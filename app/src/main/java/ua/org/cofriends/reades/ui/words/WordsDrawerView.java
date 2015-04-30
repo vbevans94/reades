@@ -1,11 +1,11 @@
 package ua.org.cofriends.reades.ui.words;
 
 import android.content.Context;
+import android.content.IntentSender;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,28 +35,28 @@ import ua.org.cofriends.reades.utils.GoogleApi;
 public class WordsDrawerView extends LinearLayout {
 
     @InjectView(R.id.list_words)
-    ListView mListWords;
+    ListView listWords;
 
     @InjectView(R.id.text_account_name)
-    TextView mTextAccountName;
+    TextView textAccountName;
 
     @InjectView(R.id.image_account)
-    ImageView mImageAccount;
+    ImageView imageAccount;
 
     @Inject
-    GoogleApi mGoogleApi;
+    GoogleApi googleApi;
 
     @Inject
-    DrawerToggle mDrawerToggle;
+    DrawerToggle drawerToggle;
 
-    private final WordsAdapter mAdapter;
+    private final WordsAdapter adapter;
 
     public WordsDrawerView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         inflate(context, R.layout.words_drawer_view, this);
 
-        mAdapter = new WordsAdapter(context);
+        adapter = new WordsAdapter(context);
 
         setBackgroundResource(R.color.white);
         setOrientation(VERTICAL);
@@ -69,7 +69,7 @@ public class WordsDrawerView extends LinearLayout {
 
         ButterKnife.inject(this);
 
-        mListWords.setAdapter(mAdapter);
+        listWords.setAdapter(adapter);
     }
 
     @Override
@@ -78,22 +78,22 @@ public class WordsDrawerView extends LinearLayout {
 
         BaseActivity.get(getContext()).inject(this);
 
-        mListWords.setEmptyView(findViewById(R.id.text_empty));
+        listWords.setEmptyView(findViewById(R.id.text_empty));
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_person);
         icon = new FillTransform(getResources().getColor(R.color.white)).transform(icon);
         icon = new CircleTransform().transform(icon);
-        mImageAccount.setImageBitmap(icon);
+        imageAccount.setImageBitmap(icon);
 
         post(new Runnable() {
             @Override
             public void run() {
-                mDrawerToggle.syncState();
+                drawerToggle.syncState();
             }
         });
 
-        mGoogleApi.connect();
+        googleApi.connect();
 
-        if (mListWords.getAdapter() == null) {
+        if (listWords.getAdapter() == null) {
             SavedWordsService.loadList(getContext());
         }
 
@@ -103,13 +103,13 @@ public class WordsDrawerView extends LinearLayout {
     @OnClick(R.id.image_account)
     @SuppressWarnings("unused")
     void onAccountImageClicked() {
-        mGoogleApi.manualConnect();
+        googleApi.manualConnect();
     }
 
     @OnClick(R.id.text_account_name)
     @SuppressWarnings("unused")
     void onAccountNameClicked() {
-        mGoogleApi.manualConnect();
+        googleApi.manualConnect();
     }
 
     @OnClick(R.id.layout_home)
@@ -122,27 +122,27 @@ public class WordsDrawerView extends LinearLayout {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Forward the new configuration the drawer toggle component.
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        mGoogleApi.disconnect();
+        googleApi.disconnect();
         BusUtils.unregister(this);
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onWordListLoaded(Word.ListLoadedEvent event) {
-        mAdapter.replaceWith(event.getData());
+        adapter.replaceWith(event.getData());
     }
 
     @OnItemClick(R.id.list_words)
     @SuppressWarnings("unused")
     public void onWordClicked(int position) {
-        Word word = (Word) mListWords.getItemAtPosition(position);
+        Word word = (Word) listWords.getItemAtPosition(position);
         DefinitionDialogFactory.show(getContext(), word);
     }
 
@@ -156,8 +156,19 @@ public class WordsDrawerView extends LinearLayout {
     @Subscribe
     public void onGoogleConnected(GoogleApi.ConnectedEvent event) {
         GoogleApiClient client = event.getData();
-        mGoogleApi.loadImage(mImageAccount);
-        mTextAccountName.setText(Plus.AccountApi.getAccountName(client));
+        googleApi.loadImage(imageAccount);
+        textAccountName.setText(Plus.AccountApi.getAccountName(client));
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onConnectionFailed(GoogleApi.ConnectionFailedEvent event) {
+        try {
+            BaseActivity.get(getContext()).startIntentSenderForResult(event.getData().getResolution().getIntentSender(),
+                    GoogleApi.RC_SIGN_IN, null, 0, 0, 0);
+        } catch (IntentSender.SendIntentException e) {
+            googleApi.connect();
+        }
     }
 
     public static class HomeEvent {}

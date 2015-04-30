@@ -22,25 +22,25 @@ public class GoogleApi implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     public static final int RC_SIGN_IN = 0;
     public static final String KEY_CANCELLED = "key_google_api_cancelled";
 
-    private final Picasso mPicasso;
+    private final Picasso picasso;
 
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient googleApiClient;
 
     @Inject
     public GoogleApi(Application context, Picasso picasso) {
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
+        googleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
 
-        mPicasso = picasso;
+        this.picasso = picasso;
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        BusUtils.post(new ConnectedEvent(mGoogleApiClient));
+        BusUtils.post(new ConnectedEvent(googleApiClient));
     }
 
     @Override
@@ -68,11 +68,11 @@ public class GoogleApi implements GoogleApiClient.ConnectionCallbacks, GoogleApi
      * Connects if possible.
      */
     public void manualConnect() {
-        if (mGoogleApiClient != null && !mGoogleApiClient.isConnecting()) {
-            if (!mGoogleApiClient.isConnected()) {
+        if (googleApiClient != null && !googleApiClient.isConnecting()) {
+            if (!googleApiClient.isConnected()) {
                 LocalStorage.INSTANCE.remove(KEY_CANCELLED);
 
-                mGoogleApiClient.connect();
+                googleApiClient.connect();
             } else {
                 onConnected(null);
             }
@@ -80,8 +80,8 @@ public class GoogleApi implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     }
 
     public void disconnect() {
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
         }
     }
 
@@ -90,10 +90,10 @@ public class GoogleApi implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     }
 
     public void loadImage(ImageView imageView) {
-        Person.Image profilePicture = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage();
+        Person.Image profilePicture = Plus.PeopleApi.getCurrentPerson(googleApiClient).getImage();
         if (profilePicture != null && profilePicture.hasUrl()) {
             int size = (int) imageView.getContext().getResources().getDimension(R.dimen.item_icon_size);
-            mPicasso.load(profilePicture.getUrl() + "&size=" + size)
+            picasso.load(profilePicture.getUrl() + "&size=" + size)
                     .transform(new CircleTransform())
                     .resize(size, size)
                     .centerCrop()
