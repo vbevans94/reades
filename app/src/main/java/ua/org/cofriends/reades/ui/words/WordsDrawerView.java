@@ -93,9 +93,7 @@ public class WordsDrawerView extends LinearLayout {
 
         googleApi.connect();
 
-        if (listWords.getAdapter() == null) {
-            SavedWordsService.loadList(getContext());
-        }
+        SavedWordsService.loadList(getContext());
 
         BusUtils.register(this);
     }

@@ -90,14 +90,17 @@ public class GoogleApi implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     }
 
     public void loadImage(ImageView imageView) {
-        Person.Image profilePicture = Plus.PeopleApi.getCurrentPerson(googleApiClient).getImage();
-        if (profilePicture != null && profilePicture.hasUrl()) {
-            int size = (int) imageView.getContext().getResources().getDimension(R.dimen.item_icon_size);
-            picasso.load(profilePicture.getUrl() + "&size=" + size)
-                    .transform(new CircleTransform())
-                    .resize(size, size)
-                    .centerCrop()
-                    .into(imageView);
+        Person currentPerson = Plus.PeopleApi.getCurrentPerson(googleApiClient);
+        if (currentPerson != null) {
+            Person.Image profilePicture = currentPerson.getImage();
+            if (profilePicture != null && profilePicture.hasUrl()) {
+                int size = (int) imageView.getContext().getResources().getDimension(R.dimen.item_icon_size);
+                picasso.load(profilePicture.getUrl() + "&size=" + size)
+                        .transform(new CircleTransform())
+                        .resize(size, size)
+                        .centerCrop()
+                        .into(imageView);
+            }
         }
     }
 
