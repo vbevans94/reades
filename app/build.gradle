@@ -16,6 +16,8 @@ android {
         versionName "1.1"
 
         buildConfigField "String", "AUTH_TOKEN", "\"${getAuthToken()}\""
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -36,6 +38,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'LICENSE.txt'
     }
 }
 
@@ -68,8 +71,10 @@ dependencies {
 
     compile 'com.github.satyan:sugar:1.3'
 
-    /*//Test dependencies
-    debugCompile('org.mockito:mockito-core:1.10.19') {
+    //Test dependencies
+
+    // Espresso
+    androidTestCompile('org.mockito:mockito-core:1.10.19') {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
     androidTestCompile('com.google.dexmaker:dexmaker-mockito:1.0') {
@@ -78,20 +83,9 @@ dependencies {
     }
     androidTestCompile('com.google.dexmaker:dexmaker:1.0')
 
-    // Robolectric
-    testCompile 'org.hamcrest:hamcrest-core:1.3'
-    testCompile 'org.hamcrest:hamcrest-library:1.3'
-    testCompile 'org.hamcrest:hamcrest-integration:1.3'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.apache.maven:maven-ant-tasks:2.1.3'
-    testCompile("org.robolectric:robolectric:3.0-rc2") {
-        exclude group: 'commons-logging', module: 'commons-logging'
-    }
-
-    // Espresso
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.0') {
         exclude group: 'javax.inject'
         exclude group: 'com.squareup'
     }
-    androidTestCompile('com.android.support.test:testing-support-lib:0.1')*/
+    androidTestCompile('com.android.support.test:testing-support-lib:0.1')
 }

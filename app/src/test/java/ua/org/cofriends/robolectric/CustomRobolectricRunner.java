@@ -1,4 +1,4 @@
-package com.zoomlee.Zoomlee.robolectric;
+package ua.org.cofriends.robolectric;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricGradleTestRunner;

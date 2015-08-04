@@ -37,7 +37,7 @@
                     android:divider="@drawable/divider_list"
                     android:dividerHeight="1dp"
                     android:listSelector="@drawable/selectable_background_reades"
-                    tools:listitem="@layout/book_item" />
+                    tools:listitem="@layout/item_dictionary" />
 
                 <ua.org.cofriends.reades.ui.basic.BaseTextView
                     android:id="@+id/text_empty"
@@ -45,6 +45,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:padding="@dimen/app_padding"
+                    android:text="@string/message_no_items"
                     android:visibility="gone" />
 
                 <ImageView

@@ -56,7 +56,6 @@ public class BaseListLayout extends FrameLayout implements SwipeRefreshLayout.On
         objectGraph.plus(new SwipeToRefreshModule(layoutRefresh, this)).inject(this);
 
         TextView textEmpty = ButterKnife.findById(this, R.id.text_empty);
-        textEmpty.setText(R.string.message_no_items);
         listView.setEmptyView(textEmpty);
 
         BusUtils.register(this);

@@ -77,6 +77,7 @@ public class DownloadBooksView extends BaseListLayout implements Callback<List<B
 
     /**
      * Saved or deleted. Need to refresh list.
+     *
      * @param event to respond on
      */
     @SuppressWarnings("unused")
@@ -91,6 +92,7 @@ public class DownloadBooksView extends BaseListLayout implements Callback<List<B
 
     /**
      * Called when local books query returns.
+     *
      * @param event to retrieve books from
      */
     @SuppressWarnings("unused")

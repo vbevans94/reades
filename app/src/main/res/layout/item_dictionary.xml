@@ -2,17 +2,23 @@
 <ua.org.cofriends.reades.ui.dictionaries.DictionaryItemView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/checkable_background"
-    android:layout_height="@dimen/item_height">
+    android:layout_height="@dimen/item_height"
+    android:background="@drawable/checkable_background">
 
     <LinearLayout
         android:id="@+id/layout_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/item_icon_size"
+        android:layout_height="@dimen/item_icon_size"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_margin="@dimen/root_margin"
+        android:gravity="center"
         android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/image_from"
@@ -27,6 +33,11 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/description_image" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout
