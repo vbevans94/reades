@@ -1,7 +1,6 @@
 package ua.org.cofriends.reades.ui.read;
 
 import android.content.Context;
-import android.support.v4.view.ViewConfigurationCompat;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.MotionEvent;

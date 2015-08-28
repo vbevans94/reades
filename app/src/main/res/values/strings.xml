@@ -43,5 +43,7 @@
     <string name="title_delete">Delete</string>
     <string name="title_file_picker">Open file</string>
     <string name="message_access_denied">Access denied</string>
+    <string name="hint_enter_page">Enter page between 1 and %d</string>
+    <string name="message_invalid_page">Invalid page</string>
 
 </resources>

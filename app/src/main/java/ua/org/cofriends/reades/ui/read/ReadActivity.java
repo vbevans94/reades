@@ -1,13 +1,18 @@
 package ua.org.cofriends.reades.ui.read;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.text.TextPaint;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
@@ -18,6 +23,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.dict.DictService;
@@ -161,6 +167,31 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
 
     @Override
     public void onPageScrollStateChanged(int i) {
+    }
+
+    @OnClick(R.id.text_page_info)
+    @SuppressWarnings("unused")
+    void onPageClicked() {
+        final int count = pager.getAdapter().getCount();
+        final EditText editText = (EditText) View.inflate(this, R.layout.dialog_page, null);
+        editText.setHint(getString(R.string.hint_enter_page, count));
+
+        new AlertDialog.Builder(this)
+                .setView(editText)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int page = Integer.parseInt(editText.getText().toString());
+
+                        if (page < 1 || page > count) {
+                            Toast.makeText(getApplicationContext(), R.string.message_invalid_page, Toast.LENGTH_SHORT).show();
+                        } else {
+                            pager.setCurrentItem(page - 1);
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     private static class PagingTask extends AsyncTask<PagingTask.Params, Integer, List<CharSequence>> {

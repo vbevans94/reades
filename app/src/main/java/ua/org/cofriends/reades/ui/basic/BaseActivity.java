@@ -3,7 +3,7 @@ package ua.org.cofriends.reades.ui.basic;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,16 +23,12 @@ import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.dictionaries.DictionariesActivity;
 import ua.org.cofriends.reades.ui.words.WordsDrawerView;
 import ua.org.cofriends.reades.utils.BusUtils;
-import ua.org.cofriends.reades.utils.GoogleApi;
 
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends AppCompatActivity {
 
     FrameLayout layoutContainer;
 
     private ObjectGraph objectGraph;
-
-    @Inject
-    GoogleApi googleApi;
 
     @Inject
     DrawerToggle drawerToggle;
@@ -111,28 +107,6 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     public void setContentView(View view) {
         setContentView(view, null);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == GoogleApi.RC_SIGN_IN) {
-            if (resultCode == RESULT_OK) {
-                googleApi.connect();
-            } else {
-                googleApi.cancel();
-            }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onHome(WordsDrawerView.HomeEvent event) {
-        if (getClass() != DictionariesActivity.class) {
-            startActivity(new Intent(this, DictionariesActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-        }
     }
 
     @Override

@@ -1,7 +1,6 @@
 package ua.org.cofriends.reades.ui.words;
 
 import android.content.Context;
-import android.content.IntentSender;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,8 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.plus.Plus;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
@@ -30,21 +27,11 @@ import ua.org.cofriends.reades.ui.basic.DrawerToggle;
 import ua.org.cofriends.reades.ui.basic.tools.CircleTransform;
 import ua.org.cofriends.reades.ui.basic.tools.FillTransform;
 import ua.org.cofriends.reades.utils.BusUtils;
-import ua.org.cofriends.reades.utils.GoogleApi;
 
 public class WordsDrawerView extends LinearLayout {
 
     @InjectView(R.id.list_words)
     ListView listWords;
-
-    @InjectView(R.id.text_account_name)
-    TextView textAccountName;
-
-    @InjectView(R.id.image_account)
-    ImageView imageAccount;
-
-    @Inject
-    GoogleApi googleApi;
 
     @Inject
     DrawerToggle drawerToggle;
@@ -79,10 +66,6 @@ public class WordsDrawerView extends LinearLayout {
         BaseActivity.get(getContext()).inject(this);
 
         listWords.setEmptyView(findViewById(R.id.text_empty));
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_person);
-        icon = new FillTransform(getResources().getColor(R.color.white)).transform(icon);
-        icon = new CircleTransform().transform(icon);
-        imageAccount.setImageBitmap(icon);
 
         post(new Runnable() {
             @Override
@@ -91,29 +74,9 @@ public class WordsDrawerView extends LinearLayout {
             }
         });
 
-        googleApi.connect();
-
         SavedWordsService.loadList(getContext());
 
         BusUtils.register(this);
-    }
-
-    @OnClick(R.id.image_account)
-    @SuppressWarnings("unused")
-    void onAccountImageClicked() {
-        googleApi.manualConnect();
-    }
-
-    @OnClick(R.id.text_account_name)
-    @SuppressWarnings("unused")
-    void onAccountNameClicked() {
-        googleApi.manualConnect();
-    }
-
-    @OnClick(R.id.layout_home)
-    @SuppressWarnings("unused")
-    void onHomeClicked() {
-        BusUtils.post(new HomeEvent());
     }
 
     @Override
@@ -127,7 +90,6 @@ public class WordsDrawerView extends LinearLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        googleApi.disconnect();
         BusUtils.unregister(this);
     }
 
@@ -149,25 +111,4 @@ public class WordsDrawerView extends LinearLayout {
     public void onWordRemove(Word.RemoveEvent event) {
         SavedWordsService.delete(getContext(), event.getData());
     }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onGoogleConnected(GoogleApi.ConnectedEvent event) {
-        GoogleApiClient client = event.getData();
-        googleApi.loadImage(imageAccount);
-        textAccountName.setText(Plus.AccountApi.getAccountName(client));
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onConnectionFailed(GoogleApi.ConnectionFailedEvent event) {
-        try {
-            BaseActivity.get(getContext()).startIntentSenderForResult(event.getData().getResolution().getIntentSender(),
-                    GoogleApi.RC_SIGN_IN, null, 0, 0, 0);
-        } catch (IntentSender.SendIntentException e) {
-            googleApi.connect();
-        }
-    }
-
-    public static class HomeEvent {}
 }
