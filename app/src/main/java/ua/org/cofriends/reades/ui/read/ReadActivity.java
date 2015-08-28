@@ -176,8 +176,10 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
         final EditText editText = (EditText) View.inflate(this, R.layout.dialog_page, null);
         editText.setHint(getString(R.string.hint_enter_page, count));
 
+        int offset = getResources().getDimensionPixelSize(R.dimen.app_padding);
         new AlertDialog.Builder(this)
-                .setView(editText)
+                .setTitle(R.string.title_set_page)
+                .setView(editText, offset, offset, offset, offset)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

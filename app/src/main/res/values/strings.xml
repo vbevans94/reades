@@ -45,5 +45,6 @@
     <string name="message_access_denied">Access denied</string>
     <string name="hint_enter_page">Enter page between 1 and %d</string>
     <string name="message_invalid_page">Invalid page</string>
+    <string name="title_set_page">Go to page</string>
 
 </resources>
