@@ -2,8 +2,7 @@
 <resources>
 
     <string name="app_name">Reades</string>
-    <string name="action_settings">Settings</string>
-    <string name="message_file_loading">File being loaded. %d%% complete (Tap to cancel)</string>
+    <string name="message_file_loading">File being downloaded. (Tap to cancel)</string>
     <string name="message_download_started">Download of %s started</string>
     <string name="error_download_failed">Download failed</string>
     <string name="message_download_success">Downloaded successfully</string>

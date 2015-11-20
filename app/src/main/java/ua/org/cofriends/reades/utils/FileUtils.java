@@ -1,9 +1,11 @@
 package ua.org.cofriends.reades.utils;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -49,5 +51,15 @@ public class FileUtils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
                 ? System.lineSeparator()
                 : "\n";
+    }
+
+    public static File tempFile(Context context) {
+        try {
+            return File.createTempFile("temp", "file", context.getFilesDir());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

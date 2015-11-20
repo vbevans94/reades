@@ -1,14 +1,18 @@
 package ua.org.cofriends.reades.ui.read;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.text.TextPaint;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,18 +35,31 @@ import ua.org.cofriends.reades.entity.Book;
 import ua.org.cofriends.reades.entity.Dictionary;
 import ua.org.cofriends.reades.entity.Page;
 import ua.org.cofriends.reades.ui.basic.BaseActivity;
-import ua.org.cofriends.reades.ui.words.DefinitionDialogFactory;
-import ua.org.cofriends.reades.ui.basic.tools.UiUtils;
 import ua.org.cofriends.reades.ui.basic.BaseViewPager;
+import ua.org.cofriends.reades.ui.basic.tools.UiUtils;
+import ua.org.cofriends.reades.ui.words.DefinitionDialogFactory;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.FileUtils;
 import ua.org.cofriends.reades.utils.LocalStorage;
 import ua.org.cofriends.reades.utils.PageSplitter;
 import ua.org.cofriends.reades.utils.TaskUtils;
+import ua.org.cofriends.reades.utils.Versions;
 
 
-public class ReadActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
+public class ReadActivity extends BaseActivity implements ViewPager.OnPageChangeListener, PageSplitter.WordClickedListener {
+
+    private static final int FULLSCREEN = Versions.isJellyBean()
+            ? View.SYSTEM_UI_FLAG_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_LOW_PROFILE
+            : WindowManager.LayoutParams.FLAG_FULLSCREEN;
+
+    private static final int NORMAL = Versions.isJellyBean()
+            ? View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            : 0;
 
     @Optional
     @InjectView(R.id.pager)
@@ -57,6 +74,7 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     TextView textPageInfo;
 
     private DictService dictService;
+    private boolean barVisible;
 
     public static void start(Book book, Dictionary dictionary, Context context) {
         Bundle extras = BundleUtils.writeObject(Book.class, book
@@ -69,6 +87,16 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!Versions.isJellyBean()) {
+            // necessary config for pre-jellybean devices
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+        animateStatusBar(FULLSCREEN);
+
+        setBarVisibility(false);
+
         setContentView(R.layout.read_activity);
 
         ButterKnife.inject(this);
@@ -77,7 +105,7 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
 
         setTitle(getBook().getName());
 
-        pager.setOnPageChangeListener(this);
+        pager.addOnPageChangeListener(this);
     }
 
     private Book getBook() {
@@ -86,6 +114,39 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
 
     private Dictionary getDictionary() {
         return BundleUtils.fetchFromBundle(Dictionary.class, getIntent().getExtras());
+    }
+
+    protected void setBarVisibility(boolean visible) {
+        barVisible = visible;
+
+        ActionBar actionBar = getSupportActionBar();
+        if (visible) {
+            actionBar.show();
+        } else {
+            actionBar.hide();
+        }
+    }
+
+    @SuppressLint("NewApi")
+    void animateStatusBar(int visibilityFlag) {
+        if (Versions.isJellyBean()) {
+            final Window window = getWindow();
+
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(visibilityFlag);
+
+            if (Versions.isLollipop()) {
+                decorView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    }
+                });
+            }
+        } else {
+            getWindow().setFlags(visibilityFlag, FULLSCREEN);
+        }
     }
 
     @Override
@@ -129,10 +190,13 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
         progressBar.setProgress(progress);
     }
 
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onWordRequested(PageView.WordRequestEvent event) {
-        dictService.search(event.getData());
+    @Override
+    public void onWordClicked(CharSequence word) {
+        if (barVisible) {
+            dictService.search(word);
+        } else {
+            setBarVisibility(true);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -269,4 +333,6 @@ public class ReadActivity extends BaseActivity implements ViewPager.OnPageChange
             super(object);
         }
     }
+
+
 }

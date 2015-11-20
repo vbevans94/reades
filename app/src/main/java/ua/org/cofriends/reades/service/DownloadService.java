@@ -10,16 +10,17 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
-import org.apache.http.Header;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import cz.msebera.android.httpclient.Header;
 import ua.org.cofriends.reades.R;
 import ua.org.cofriends.reades.ui.basic.tools.BaseToast;
 import ua.org.cofriends.reades.utils.BusUtils;
+import ua.org.cofriends.reades.utils.FileUtils;
 import ua.org.cofriends.reades.utils.GsonUtils;
 import ua.org.cofriends.reades.utils.HttpUtils;
 import ua.org.cofriends.reades.utils.Logger;
@@ -152,12 +153,13 @@ public class DownloadService extends Service {
                     .setContentTitle(loadable.getName())
                     .setContentIntent(stopIntent(this, loadable, getClass()))
                     .setSmallIcon(R.drawable.ic_stat_file_file_download)
+                    .setProgress(100, 0, true)
                     .setColor(mNotificationColor);
             final NotificationManagerCompat manager = NotificationManagerCompat.from(this);
             startForeground(mPendingToId.get(loadable), builder.build());
 
             // start loading
-            HttpUtils.getClient().get(loadable.getDownloadUrl(), new FileAsyncHttpResponseHandler(this) {
+            HttpUtils.getClient().get(loadable.getDownloadUrl(), new FileAsyncHttpResponseHandler(FileUtils.tempFile(this)) {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
                     stopWithMessage(getString(R.string.error_download_failed), loadable);
@@ -170,20 +172,6 @@ public class DownloadService extends Service {
                     onLoaded(loadable);
 
                     stopWithMessage(getString(R.string.message_download_success, loadable.getName()), loadable);
-                }
-
-                @Override
-                public void onProgress(int bytesWritten, int totalSize) {
-                    super.onProgress(bytesWritten, totalSize);
-
-                    if (totalSize > 0) {
-                        int progress = (int) ((bytesWritten * 1.0 / totalSize) * 100);
-                        builder.setProgress(100, progress, false);
-                        manager.notify(mPendingToId.get(loadable)
-                                , builder
-                                .setContentText(getString(R.string.message_file_loading, progress))
-                                .build());
-                    }
                 }
 
                 /**

@@ -20,6 +20,7 @@ import ua.org.cofriends.reades.ui.read.PageView;
 import ua.org.cofriends.reades.ui.basic.tools.BaseToast;
 import ua.org.cofriends.reades.utils.BundleUtils;
 import ua.org.cofriends.reades.utils.BusUtils;
+import ua.org.cofriends.reades.utils.PageSplitter;
 
 public class DefinitionDialogFactory {
 
@@ -41,7 +42,8 @@ public class DefinitionDialogFactory {
             builder.setItems(adjacent, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    BusUtils.post(new PageView.WordRequestEvent(adjacent[which]));
+                    PageSplitter.WordClickedListener listener = (PageSplitter.WordClickedListener) context;
+                    listener.onWordClicked(adjacent[which]);
                     dialog.dismiss();
                 }
             });

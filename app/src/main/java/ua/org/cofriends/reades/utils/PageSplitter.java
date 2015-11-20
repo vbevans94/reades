@@ -2,7 +2,6 @@ package ua.org.cofriends.reades.utils;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.Html;
 import android.text.Spannable;
@@ -10,7 +9,6 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
@@ -126,7 +124,7 @@ public class PageSplitter {
         return spannable;
     }
 
-    public static Spannable splitWords(String textInput) {
+    public static Spannable splitWords(String textInput, WordClickedListener listener) {
         StringBuilder text = new StringBuilder(textInput);
         int start = 0;
         SpannableStringBuilder spanText = new SpannableStringBuilder();
@@ -141,12 +139,12 @@ public class PageSplitter {
             if (nextSpace != -1) {
                 CharSequence word = text.subSequence(start, nextSpace);
                 spanText.append(Html.fromHtml(word.toString())).append(delimiter);
-                addSpannable(spanText, word);
+                addSpannable(spanText, word, listener);
                 text.delete(start, nextSpace + 1);
             } else {
                 CharSequence word = text.substring(start);
                 spanText.append(word);
-                addSpannable(spanText, word);
+                addSpannable(spanText, word, listener);
                 break;
             }
         }
@@ -154,7 +152,7 @@ public class PageSplitter {
         return spanText;
     }
 
-    private static void addSpannable(Spannable spannable, final CharSequence word) {
+    private static void addSpannable(Spannable spannable, final CharSequence word, final WordClickedListener listener) {
         ClickableSpan clickableSpan = new ClickableSpan() {
 
             @Override
@@ -163,7 +161,7 @@ public class PageSplitter {
                     PageView pageView = (PageView) view;
                     if (!pageView.hasMoved()) {
                         String escaped = word.toString().replaceAll("\\W", "");
-                        BusUtils.post(new PageView.WordRequestEvent(escaped));
+                        listener.onWordClicked(escaped);
                     }
                 }
             }
@@ -182,5 +180,10 @@ public class PageSplitter {
             start = 0;
         }
         spannable.setSpan(clickableSpan, start, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    public interface WordClickedListener {
+
+        void onWordClicked(CharSequence word);
     }
 }

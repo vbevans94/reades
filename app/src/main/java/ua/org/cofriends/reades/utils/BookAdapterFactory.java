@@ -81,8 +81,7 @@ public class BookAdapterFactory {
                 // if book is opened on device by user we should just copy it into our local storage
                 copy(context, book);
             } else {
-                // if book was downloaded from the server, it just need to be moved from temp file
-                move(context, book);
+                // if book was downloaded from the server, it's already where it must be
             }
         }
     }
@@ -106,7 +105,7 @@ public class BookAdapterFactory {
                         for (TextWord word : line) {
                             builder.append(word.w).append(' ');
                         }
-                        builder.append(System.lineSeparator());
+                        builder.append(FileUtils.lineSeparator());
                     }
                 }
 
@@ -142,26 +141,6 @@ public class BookAdapterFactory {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Moves book file from current {@link Book#getFileUrl()} to destination file and resets book's file url value.
-     *
-     * @param context to use
-     * @param book    to move file of
-     */
-    private static void move(Context context, Book book) {
-        File bookFile = new File(book.getFileUrl());
-        File destinationFile = getDestinationFile(context, bookFile);
-        try {
-            Files.move(bookFile, destinationFile);
-            bookFile.delete();
-            bookFile = destinationFile;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        book.setLoadedPath(bookFile.getAbsolutePath());
     }
 
     private static File getDestinationFile(Context context, File currentFile) {

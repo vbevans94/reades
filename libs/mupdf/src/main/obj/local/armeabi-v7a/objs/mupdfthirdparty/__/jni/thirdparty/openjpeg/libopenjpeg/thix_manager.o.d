@@ -2,49 +2,49 @@ obj/local/armeabi-v7a/objs/mupdfthirdparty/__/jni/thirdparty/openjpeg/libopenjpe
  jni/../jni/thirdparty/openjpeg/libopenjpeg/thix_manager.c \
  jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_includes.h \
  jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_config_private.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/memory.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/stdlib.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/cdefs.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/cdefs_elf.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/android/api-level.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/string.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/malloc.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/alloca.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/strings.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/types.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/stdint.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/_types.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/machine/_types.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/_wchar_limits.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/posix_types.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/stddef.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/compiler.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/asm/posix_types.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/asm/types.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/types.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/machine/kernel.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/sysmacros.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/math.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/limits.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/limits.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/limits.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/machine/internal_types.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/machine/limits.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/syslimits.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/asm/page.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/time.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/time.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/time.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/asm/siginfo.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/asm-generic/siginfo.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/stdio.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/ctype.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/assert.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/memory.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/stdlib.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/cdefs.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/cdefs_elf.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/android/api-level.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/string.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/malloc.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/alloca.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/strings.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/types.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/stdint.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/_types.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/machine/_types.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/_wchar_limits.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/posix_types.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/stddef.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/compiler.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/asm/posix_types.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/asm/types.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/types.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/machine/kernel.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/sysmacros.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/math.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/limits.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/limits.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/limits.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/machine/internal_types.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/machine/limits.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/syslimits.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/asm/page.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/time.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/time.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/time.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/asm/siginfo.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/asm-generic/siginfo.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/stdio.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/ctype.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/assert.h \
  jni/../jni/thirdparty/openjpeg/libopenjpeg/openjpeg.h \
  jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_stdint.h \
  jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_config.h \
  jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_inttypes.h \
- /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/inttypes.h \
+ /Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/inttypes.h \
  jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_clock.h \
  jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_malloc.h \
  jni/../jni/thirdparty/openjpeg/libopenjpeg/function_list.h \
@@ -72,81 +72,81 @@ jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_includes.h:
 
 jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_config_private.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/memory.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/memory.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/stdlib.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/stdlib.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/cdefs.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/cdefs.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/cdefs_elf.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/cdefs_elf.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/android/api-level.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/android/api-level.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/string.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/string.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/malloc.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/malloc.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/alloca.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/alloca.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/strings.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/strings.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/types.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/types.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/stdint.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/stdint.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/_types.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/_types.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/machine/_types.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/machine/_types.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/_wchar_limits.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/_wchar_limits.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/posix_types.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/posix_types.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/stddef.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/stddef.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/compiler.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/compiler.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/asm/posix_types.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/asm/posix_types.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/asm/types.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/asm/types.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/types.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/types.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/machine/kernel.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/machine/kernel.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/sysmacros.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/sysmacros.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/math.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/math.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/limits.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/limits.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/limits.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/limits.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/limits.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/limits.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/machine/internal_types.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/machine/internal_types.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/machine/limits.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/machine/limits.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/syslimits.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/syslimits.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/asm/page.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/asm/page.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/time.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/time.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/sys/time.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/sys/time.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/linux/time.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/linux/time.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/asm/siginfo.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/asm/siginfo.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/asm-generic/siginfo.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/asm-generic/siginfo.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/stdio.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/stdio.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/ctype.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/ctype.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/assert.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/assert.h:
 
 jni/../jni/thirdparty/openjpeg/libopenjpeg/openjpeg.h:
 
@@ -156,7 +156,7 @@ jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_config.h:
 
 jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_inttypes.h:
 
-/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-8/arch-arm/usr/include/inttypes.h:
+/Users/vbevans94/Library/Android/android-ndk-r10c/platforms/android-9/arch-arm/usr/include/inttypes.h:
 
 jni/../jni/thirdparty/openjpeg/libopenjpeg/opj_clock.h:
 

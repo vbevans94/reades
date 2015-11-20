@@ -10,7 +10,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ua.org.cofriends.reades.R;
-import ua.org.cofriends.reades.utils.BusUtils;
 import ua.org.cofriends.reades.utils.PageSplitter;
 
 public class PageView extends TextView {
@@ -76,7 +75,8 @@ public class PageView extends TextView {
     }
 
     private void parseWords() {
-        textPage.setText(PageSplitter.splitWords(text));
+        PageSplitter.WordClickedListener listener = (PageSplitter.WordClickedListener) getContext();
+        textPage.setText(PageSplitter.splitWords(text, listener));
     }
 
     /**
@@ -86,12 +86,5 @@ public class PageView extends TextView {
         boolean result = moved;
         moved = false;
         return result;
-    }
-
-    public static class WordRequestEvent extends BusUtils.Event<CharSequence> {
-
-        public WordRequestEvent(CharSequence object) {
-            super(object);
-        }
     }
 }
